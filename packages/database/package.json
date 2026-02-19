@@ -4,9 +4,17 @@
   "private": true,
   "main": "./src/index.ts",
   "types": "./src/index.ts",
+  "scripts": {
+    "db:seed": "prisma db seed"
+  },
+  "prisma": {
+    "seed": "node ./scripts/seed-planetscale.js"
+  },
   "dependencies": {
+    "@prisma/adapter-pg": "^7.4.0",
     "@prisma/client": "latest",
-    "dotenv": "^16.0.0"
+    "dotenv": "^16.0.0",
+    "pg": "^8.18.0"
   },
   "devDependencies": {
     "prisma": "latest",

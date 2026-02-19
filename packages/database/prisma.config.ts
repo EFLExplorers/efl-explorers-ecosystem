@@ -9,6 +9,9 @@ if (!databaseUrl) {
 
 export const prismaConfig = defineConfig({
   schema: "prisma/schema.prisma",
+  migrations: {
+    seed: "node ./scripts/seed-planetscale.js",
+  },
   datasource: {
     url: databaseUrl,
   },
