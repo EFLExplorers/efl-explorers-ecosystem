@@ -1,0 +1,104 @@
+.authForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  width: 100%;
+}
+
+.error {
+  padding: var(--spacing-md);
+  background-color: var(--error);
+  color: var(--error-foreground);
+  border-radius: var(--radius);
+  font-size: var(--font-sm);
+  text-align: center;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.formGroup label {
+  font-size: var(--font-base);
+  font-weight: var(--font-semibold);
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.formGroup input {
+  width: 100%;
+  padding: var(--spacing-md);
+  background: var(--text-inverse);
+  border: 2px solid var(--theme-border);
+  border-radius: var(--radius);
+  color: var(--primary);
+  font-size: var(--font-lg);
+  transition: all 0.2s ease;
+}
+
+.formGroup input::placeholder {
+  color: var(--primary-two);
+  opacity: 0.7;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(245, 125, 63, 0.2);
+  background: var(--text-inverse);
+}
+
+.formGroup input:hover {
+  border-color: var(--accent);
+}
+
+.formGroup input:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.submitButton {
+  margin-top: var(--spacing-lg);
+  font-size: var(--font-lg);
+  padding: var(--spacing-md) var(--spacing-xl);
+  background: var(--accent);
+  color: var(--text-inverse);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: var(--transition-colors);
+}
+
+.submitButton:hover {
+  background: var(--accent-hover);
+}
+
+.submitButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.links {
+  display: flex;
+  color: var(--text-secondary);
+  justify-content: center;
+  gap: var(--spacing-xl);
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--theme-border);
+}
+
+.links a {
+  color: var(--text-secondary);
+  font-size: var(--font-base);
+  font-weight: var(--font-medium);
+  text-decoration: none;
+  transition: var(--transition-colors);
+}
+
+.links a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}

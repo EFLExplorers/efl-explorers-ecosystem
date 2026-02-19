@@ -1,0 +1,24 @@
+.container {
+  padding-top: 6rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #111827;
+  margin-bottom: 2rem;
+}
+
+.content {
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.courseGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+/* Add more specific styles as needed */

@@ -1,0 +1,180 @@
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  min-height: 100vh;
+  padding: 4rem 2rem;
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.heroContent {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.heroContent h1 {
+  font-size: var(--font-6xl);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-lg);
+  line-height: 1.2;
+  text-shadow: 0 8px 16px rgba(0, 0, 0, 0.6), 0 4px 8px rgba(0, 0, 0, 0.5),
+    0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.heroContent p {
+  font-size: var(--font-lg);
+  line-height: var(--leading-relaxed);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-2xl);
+  max-width: 500px;
+  text-shadow: 0 6px 12px rgba(0, 0, 0, 0.5), 0 3px 6px rgba(0, 0, 0, 0.4),
+    0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.primaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md) var(--spacing-3xl);
+  background: linear-gradient(
+    135deg,
+    var(--accent) 0%,
+    var(--accent-hover) 100%
+  );
+  color: var(--accent-foreground);
+  border: none;
+  border-radius: var(--radius-full);
+  font-size: var(--font-base);
+  font-weight: var(--font-semibold);
+  cursor: pointer;
+  transition: var(--transition-all);
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  min-width: 220px;
+  text-align: center;
+}
+
+.primaryButton::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transform: translateX(-100%);
+  transition: transform 0.6s;
+}
+
+.primaryButton:hover::before {
+  transform: translateX(100%);
+}
+
+.primaryButton:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.primaryButton:focus-visible {
+  outline: 2px solid var(--accent-foreground);
+  outline-offset: 4px;
+  box-shadow: var(--shadow-lg);
+}
+
+.heroImage {
+  animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+.placeholder {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: rgba(139, 92, 246, 0.1);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-2xl);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  box-shadow: var(--shadow-lg);
+  transition: var(--transition-all);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.placeholder:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+}
+
+.heroCharacter {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-2xl);
+  transition: var(--transition-all);
+}
+
+.placeholder:hover .heroCharacter {
+  transform: scale(1.05);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1024px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    text-align: center;
+    padding: 4rem 2rem;
+  }
+
+  .heroContent p {
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    min-height: 80vh;
+    padding: 2rem 1rem;
+  }
+
+  .heroContent h1 {
+    font-size: var(--font-4xl);
+  }
+
+  .heroContent p {
+    font-size: var(--font-base);
+  }
+}
+
+@media (max-width: 480px) {
+  .heroContent h1 {
+    font-size: var(--font-3xl);
+  }
+}

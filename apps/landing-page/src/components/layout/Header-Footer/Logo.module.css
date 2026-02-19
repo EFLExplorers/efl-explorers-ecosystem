@@ -1,0 +1,29 @@
+.logoLink {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.logoContainer {
+  position: relative;
+  height: 60px;
+  width: 180px;
+  display: flex;
+  align-items: center;
+}
+
+.logoImage {
+  object-fit: contain;
+  transition: transform 0.2s ease;
+}
+
+.logoImage:hover {
+  transform: scale(1.05);
+}
+
+/* Fallback text styling */
+.logoContainer span {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}

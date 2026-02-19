@@ -1,0 +1,102 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+/* Variants */
+.variant-default {
+  background-color: var(--primary-color);
+  color: var(--primary-foreground-color);
+}
+
+.variant-default:hover {
+  background-color: var(--primary-hover-color);
+}
+
+.variant-destructive {
+  background-color: var(--destructive-color);
+  color: var(--destructive-foreground-color);
+}
+
+.variant-destructive:hover {
+  background-color: var(--destructive-hover-color);
+}
+
+.variant-outline {
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--foreground-color);
+}
+
+.variant-outline:hover {
+  background-color: var(--hover-color);
+}
+
+.variant-secondary {
+  background-color: var(--secondary-color);
+  color: var(--secondary-foreground-color);
+}
+
+.variant-secondary:hover {
+  background-color: var(--secondary-hover-color);
+}
+
+.variant-ghost {
+  background-color: transparent;
+  color: var(--foreground-color);
+}
+
+.variant-ghost:hover {
+  background-color: var(--hover-color);
+}
+
+.variant-link {
+  background-color: transparent;
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
+.variant-link:hover {
+  color: var(--primary-hover-color);
+}
+
+/* Sizes */
+.size-default {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+.size-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.size-lg {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+}
+
+.size-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+}
+
+/* Disabled state */
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Focus state */
+.button:focus {
+  box-shadow: 0 0 0 2px var(--ring-color), 0 0 0 4px var(--ring-offset-color);
+}

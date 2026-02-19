@@ -1,0 +1,21 @@
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  height: auto;
+}
+
+.responsiveImage {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.characterImage {
+  border-radius: var(--auth-border-radius);
+  box-shadow: var(--shadow-md);
+}
+
+.logo {
+  max-height: 50px;
+  width: auto;
+}

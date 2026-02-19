@@ -1,0 +1,203 @@
+.teaching {
+  background-color: var(--primary-active);
+  padding: var(--section-spacing) var(--site-padding-x);
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.content {
+  max-width: var(--container-width);
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-lg);
+  text-align: center;
+  line-height: 1.2;
+  position: relative;
+}
+
+.title::after {
+  content: "";
+  display: block;
+  width: 120px;
+  height: 5px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #ff6b35 50%,
+    transparent 100%
+  );
+  margin: 2rem auto 0;
+  border-radius: 9999px;
+  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.4);
+  animation: expandLine 0.8s ease-out 0.3s both;
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  opacity: 0.8;
+  max-width: 800px;
+  margin: 0 auto var(--spacing-xl);
+  text-align: center;
+  line-height: 1.6;
+}
+
+.methodsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-xl);
+}
+
+.methodCard {
+  background: linear-gradient(
+    180deg,
+    rgba(45, 27, 78, 0.4) 0%,
+    rgba(45, 27, 78, 0.6) 50%,
+    rgba(45, 27, 78, 0.4) 100%
+  );
+  border: none;
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  transition: var(--transition-all);
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.methodCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 107, 53, 0.1) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.methodCard::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transform: translateX(-100%);
+  transition: transform 0.6s;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.methodCard:hover::after {
+  transform: translateX(100%);
+}
+
+.methodCard > * {
+  position: relative;
+  z-index: 2;
+}
+
+.methodCard:hover {
+  transform: translateY(-4px);
+  box-shadow: none;
+  background: linear-gradient(
+    180deg,
+    rgba(45, 27, 78, 0.5) 0%,
+    rgba(45, 27, 78, 0.7) 50%,
+    rgba(45, 27, 78, 0.5) 100%
+  );
+}
+
+.methodCard:hover::before {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 107, 53, 0.2) 0%,
+    transparent 70%
+  );
+}
+
+.methodIcon {
+  width: 64px;
+  height: 64px;
+  margin-bottom: var(--spacing-md);
+  font-size: 2.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-sm);
+}
+
+.methodTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.methodDescription {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+@keyframes expandLine {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+  to {
+    width: 120px;
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .teaching {
+    padding: var(--spacing-xl) var(--spacing-md);
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .title::after {
+    width: 100px;
+    height: 4px;
+    margin: 1.5rem auto 0;
+  }
+
+  .subtitle {
+    font-size: 1.125rem;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .methodsGrid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+}

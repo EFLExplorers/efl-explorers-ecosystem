@@ -1,0 +1,237 @@
+.tools {
+  width: 100%;
+  background: linear-gradient(
+    135deg,
+    var(--theme-background) 0%,
+    var(--theme-muted) 100%
+  );
+  background-image: url("/assets/Space4.png");
+  background-size: cover;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  padding: 6rem 0;
+  position: relative;
+  overflow: hidden;
+  margin-top: 0;
+}
+
+.tools::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -1px;
+  right: -1px;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    var(--theme-background) 0%,
+    var(--theme-muted) 100%
+  );
+  opacity: 0.8;
+  z-index: 0;
+}
+
+.tools::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -1px;
+  right: -1px;
+  bottom: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    var(--theme-accent) 0%,
+    transparent 70%
+  );
+  opacity: 0.1;
+  z-index: 0;
+}
+
+.content {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+.title {
+  font-size: var(--font-4xl);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+  padding-bottom: var(--spacing-lg);
+  text-align: center;
+  line-height: 1.2;
+  text-shadow: 0 6px 12px rgba(0, 0, 0, 0.6), 0 3px 6px rgba(0, 0, 0, 0.5),
+    0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.subtitle {
+  font-size: var(--font-lg);
+  color: var(--text-muted);
+  max-width: 800px;
+  margin: 0 auto;
+  padding-bottom: var(--spacing-4xl);
+  text-align: center;
+  line-height: var(--leading-relaxed);
+}
+
+.toolsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-2xl);
+  width: 100%;
+}
+
+.toolCard {
+  background: rgba(139, 92, 246, 0.08);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(139, 92, 246, 0.15);
+  border-radius: var(--radius-2xl);
+  padding: var(--spacing-2xl);
+  transition: var(--transition-all);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-lg);
+  height: 100%;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.toolCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transform: translateX(-100%);
+  transition: transform 0.6s;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.toolCard:hover::before {
+  transform: translateX(100%);
+}
+
+.toolCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+  background: rgba(139, 92, 246, 0.12);
+}
+
+.toolIcon {
+  font-size: 2.5rem;
+  color: var(--accent);
+  background: rgba(139, 92, 246, 0.1);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-xl);
+  transition: var(--transition-all);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.toolCard:hover .toolIcon {
+  transform: scale(1.1);
+  background: rgba(139, 92, 246, 0.2);
+  color: var(--accent);
+  box-shadow: var(--shadow-md);
+}
+
+.toolTitle {
+  font-size: var(--font-xl);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  margin: 0;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.4),
+    0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.toolCard:hover .toolTitle {
+  color: var(--text-primary);
+  font-weight: var(--font-bold);
+}
+
+.toolDescription {
+  font-size: var(--font-base);
+  color: var(--text-muted);
+  line-height: var(--leading-relaxed);
+  margin: 0;
+  flex-grow: 1;
+}
+
+.toolCard:hover .toolDescription {
+  color: var(--text-primary);
+  opacity: 0.9;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .tools {
+    padding: 4rem 0;
+  }
+
+  .content {
+    padding: 0 1rem;
+  }
+
+  .title {
+    font-size: var(--font-3xl);
+  }
+
+  .subtitle {
+    font-size: var(--font-base);
+    padding-bottom: var(--spacing-3xl);
+  }
+
+  .toolsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-xl);
+  }
+}
+
+@media (max-width: 480px) {
+  .tools {
+    padding: 3rem 0;
+  }
+
+  .title {
+    font-size: var(--font-2xl);
+  }
+
+  .subtitle {
+    font-size: var(--font-sm);
+    padding-bottom: var(--spacing-2xl);
+  }
+
+  .toolCard {
+    padding: var(--spacing-xl);
+  }
+
+  .toolsGrid {
+    grid-template-columns: 1fr;
+  }
+}

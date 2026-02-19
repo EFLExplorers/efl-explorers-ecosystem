@@ -1,0 +1,115 @@
+.authButtons {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+}
+
+/* Remove duplicate button styles and extend from base */
+.actionButton {
+  composes: baseButton from "../../styles/base/auth.module.css";
+  font-size: 0.9rem;
+}
+
+.registerButton {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background-color: var(--accent);
+  color: var(--text-inverse);
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: var(--theme-radius);
+  transition: all 0.2s ease;
+}
+
+.registerButton:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+  color: var(--text-primary);
+}
+
+.loginButton {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 500;
+  border-radius: var(--theme-radius);
+  transition: all 0.2s ease;
+}
+
+.loginButton:hover {
+  color: var(--primary-light);
+}
+
+.dashboardButton,
+.logoutButton {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.dashboardButton {
+  background: #007aff;
+  color: white;
+}
+
+.dashboardButton:hover {
+  background: #0066d6;
+}
+
+.logoutButton {
+  background: transparent;
+  color: #dc2626;
+  border: 1px solid #dc2626;
+  cursor: pointer;
+}
+
+.logoutButton:hover {
+  background: #dc2626;
+  color: white;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdownContent {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  border-radius: 4px;
+}
+
+.dropdown:hover .dropdownContent {
+  display: block;
+}
+
+.dropdownContent a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdownContent a:hover {
+  background-color: #f1f1f1;
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  .authButtons {
+    gap: var(--spacing-sm);
+  }
+
+  .loginButton,
+  .registerButton {
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: 0.9rem;
+  }
+}

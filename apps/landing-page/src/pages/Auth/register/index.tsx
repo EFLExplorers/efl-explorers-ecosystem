@@ -1,0 +1,129 @@
+import { useRouter } from "next/router";
+import Link from "next/link";
+import styles from "@/styles/Auth.module.css";
+import type { GetStaticProps } from "next";
+import type { HeaderContent } from "@/components/layout/Header-Footer/Header";
+import type { FooterContent } from "@/components/layout/Header-Footer/Footer";
+import { getGlobalLayoutContent } from "@/utils/globalSections";
+import { prisma } from "@repo/database";
+
+interface RegisterPageProps {
+  headerContent: HeaderContent | null;
+  footerContent: FooterContent | null;
+  title: string;
+  subtitle: string;
+  studentButtonLabel: string;
+  teacherButtonLabel: string;
+  loginPrompt: string;
+  loginLinkText: string;
+  loginHref: string;
+}
+
+export const RegisterPage = ({
+  title,
+  subtitle,
+  studentButtonLabel,
+  teacherButtonLabel,
+  loginPrompt,
+  loginLinkText,
+  loginHref,
+}: RegisterPageProps) => {
+  const router = useRouter();
+
+  const handlePlatformSelect = (platform: "student" | "teacher") => {
+    router.push(`/Auth/register/${platform}`);
+  };
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.formContainer}>
+        <h1 className={styles.title}>{title}</h1>
+        <p className={styles.subtitle}>{subtitle}</p>
+
+        <div className={styles.buttonGroup}>
+          <button
+            onClick={() => handlePlatformSelect("student")}
+            className={`${styles.button} ${styles.studentButton}`}
+          >
+            {studentButtonLabel}
+          </button>
+          <button
+            onClick={() => handlePlatformSelect("teacher")}
+            className={`${styles.button} ${styles.teacherButton}`}
+          >
+            {teacherButtonLabel}
+          </button>
+        </div>
+
+        <div className={styles.registerLink}>
+          {loginPrompt}{" "}
+          <Link href={loginHref} className={styles.link}>
+            {loginLinkText}
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default RegisterPage; 
+
+export const getStaticProps: GetStaticProps<RegisterPageProps> = async () => {
+  const { headerContent, footerContent } = await getGlobalLayoutContent();
+
+  const pageData = await prisma.page.findUnique({
+    where: { route: "/Auth/register" },
+    select: { id: true },
+  });
+
+  if (!pageData?.id) {
+    throw new Error(
+      "[Register] Missing pages row for route '/Auth/register': no id"
+    );
+  }
+
+  const sectionData = await prisma.pageSection.findFirst({
+    where: {
+      pageId: pageData.id,
+      sectionKey: "selection",
+      active: true,
+    },
+    select: { content: true },
+  });
+
+  if (!sectionData) {
+    throw new Error(
+      "[Register] Missing page_sections for '/Auth/register' (selection): no data"
+    );
+  }
+
+  const content = sectionData.content as any;
+  if (
+    !content.title ||
+    !content.subtitle ||
+    !content.student_button_label ||
+    !content.teacher_button_label ||
+    !content.login_prompt ||
+    !content.login_link_text ||
+    !content.login_href
+  ) {
+    throw new Error(
+      "[Register] Missing required content fields in selection section"
+    );
+  }
+
+  return {
+    props: {
+      headerContent,
+      footerContent,
+      title: content.title,
+      subtitle: content.subtitle,
+      studentButtonLabel: content.student_button_label,
+      teacherButtonLabel: content.teacher_button_label,
+      loginPrompt: content.login_prompt,
+      loginLinkText: content.login_link_text,
+      loginHref: content.login_href,
+    },
+    revalidate: 300,
+  };
+};

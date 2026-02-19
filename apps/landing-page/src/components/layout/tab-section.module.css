@@ -1,0 +1,49 @@
+.tabSection {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.tabHeaders {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.tabButton {
+  padding: 0.5rem 1rem;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #666;
+}
+
+.tabButton.active {
+  border-bottom-color: #333;
+  color: #333;
+  font-weight: 500;
+}
+
+.tabContent {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  min-height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .tabHeaders {
+    flex-wrap: wrap;
+  }
+
+  .tabButton {
+    flex: 1 0 40%;
+  }
+}

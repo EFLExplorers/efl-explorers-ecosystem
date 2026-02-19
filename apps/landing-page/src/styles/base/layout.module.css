@@ -1,0 +1,14 @@
+.pageContainer {
+  width: 100%;
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+.section {
+  padding: var(--spacing-lg) 0;
+}
+
+.contentWrapper {
+  margin: var(--spacing-md) 0;
+}

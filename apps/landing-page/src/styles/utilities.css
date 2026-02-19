@@ -1,0 +1,52 @@
+/* Media query utilities using CSS custom properties */
+@media (max-width: var(--breakpoint-md)) {
+  .mobile-only {
+    display: block;
+  }
+  .hide-on-mobile {
+    display: none;
+  }
+}
+
+@media (min-width: var(--breakpoint-md)) and (max-width: var(--breakpoint-lg)) {
+  .tablet-only {
+    display: block;
+  }
+  .hide-on-tablet {
+    display: none;
+  }
+}
+
+@media (min-width: var(--breakpoint-lg)) {
+  .desktop-only {
+    display: block;
+  }
+  .hide-on-desktop {
+    display: none;
+  }
+}
+
+/* Transition utilities */
+.transition-standard {
+  transition: all var(--transition-speed) var(--transition-timing);
+}
+
+/* Container utility */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--page-padding);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Add responsive padding utilities */
+.p-responsive {
+  padding: var(--spacing-sm);
+}
+
+@media (min-width: var(--breakpoint-md)) {
+  .p-responsive {
+    padding: var(--spacing-md);
+  }
+}

@@ -1,0 +1,16 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  flex-grow: 1;
+  padding-top: 1rem;
+  width: 100%;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+}

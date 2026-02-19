@@ -1,0 +1,133 @@
+.registerCta {
+  background-color: var(--theme-foreground);
+  background-image: url("/assets/Space4.png");
+  background-size: cover;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  padding: var(--spacing-2xl) var(--site-padding-x);
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  overflow: hidden;
+}
+
+.registerCta::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--theme-foreground);
+  opacity: 0.8;
+  z-index: -1;
+}
+
+.registerCtaContent {
+  max-width: var(--container-width);
+  text-align: center;
+  margin: 0 auto;
+  padding: var(--spacing-xl) 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-lg);
+  position: relative;
+}
+
+.registerCtaTitle {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+  max-width: 800px;
+  margin: 0 auto;
+  text-shadow: 0 8px 16px rgba(0, 0, 0, 0.6), 0 4px 8px rgba(0, 0, 0, 0.5),
+    0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.registerCtaSubtitle {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.registerCtaButton {
+  display: inline-block;
+  padding: var(--spacing-md) var(--spacing-xl);
+  background-color: var(--theme-accent);
+  color: var(--text-primary);
+  border: none;
+  border-radius: var(--theme-radius);
+  font-size: 1.125rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: var(--spacing-md);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.registerCtaButton::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.registerCtaButton:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.registerCtaButton:hover::before {
+  left: 100%;
+}
+
+@media (max-width: 768px) {
+  .registerCta {
+    padding: var(--spacing-xl) var(--spacing-md);
+    min-height: 300px;
+  }
+
+  .registerCtaContent {
+    padding: var(--spacing-lg) 0;
+    gap: var(--spacing-md);
+  }
+
+  .registerCtaTitle {
+    font-size: 2.25rem;
+    padding: 0 var(--spacing-md);
+  }
+
+  .registerCtaSubtitle {
+    font-size: 1.125rem;
+    padding: 0 var(--spacing-md);
+  }
+
+  .registerCtaButton {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    font-size: 1rem;
+  }
+}
