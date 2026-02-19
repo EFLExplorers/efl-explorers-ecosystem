@@ -5,3 +5,321 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+enum UserRole {
+  student
+  teacher
+}
+
+model User {
+  id            String    @id @default(uuid()) @db.Uuid
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime? @map("email_verified")
+  image         String?   @db.Text
+  passwordHash  String?   @map("password_hash")
+  role          UserRole  @default(student)
+  approved      Boolean   @default(false)
+  firstName     String?   @map("first_name")
+  lastName      String?   @map("last_name")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  accounts Account[]
+  sessions Session[]
+  passwordResetTokens PasswordResetToken[]
+  ssoTokens SsoToken[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(uuid()) @db.Uuid
+  userId            String  @map("user_id") @db.Uuid
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String? @db.Text
+  id_token          String? @db.Text
+  session_state     String? @db.Text
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(uuid()) @db.Uuid
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id") @db.Uuid
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  tokenHash String   @unique @map("token_hash")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("password_reset_tokens")
+}
+
+model SsoToken {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  tokenHash String   @unique @map("token_hash")
+  platform  UserRole
+  expiresAt DateTime @map("expires_at")
+  usedAt    DateTime? @map("used_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("sso_tokens")
+}
+
+model Page {
+  id              String        @id @default(uuid()) @db.Uuid
+  route           String        @unique
+  title           String?       @db.Text
+  metaDescription String?       @map("meta_description") @db.Text
+  layout          String        @default("default") @db.VarChar(64)
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @default(now()) @updatedAt @map("updated_at")
+  sections        PageSection[]
+  contentItems    ContentItem[]
+  routeSections   RouteSection[]
+
+  @@map("pages")
+}
+
+model ContentItem {
+  id          String     @id @default(uuid()) @db.Uuid
+  pageId      String?    @map("page_id") @db.Uuid
+  sectionKey  String?    @map("section_key") @db.VarChar(128)
+  contentType String     @map("content_type") @db.VarChar(128)
+  slug        String?    @unique
+  title       String?    @db.Text
+  subtitle    String?    @db.Text
+  description String?    @db.Text
+  content     Json?
+  metadata    Json?
+  sortOrder   Int        @default(0) @map("sort_order")
+  active      Boolean    @default(true)
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @default(now()) @updatedAt @map("updated_at")
+
+  page               Page?                 @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  parentRelationships ContentRelationship[] @relation("ContentParent")
+  childRelationships  ContentRelationship[] @relation("ContentChild")
+
+  @@index([contentType, active])
+  @@index([slug])
+  @@index([pageId, contentType, active, sortOrder])
+  @@map("content_items")
+}
+
+model PageSection {
+  id          String   @id @default(uuid()) @db.Uuid
+  pageId      String?  @map("page_id") @db.Uuid
+  sectionKey  String   @map("section_key") @db.VarChar(128)
+  sectionType String   @default("content") @map("section_type") @db.VarChar(64)
+  title       String?  @db.Text
+  subtitle    String?  @db.Text
+  heading     String?  @db.Text
+  subheading  String?  @db.Text
+  body        String?  @db.Text
+  ctaLabel    String?  @map("cta_label") @db.Text
+  ctaHref     String?  @map("cta_href") @db.Text
+  content     Json?
+  settings    Json?
+  data        Json?
+  sortOrder   Int      @default(0) @map("sort_order")
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+
+  page Page? @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@unique([pageId, sectionKey])
+  @@index([pageId, sectionKey])
+  @@index([active, sortOrder])
+  @@map("page_sections")
+}
+
+model SiteSection {
+  id          String   @id @default(uuid()) @db.Uuid
+  sectionKey  String   @unique @map("section_key") @db.VarChar(128)
+  sectionType String   @default("content") @map("section_type") @db.VarChar(64)
+  content     Json?
+  settings    Json?
+  sortOrder   Int      @default(0) @map("sort_order")
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@index([active, sortOrder])
+  @@map("site_sections")
+}
+
+model RouteSection {
+  id              String   @id @default(uuid()) @db.Uuid
+  pageId          String   @map("page_id") @db.Uuid
+  sectionKey      String   @map("section_key") @db.VarChar(128)
+  sectionType     String   @default("content") @map("section_type") @db.VarChar(64)
+  expectedContent Json?    @map("expected_content")
+  notes           String?  @db.Text
+  sortOrder       Int      @default(0) @map("sort_order")
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at")
+
+  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@unique([pageId, sectionKey])
+  @@index([pageId])
+  @@map("route_sections")
+}
+
+model ContentRelationship {
+  id               String   @id @default(uuid()) @db.Uuid
+  parentId         String   @map("parent_id") @db.Uuid
+  childId          String   @map("child_id") @db.Uuid
+  relationshipType String   @map("relationship_type") @db.VarChar(128)
+  sortOrder        Int      @default(0) @map("sort_order")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  parent ContentItem @relation("ContentParent", fields: [parentId], references: [id], onDelete: Cascade)
+  child  ContentItem @relation("ContentChild", fields: [childId], references: [id], onDelete: Cascade)
+
+  @@unique([parentId, childId, relationshipType])
+  @@map("content_relationships")
+}
+
+model MediaAsset {
+  id           String   @id @default(uuid()) @db.Uuid
+  filename     String   @db.Text
+  originalName String   @map("original_name") @db.Text
+  url          String   @db.Text
+  altText      String?  @map("alt_text") @db.Text
+  caption      String?  @db.Text
+  mimeType     String   @map("mime_type") @db.Text
+  sizeBytes    Int?     @map("size_bytes")
+  dimensions   Json?
+  metadata     Json?
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("media_assets")
+}
+
+model Faq {
+  id        String   @id @default(uuid()) @db.Uuid
+  category  String?  @db.Text
+  question  String?  @db.Text
+  answer    String?  @db.Text
+  sortOrder Int      @default(0) @map("sort_order")
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("faqs")
+}
+
+model TeamMember {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String?  @db.Text
+  role      String?  @db.Text
+  title     String?  @db.Text
+  imageUrl  String?  @map("image_url") @db.Text
+  bio       String?  @db.Text
+  expertise Json?
+  sortOrder Int      @default(0) @map("sort_order")
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("team_members")
+}
+
+model AboutStat {
+  id        String   @id @default(uuid()) @db.Uuid
+  number    String?  @db.Text
+  label     String?  @db.Text
+  sortOrder Int      @default(0) @map("sort_order")
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("about_stats")
+}
+
+model CoreValue {
+  id          String   @id @default(uuid()) @db.Uuid
+  icon        String?  @db.Text
+  title       String?  @db.Text
+  description String?  @db.Text
+  sortOrder   Int      @default(0) @map("sort_order")
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("core_values")
+}
+
+model LessonModule {
+  id                 String   @id @default(uuid()) @db.Uuid
+  name               String?  @db.Text
+  colorToken         String?  @map("color_token") @db.Text
+  recommendedStudents String? @map("recommended_students") @db.Text
+  description        String?  @db.Text
+  lessonsSummary     String?  @map("lessons_summary") @db.Text
+  durationSummary    String?  @map("duration_summary") @db.Text
+  sortOrder          Int      @default(0) @map("sort_order")
+  active             Boolean  @default(true)
+  createdAt          DateTime @default(now()) @map("created_at")
+
+  @@map("lesson_modules")
+}
+
+model TeacherBenefit {
+  id          String   @id @default(uuid()) @db.Uuid
+  title       String?  @db.Text
+  description String?  @db.Text
+  sortOrder   Int      @default(0) @map("sort_order")
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("teacher_benefits")
+}
+
+model Testimonial {
+  id         String   @id @default(uuid()) @db.Uuid
+  quote      String?  @db.Text
+  authorName String?  @map("author_name") @db.Text
+  authorRole String?  @map("author_role") @db.Text
+  sortOrder  Int      @default(0) @map("sort_order")
+  active     Boolean  @default(true)
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@map("testimonials")
+}
