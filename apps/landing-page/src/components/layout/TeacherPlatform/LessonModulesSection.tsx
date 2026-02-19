@@ -30,16 +30,16 @@ export interface LessonModulesSectionProps {
 }
 
 const colorClassByKey: Record<LessonModuleColorKey, string> = {
-  muted: styles.colorMuted,
-  accent: styles.colorAccent,
-  textSecondary: styles.colorTextSecondary,
-  foreground: styles.colorForeground,
-  mutedForeground: styles.colorMutedForeground,
-  primaryThree: styles.colorPrimaryThree,
-  secondaryHover: styles.colorSecondaryHover,
-  primaryTwo: styles.colorPrimaryTwo,
-  secondary: styles.colorSecondary,
-  textMuted: styles.colorTextMuted,
+  muted: styles.colorMuted ?? "",
+  accent: styles.colorAccent ?? "",
+  textSecondary: styles.colorTextSecondary ?? "",
+  foreground: styles.colorForeground ?? "",
+  mutedForeground: styles.colorMutedForeground ?? "",
+  primaryThree: styles.colorPrimaryThree ?? "",
+  secondaryHover: styles.colorSecondaryHover ?? "",
+  primaryTwo: styles.colorPrimaryTwo ?? "",
+  secondary: styles.colorSecondary ?? "",
+  textMuted: styles.colorTextMuted ?? "",
 };
 
 export const LessonModulesSection = ({
@@ -56,6 +56,7 @@ export const LessonModulesSection = ({
     "Choose from our comprehensive range of EFL modules designed for every proficiency level";
 
   const active = modules[selectedModule] ?? modules[0];
+  if (!active) return null;
   const activeColorClass = colorClassByKey[active.colorKey] ?? "";
 
   return (

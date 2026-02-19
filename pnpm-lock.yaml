@@ -103,6 +103,9 @@ importers:
         specifier: ^8.18.0
         version: 8.18.0
     devDependencies:
+      '@types/pg':
+        specifier: ^8.16.0
+        version: 8.16.0
       prisma:
         specifier: latest
         version: 7.4.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3)
@@ -680,6 +683,9 @@ packages:
 
   '@types/node@25.3.0':
     resolution: {integrity: sha512-4K3bqJpXpqfg2XKGK9bpDTc6xO/xoUP/RBWS7AtRMug6zZFaRekiLzjVtAoZMquxoAbzBvy5nxQ7veS5eYzf8A==}
+
+  '@types/pg@8.16.0':
+    resolution: {integrity: sha512-RmhMd/wD+CF8Dfo+cVIy3RR5cl8CyfXQ0tGgW6XBL8L4LM/UTEbNXYRbLwU6w+CgrKBNbrQWt4FUtTfaU5jSYQ==}
 
   '@types/react-dom@19.2.2':
     resolution: {integrity: sha512-9KQPoO6mZCi7jcIStSnlOWn2nEF3mNmyr3rIAsGnAbQKYbRLyqmeSc39EVgtxXVia+LMT8j3knZLAZAh+xLmrw==}
@@ -3481,6 +3487,12 @@ snapshots:
   '@types/node@25.3.0':
     dependencies:
       undici-types: 7.18.2
+
+  '@types/pg@8.16.0':
+    dependencies:
+      '@types/node': 25.3.0
+      pg-protocol: 1.11.0
+      pg-types: 2.2.0
 
   '@types/react-dom@19.2.2(@types/react@19.2.2)':
     dependencies:

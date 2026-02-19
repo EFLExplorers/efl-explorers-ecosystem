@@ -12,8 +12,10 @@ interface TabSectionProps {
   tabs: Tab[];
 }
 
-export default function TabSection({ tabs }: TabSectionProps) {
+export const TabSection = ({ tabs }: TabSectionProps) => {
   const [activeTab, setActiveTab] = useState(0);
+
+  if (!tabs?.length) return null;
 
   return (
     <div className={styles.tabSection}>
@@ -30,7 +32,9 @@ export default function TabSection({ tabs }: TabSectionProps) {
           </button>
         ))}
       </div>
-      <div className={styles.tabContent}>{tabs[activeTab].content}</div>
+      <div className={styles.tabContent}>
+        {tabs[activeTab]?.content ?? ""}
+      </div>
     </div>
   );
-}
+};

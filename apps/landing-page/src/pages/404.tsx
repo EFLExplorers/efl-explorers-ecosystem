@@ -4,6 +4,7 @@ import type { GetStaticProps } from "next";
 import type { HeaderContent } from "@/components/layout/Header-Footer/Header";
 import type { FooterContent } from "@/components/layout/Header-Footer/Footer";
 import { getGlobalLayoutContent } from "@/utils/globalSections";
+import { parsePrismaJson } from "@/utils/prismaJson";
 import styles from "./404.module.css";
 import { prisma } from "@repo/database";
 
@@ -44,8 +45,8 @@ export const getStaticProps: GetStaticProps<Custom404Props> = async () => {
     );
   }
 
-  const content = sectionData.content as any;
-  if (!content.title || !content.message || !content.home_link_text) {
+  const content = parsePrismaJson<Record<string, any>>(sectionData.content);
+  if (!content || !content.title || !content.message || !content.home_link_text) {
     throw new Error(
       "[404] Missing required content fields in 404 site_section (title, message, home_link_text)"
     );

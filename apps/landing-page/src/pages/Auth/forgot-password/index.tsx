@@ -7,6 +7,7 @@ import sharedStyles from "../../../components/auth/styles/shared.module.css";
 import type { HeaderContent } from "@/components/layout/Header-Footer/Header";
 import type { FooterContent } from "@/components/layout/Header-Footer/Footer";
 import { getGlobalLayoutContent } from "@/utils/globalSections";
+import { parsePrismaJson } from "@/utils/prismaJson";
 import { prisma } from "@repo/database";
 
 interface ForgotPasswordPageProps {
@@ -158,8 +159,8 @@ export const getStaticProps: GetStaticProps<ForgotPasswordPageProps> =
       );
     }
 
-    const content = sectionData.content as any;
-    if (!content.form || !content.success) {
+    const content = parsePrismaJson<Record<string, any>>(sectionData.content);
+    if (!content || !content.form || !content.success) {
       throw new Error(
         "[ForgotPassword] Missing form or success content in section"
       );

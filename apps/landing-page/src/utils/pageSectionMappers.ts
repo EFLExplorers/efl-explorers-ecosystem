@@ -3,15 +3,17 @@ import type { FooterContent } from "../components/layout/Header-Footer/Footer";
 import type { HeaderContent } from "../components/layout/Header-Footer/Header";
 import type { PageSection as PrismaPageSection } from "@repo/database";
 import { getSectionContentSchema } from "../schemas/page-sections";
+import { parsePrismaJson } from "./prismaJson";
 
 export const mapFooterContentFromSection = (
   section?: PageSection | null
 ): FooterContent | null => {
   if (!section) return null;
+  const raw = parsePrismaJson<Record<string, any>>(section.content) ?? {};
   const columns =
-    ((section.content as any)?.columns as FooterContent["columns"]) || [];
+    (raw.columns as FooterContent["columns"]) || [];
   const bottomBar =
-    ((section.content as any)?.bottom_bar as FooterContent["bottomBar"]) || [];
+    (raw.bottom_bar as FooterContent["bottomBar"]) || [];
 
   if (!columns.length && !bottomBar.length) return null;
 
@@ -25,7 +27,7 @@ export const mapHeaderContentFromSection = (
   section?: PageSection | null
 ): HeaderContent | null => {
   if (!section) return null;
-  const raw = (section.content as any) ?? {};
+  const raw = parsePrismaJson<Record<string, any>>(section.content) ?? {};
 
   const navbar = raw.navbar ?? raw.nav ?? null;
   const authButtons = raw.auth_buttons ?? raw.authButtons ?? null;
@@ -86,13 +88,21 @@ const parseSectionContent = (
   content: PrismaPageSection["content"]
 ): Record<string, any> | null => {
   const schema = getSectionContentSchema(sectionKey);
-  const raw = content ?? {};
+  const raw = parsePrismaJson<Record<string, any>>(content);
 
   if (!schema) {
     if (raw && typeof raw === "object" && !Array.isArray(raw)) {
       return raw as Record<string, any>;
     }
     return {};
+  }
+
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
+    console.warn("[content] Invalid section content", {
+      sectionKey,
+      issues: ["Content is not a valid JSON object."],
+    });
+    return null;
   }
 
   const result = schema.safeParse(raw);

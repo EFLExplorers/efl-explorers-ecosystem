@@ -38,13 +38,13 @@ export const StudentPlanetsSection = ({
   };
 
   const calculatePlanetStyle = useMemo(
-    () => (index: number) => {
+    () => (planet: StudentPlanet, index: number) => {
       const angle = (360 / planets.length) * index;
       const radius = 300;
       const zOffset = Math.cos((angle * Math.PI) / 180) * 100;
 
       return {
-        "--planet-color": planets[index].color,
+        "--planet-color": planet.color,
         transform: `
           rotate(${angle + (isSpinning ? currentSlide * 36 : 0)}deg)
           translateX(${radius}px)
@@ -54,7 +54,7 @@ export const StudentPlanetsSection = ({
         zIndex: Math.round(zOffset),
       } as React.CSSProperties;
     },
-    [currentSlide, isSpinning]
+    [currentSlide, isSpinning, planets.length]
   );
 
   useEffect(() => {
@@ -85,7 +85,7 @@ export const StudentPlanetsSection = ({
                 className={`${styles.planetCircle} ${
                   index === currentSlide ? styles.activePlanet : ""
                 }`}
-                style={calculatePlanetStyle(index)}
+                style={calculatePlanetStyle(planet, index)}
                 onClick={() => {
                   setCurrentSlide(index);
                   setIsSpinning(false);
@@ -112,7 +112,7 @@ export const StudentPlanetsSection = ({
         </button>
       </div>
       <p className={styles.planetName} data-cy="student-planet-name">
-        {planets[currentSlide].name}
+        {planets[currentSlide]?.name ?? ""}
       </p>
       <button
         className={`${styles.spinButton} ${isSpinning ? styles.active : ""}`}

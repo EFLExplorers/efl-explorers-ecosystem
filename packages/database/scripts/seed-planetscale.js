@@ -171,7 +171,10 @@ const parseValuesList = (valuesText) => {
 };
 
 const parseJsonValue = (value) => {
-  const trimmed = value.trim();
+  let trimmed = value.trim().replace(/::jsonb?$/i, "");
+  if (trimmed.startsWith("'") && trimmed.endsWith("'")) {
+    trimmed = trimmed.slice(1, -1).replace(/''/g, "'");
+  }
   if (!trimmed) return value;
   if (!trimmed.startsWith("{") && !trimmed.startsWith("[")) return value;
   try {
