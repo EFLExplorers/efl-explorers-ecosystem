@@ -30,7 +30,7 @@ export function TasksCard() {
     updateTaskMutation.mutate({ id, data: { completed } });
   };
   
-  const getTaskDueLabel = (dueDate: string | null) => {
+  const getTaskDueLabel = (dueDate: Date | string | null) => {
     if (!dueDate) return "";
     
     const dueDateObj = new Date(dueDate);
@@ -45,7 +45,7 @@ export function TasksCard() {
     }
   };
   
-  const getTaskDueClass = (dueDate: string | null) => {
+  const getTaskDueClass = (dueDate: Date | string | null) => {
     if (!dueDate) return styles.dueDefault;
     
     const dueDateObj = new Date(dueDate);
