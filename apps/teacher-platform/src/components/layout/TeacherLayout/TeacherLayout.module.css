@@ -1,0 +1,40 @@
+.container {
+  display: flex;
+  height: 100vh;
+  background-color: #ffffff;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition-all);
+}
+
+.contentExpanded {
+  margin-left: 16rem;
+}
+
+.contentCollapsed {
+  margin-left: 4rem;
+}
+
+@media (max-width: 767px) {
+  .contentExpanded,
+  .contentCollapsed {
+    margin-left: 0;
+  }
+}
+
+.main {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-md);
+  background-color: #ffffff;
+}
+
+@media (min-width: 768px) {
+  .main {
+    padding: var(--spacing-lg);
+  }
+}

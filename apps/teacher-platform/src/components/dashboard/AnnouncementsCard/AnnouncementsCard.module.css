@@ -1,0 +1,128 @@
+.card {
+  border: 1px solid #93c5fd;
+  background-color: #dbeafe;
+  color: #1f2937;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.title {
+  font-size: var(--font-lg);
+  font-weight: var(--font-semibold);
+  color: #111827;
+}
+
+.viewAll {
+  color: #111827;
+  transition: var(--transition-colors);
+  font-size: var(--font-sm);
+  font-weight: var(--font-medium);
+  text-decoration: none;
+}
+
+.viewAll:hover {
+  color: #9333ea;
+  text-decoration: underline;
+}
+
+.content {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.content > *:not(:last-child) {
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+}
+
+.emptyState {
+  padding: var(--spacing-lg);
+  text-align: center;
+  color: #6b7280;
+}
+
+.announcementItem {
+  padding: var(--spacing-md);
+}
+
+.announcementHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.timeAgo {
+  margin-left: auto;
+  color: #6b7280;
+  font-size: var(--font-xs);
+}
+
+.announcementTitle {
+  font-weight: var(--font-medium);
+  color: #111827;
+}
+
+.announcementContent {
+  color: #6b7280;
+  font-size: var(--font-sm);
+  margin-top: var(--spacing-xs);
+}
+
+.badgeHigh {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.badgeHigh:hover {
+  background-color: #fee2e2;
+}
+
+.badgeMedium {
+  background-color: #fed7aa;
+  color: #9a3412;
+}
+
+.badgeMedium:hover {
+  background-color: #fed7aa;
+}
+
+.badgeGeneral {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.badgeGeneral:hover {
+  background-color: #dbeafe;
+}
+
+.footer {
+  border-top: 1px solid #e5e7eb;
+  padding: var(--spacing-md);
+}
+
+.createButton {
+  color: #111827;
+  transition: var(--transition-colors);
+  font-size: var(--font-sm);
+  font-weight: var(--font-medium);
+  display: flex;
+  align-items: center;
+}
+
+.createButton:hover {
+  color: #9333ea;
+  text-decoration: underline;
+}
+
+.createIcon {
+  height: 1rem;
+  width: 1rem;
+  margin-right: var(--spacing-xs);
+}

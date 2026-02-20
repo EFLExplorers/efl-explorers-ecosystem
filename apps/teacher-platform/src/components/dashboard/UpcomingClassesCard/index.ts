@@ -1,0 +1,1 @@
+export { UpcomingClassesCard } from './UpcomingClassesCard';

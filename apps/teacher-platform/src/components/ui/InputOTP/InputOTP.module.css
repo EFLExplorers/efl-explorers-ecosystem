@@ -1,0 +1,84 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.container:has([disabled]) {
+  opacity: 0.5;
+}
+
+.input {
+  cursor: default;
+}
+
+.input:disabled {
+  cursor: not-allowed;
+}
+
+.group {
+  display: flex;
+  align-items: center;
+}
+
+.slot {
+  position: relative;
+  display: flex;
+  height: 2.5rem;
+  width: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  border-top: 1px solid var(--input);
+  border-bottom: 1px solid var(--input);
+  border-right: 1px solid var(--input);
+  font-size: var(--font-sm);
+  transition: var(--transition-all);
+}
+
+.slot:first-child {
+  border-top-left-radius: var(--radius-md);
+  border-bottom-left-radius: var(--radius-md);
+  border-left: 1px solid var(--input);
+}
+
+.slot:last-child {
+  border-top-right-radius: var(--radius-md);
+  border-bottom-right-radius: var(--radius-md);
+}
+
+.slot.active {
+  z-index: 10;
+  outline: none;
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.caret {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.caretLine {
+  height: 1rem;
+  width: 1px;
+  animation: caretBlink 1s infinite;
+  background-color: var(--text-primary);
+}
+
+.separatorIcon {
+  height: 1rem;
+  width: 1rem;
+}
+
+@keyframes caretBlink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}

@@ -1,0 +1,142 @@
+.container {
+  max-width: 80rem;
+  margin: 0 auto;
+  min-height: calc(100vh - 2rem);
+  padding: var(--spacing-lg);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--spacing-lg);
+}
+
+@media (min-width: 768px) {
+  .header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.headerContent {
+  flex: 1;
+}
+
+.title {
+  font-size: var(--font-2xl);
+  font-weight: var(--font-bold);
+  color: #1f2937;
+}
+
+.subtitle {
+  color: #6b7280;
+}
+
+.headerAction {
+  margin-top: var(--spacing-md);
+}
+
+@media (min-width: 768px) {
+  .headerAction {
+    margin-top: 0;
+  }
+}
+
+.createButton {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  transition: var(--transition-colors);
+}
+
+.createButton:hover {
+  background-color: color-mix(in srgb, var(--primary) 90%, black);
+}
+
+.createIcon {
+  height: 1rem;
+  width: 1rem;
+  margin-right: var(--spacing-sm);
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+@media (min-width: 768px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .statsGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-lg);
+}
+
+@media (min-width: 1024px) {
+  .contentGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+@media (min-width: 1024px) {
+  .leftColumn {
+    grid-column: span 2;
+  }
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* Icon color classes for StatsCard - these are passed as className strings */
+.iconPrimary {
+  color: var(--primary-light);
+}
+
+.iconSecondary {
+  color: var(--accent);
+}
+
+.iconPurple {
+  color: #9333ea;
+}
+
+.iconGreen {
+  color: #16a34a;
+}
+
+.iconBgPrimary {
+  background-color: color-mix(in srgb, var(--primary-light) 20%, transparent);
+}
+
+.iconBgSecondary {
+  background-color: color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+.iconBgPurple {
+  background-color: color-mix(in srgb, #9333ea 20%, transparent);
+}
+
+.iconBgGreen {
+  background-color: color-mix(in srgb, #16a34a 20%, transparent);
+}

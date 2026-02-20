@@ -1,0 +1,83 @@
+.carousel {
+  position: relative;
+}
+
+.viewport {
+  overflow: hidden;
+}
+
+.content {
+  display: flex;
+}
+
+.horizontal {
+  margin-left: calc(-1 * var(--spacing-md));
+}
+
+.vertical {
+  flex-direction: column;
+  margin-top: calc(-1 * var(--spacing-md));
+}
+
+.item {
+  min-width: 0;
+  flex-shrink: 0;
+  flex-grow: 0;
+  flex-basis: 100%;
+}
+
+.itemHorizontal {
+  padding-left: var(--spacing-md);
+}
+
+.itemVertical {
+  padding-top: var(--spacing-md);
+}
+
+.button {
+  position: absolute;
+  height: 2rem;
+  width: 2rem;
+  border-radius: var(--radius-full);
+}
+
+.buttonHorizontal {
+  left: -3rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.buttonVertical {
+  top: -3rem;
+  left: 50%;
+  transform: translateX(-50%) rotate(90deg);
+}
+
+.buttonHorizontalNext {
+  right: -3rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.buttonVerticalNext {
+  bottom: -3rem;
+  left: 50%;
+  transform: translateX(-50%) rotate(90deg);
+}
+
+.icon {
+  height: 1rem;
+  width: 1rem;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

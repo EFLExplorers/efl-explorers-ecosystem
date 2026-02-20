@@ -1,0 +1,153 @@
+.card {
+  border: 1px solid #93c5fd;
+  background-color: #dbeafe;
+  color: #1f2937;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.title {
+  font-size: var(--font-lg);
+  font-weight: var(--font-semibold);
+  color: #111827;
+}
+
+.viewAll {
+  color: #111827;
+  transition: var(--transition-colors);
+  font-size: var(--font-sm);
+  font-weight: var(--font-medium);
+  text-decoration: none;
+}
+
+.viewAll:hover {
+  color: #9333ea;
+  text-decoration: underline;
+}
+
+.content {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.content > *:not(:last-child) {
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+}
+
+.emptyState {
+  padding: var(--spacing-lg);
+  text-align: center;
+  color: #6b7280;
+}
+
+.lessonItem {
+  padding: var(--spacing-md);
+  display: flex;
+  align-items: center;
+}
+
+.iconContainer {
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+  margin-right: var(--spacing-md);
+}
+
+.iconPrimary {
+  background-color: color-mix(in srgb, var(--primary) 10%, transparent);
+}
+
+.textPrimary {
+  color: var(--primary);
+}
+
+.iconYellow {
+  background-color: #fef3c7;
+}
+
+.textYellow {
+  color: #92400e;
+}
+
+.iconBlue {
+  background-color: #dbeafe;
+}
+
+.textBlue {
+  color: #1e40af;
+}
+
+.iconGreen {
+  background-color: #d1fae5;
+}
+
+.textGreen {
+  color: #065f46;
+}
+
+.iconPurple {
+  background-color: #dbeafe;
+}
+
+.textPurple {
+  color: #6b21a8;
+}
+
+.iconAmber {
+  background-color: #fef3c7;
+}
+
+.textAmber {
+  color: #92400e;
+}
+
+.iconRed {
+  background-color: #fee2e2;
+}
+
+.textRed {
+  color: #991b1b;
+}
+
+.iconDefault {
+  background-color: #f3f4f6;
+}
+
+.textDefault {
+  color: #4b5563;
+}
+
+.lessonInfo {
+  flex: 1;
+}
+
+.lessonTitle {
+  font-weight: var(--font-medium);
+  color: #111827;
+}
+
+.lessonMeta {
+  color: #6b7280;
+  font-size: var(--font-sm);
+}
+
+.lessonTime {
+  text-align: right;
+}
+
+.time {
+  color: #111827;
+  font-weight: var(--font-medium);
+}
+
+.date {
+  color: #6b7280;
+  font-size: var(--font-sm);
+}

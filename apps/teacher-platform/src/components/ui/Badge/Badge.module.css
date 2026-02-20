@@ -1,0 +1,53 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+  padding: 0.125rem 0.625rem;
+  font-size: var(--font-xs);
+  font-weight: var(--font-semibold);
+  transition: var(--transition-colors);
+  cursor: default;
+}
+
+.badge:focus {
+  outline: none;
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Variants */
+.default {
+  border-color: transparent;
+  background-color: var(--primary);
+  color: var(--text-primary);
+}
+
+.default:hover {
+  background-color: color-mix(in srgb, var(--primary) 80%, transparent);
+}
+
+.secondary {
+  border-color: transparent;
+  background-color: var(--secondary);
+  color: var(--secondary-foreground);
+}
+
+.secondary:hover {
+  background-color: color-mix(in srgb, var(--secondary) 80%, transparent);
+}
+
+.destructive {
+  border-color: transparent;
+  background-color: var(--destructive);
+  color: var(--destructive-foreground);
+}
+
+.destructive:hover {
+  background-color: color-mix(in srgb, var(--destructive) 80%, transparent);
+}
+
+.outline {
+  color: var(--text-primary);
+  border-color: var(--border);
+}

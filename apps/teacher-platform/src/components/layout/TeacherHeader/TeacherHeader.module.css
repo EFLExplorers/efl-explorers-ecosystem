@@ -1,0 +1,264 @@
+.header {
+  background-color: #1e3a8a;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-md);
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid #1e40af;
+}
+
+.mobileMenu {
+  display: flex;
+  align-items: center;
+  margin-right: var(--spacing-lg);
+}
+
+@media (min-width: 768px) {
+  .mobileMenu {
+    display: none;
+  }
+}
+
+.mobileMenuButton {
+  color: #ffffff;
+}
+
+.mobileMenuButton:hover {
+  background-color: #1e40af;
+  color: #ffffff;
+}
+
+.menuIcon {
+  height: 1.25rem;
+  width: 1.25rem;
+  color: #ffffff;
+}
+
+.searchContainer {
+  position: relative;
+  flex: 1;
+  max-width: 32rem;
+  margin: 0 var(--spacing-md);
+}
+
+@media (max-width: 767px) {
+  .searchContainer {
+    margin-left: 0;
+  }
+}
+
+.searchWrapper {
+  position: relative;
+}
+
+.searchInput {
+  background-color: #ffffff;
+  color: #111827;
+  width: 100%;
+  padding-left: 4rem;
+  padding-right: var(--spacing-md);
+  padding-top: var(--spacing-sm);
+  padding-bottom: var(--spacing-sm);
+  border-color: #1e40af;
+}
+
+.searchInput::placeholder {
+  color: #9ca3af;
+}
+
+.searchInput:focus-visible {
+  outline-color: #3b82f6;
+}
+
+.searchIcon {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  padding-left: 0.75rem;
+  display: flex;
+  align-items: center;
+}
+
+.searchIconSvg {
+  height: 1rem;
+  width: 1rem;
+  color: #6b7280;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.actionButton {
+  position: relative;
+  color: #ffffff;
+}
+
+.actionButton:hover {
+  background-color: #1e40af;
+  color: #ffffff;
+}
+
+.actionIcon {
+  height: 1.25rem;
+  width: 1.25rem;
+  color: #ffffff;
+}
+
+.badge {
+  position: absolute;
+  top: -0.25rem;
+  right: -0.25rem;
+  background-color: #dbeafe;
+  color: #1e3a8a;
+  border-radius: var(--radius-full);
+  width: 1.25rem;
+  height: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-xs);
+}
+
+.dropdownContent {
+  width: 18rem;
+}
+
+.dropdownScroll {
+  max-height: 20rem;
+  overflow-y: auto;
+}
+
+.dropdownItem {
+  padding: var(--spacing-md);
+  color: #111827;
+}
+
+.dropdownItem:focus {
+  background-color: #eff6ff;
+  color: #111827;
+}
+
+.notificationContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.notificationTitle {
+  font-size: var(--font-sm);
+  font-weight: var(--font-medium);
+  color: #111827;
+}
+
+.notificationText {
+  font-size: var(--font-xs);
+  color: #6b7280;
+}
+
+.notificationTime {
+  font-size: var(--font-xs);
+  color: #9ca3af;
+}
+
+.messageContent {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.messageAvatar {
+  height: 2rem;
+  width: 2rem;
+}
+
+.messageAvatarFallback {
+  background-color: #dbeafe;
+  color: #1e3a8a;
+}
+
+.messageText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.messageName {
+  font-size: var(--font-sm);
+  font-weight: var(--font-medium);
+  color: #111827;
+}
+
+.messagePreview {
+  font-size: var(--font-xs);
+  color: #6b7280;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 12rem;
+}
+
+.messageTime {
+  font-size: var(--font-xs);
+  color: #9ca3af;
+}
+
+.viewAll {
+  justify-content: center;
+}
+
+.viewAllText {
+  color: #3b82f6;
+  font-size: var(--font-sm);
+  font-weight: var(--font-medium);
+}
+
+.profileButton {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-xs);
+  color: #ffffff;
+}
+
+.profileButton:hover {
+  background-color: #1e40af;
+  color: #ffffff;
+}
+
+.profileAvatar {
+  height: 2rem;
+  width: 2rem;
+}
+
+.profileAvatarFallback {
+  background-color: #dbeafe;
+  color: #1e3a8a;
+}
+
+.profileName {
+  color: #ffffff;
+}
+
+@media (max-width: 767px) {
+  .profileName {
+    display: none;
+  }
+}
+
+.profileChevron {
+  height: 1rem;
+  width: 1rem;
+  color: #ffffff;
+}
+
+@media (max-width: 767px) {
+  .profileChevron {
+    display: none;
+  }
+}

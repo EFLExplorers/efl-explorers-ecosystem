@@ -1,0 +1,12 @@
+.content {
+  z-index: 50;
+  width: 16rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  padding: var(--spacing-md);
+  color: var(--card-foreground);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  outline: none;
+  transition: var(--transition-all);
+}

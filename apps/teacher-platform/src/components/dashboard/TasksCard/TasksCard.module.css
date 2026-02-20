@@ -1,0 +1,105 @@
+.card {
+  border: 1px solid #93c5fd;
+  background-color: #dbeafe;
+  color: #1f2937;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.title {
+  font-size: var(--font-lg);
+  font-weight: var(--font-semibold);
+  color: #111827;
+}
+
+.badge {
+  background-color: color-mix(in srgb, var(--primary-light) 20%, transparent);
+  color: var(--primary-light);
+  font-size: var(--font-xs);
+  font-weight: var(--font-medium);
+  padding: 0.125rem 0.625rem;
+  border-radius: var(--radius-full);
+}
+
+.content {
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.emptyState {
+  text-align: center;
+  color: #6b7280;
+  padding: var(--spacing-sm) 0;
+}
+
+.taskItem {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox {
+  height: 1rem;
+  width: 1rem;
+  color: #9333ea;
+  border-color: #d1d5db;
+  border-radius: var(--radius-sm);
+}
+
+.taskLabel {
+  margin-left: var(--spacing-sm);
+  color: #111827;
+  flex: 1;
+  cursor: pointer;
+}
+
+.dueDate {
+  margin-left: auto;
+  font-size: var(--font-xs);
+  font-weight: var(--font-medium);
+}
+
+.dueDefault {
+  color: #6b7280;
+}
+
+.dueOverdue {
+  color: #dc2626;
+}
+
+.dueSoon {
+  color: #ea580c;
+}
+
+.footer {
+  border-top: 1px solid #e5e7eb;
+  padding: var(--spacing-md);
+}
+
+.addButton {
+  color: #111827;
+  transition: var(--transition-colors);
+  font-size: var(--font-sm);
+  font-weight: var(--font-medium);
+  display: flex;
+  align-items: center;
+}
+
+.addButton:hover {
+  color: #9333ea;
+  text-decoration: underline;
+}
+
+.addIcon {
+  height: 1rem;
+  width: 1rem;
+  margin-right: var(--spacing-xs);
+}

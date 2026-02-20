@@ -1,0 +1,64 @@
+.card {
+  border: 1px solid #93c5fd;
+  background-color: #dbeafe;
+  color: #1f2937;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.title {
+  font-size: var(--font-lg);
+  font-weight: var(--font-semibold);
+  color: #111827;
+}
+
+.selectTrigger {
+  width: 9rem;
+  height: 2rem;
+  font-size: var(--font-sm);
+  border-color: #d1d5db;
+}
+
+.content {
+  padding: var(--spacing-md) var(--spacing-lg) var(--spacing-md);
+}
+
+.chartContainer {
+  height: 16rem;
+  background-color: #ffffff;
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-md);
+  border: 1px solid #e5e7eb;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
+
+.statItem {
+  text-align: center;
+}
+
+.statLabel {
+  font-size: var(--font-sm);
+  color: #6b7280;
+}
+
+.statValue {
+  font-weight: var(--font-bold);
+  color: #111827;
+  font-size: var(--font-xl);
+}
+
+.statValueGreen {
+  color: #16a34a;
+}

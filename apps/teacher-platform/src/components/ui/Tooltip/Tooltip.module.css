@@ -1,0 +1,104 @@
+.content {
+  z-index: 50;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  padding: 0.375rem 0.75rem;
+  font-size: var(--font-sm);
+  color: var(--card-foreground);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  animation: fadeIn 0.15s ease-out, zoomIn 0.15s ease-out, slideIn 0.15s ease-out;
+}
+
+.content[data-state="closed"] {
+  animation: fadeOut 0.1s ease-in, zoomOut 0.1s ease-in, slideOut 0.1s ease-in;
+}
+
+.content[data-side="bottom"] {
+  animation-name: fadeIn, zoomIn, slideInFromTop;
+}
+
+.content[data-side="left"] {
+  animation-name: fadeIn, zoomIn, slideInFromRight;
+}
+
+.content[data-side="right"] {
+  animation-name: fadeIn, zoomIn, slideInFromLeft;
+}
+
+.content[data-side="top"] {
+  animation-name: fadeIn, zoomIn, slideInFromBottom;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    transform: scale(0.95);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes zoomOut {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(0.95);
+  }
+}
+
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-0.5rem);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-0.5rem);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(0.5rem);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    transform: translateY(0.5rem);
+  }
+  to {
+    transform: translateY(0);
+  }
+}

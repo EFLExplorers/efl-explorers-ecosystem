@@ -1,0 +1,105 @@
+.pagination {
+  margin: 0 auto;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.item {
+  /* Base item styles */
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  font-size: var(--font-sm);
+  font-weight: var(--font-medium);
+  transition: var(--transition-colors);
+  cursor: pointer;
+  text-decoration: none;
+  outline: none;
+  height: 2.5rem;
+  width: 2.5rem;
+  padding: 0;
+}
+
+.link:focus-visible {
+  outline: none;
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.inactive {
+  background-color: transparent;
+  color: var(--text-primary);
+}
+
+.inactive:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.active {
+  border: 1px solid var(--input);
+  background-color: var(--theme-background);
+  color: var(--text-primary);
+}
+
+.active:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.previous,
+.next {
+  height: 2.5rem;
+  padding: var(--spacing-sm) 0.625rem;
+  gap: var(--spacing-xs);
+}
+
+.previous {
+  padding-left: 0.625rem;
+}
+
+.next {
+  padding-right: 0.625rem;
+}
+
+.icon {
+  height: 1rem;
+  width: 1rem;
+}
+
+.ellipsis {
+  display: flex;
+  height: 2.25rem;
+  width: 2.25rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.ellipsisIcon {
+  height: 1rem;
+  width: 1rem;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

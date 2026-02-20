@@ -1,14 +1,18 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
   provider = "postgresql"
+  schemas = ["auth", "teachers", "students", "shared"]
 }
 
 enum UserRole {
   student
   teacher
+
+  @@schema("auth")
 }
 
 model User {
@@ -31,6 +35,7 @@ model User {
   ssoTokens SsoToken[]
 
   @@map("users")
+  @@schema("auth")
 }
 
 model Account {
@@ -51,6 +56,7 @@ model Account {
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
+  @@schema("auth")
 }
 
 model Session {
@@ -62,6 +68,7 @@ model Session {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
+  @@schema("auth")
 }
 
 model VerificationToken {
@@ -71,6 +78,7 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verification_tokens")
+  @@schema("auth")
 }
 
 model PasswordResetToken {
@@ -84,6 +92,7 @@ model PasswordResetToken {
 
   @@index([userId])
   @@map("password_reset_tokens")
+  @@schema("auth")
 }
 
 model SsoToken {
@@ -100,6 +109,7 @@ model SsoToken {
   @@index([userId])
   @@index([expiresAt])
   @@map("sso_tokens")
+  @@schema("auth")
 }
 
 model Page {
@@ -115,6 +125,7 @@ model Page {
   routeSections   RouteSection[]
 
   @@map("pages")
+  @@schema("shared")
 }
 
 model ContentItem {
@@ -141,6 +152,7 @@ model ContentItem {
   @@index([slug])
   @@index([pageId, contentType, active, sortOrder])
   @@map("content_items")
+  @@schema("shared")
 }
 
 model PageSection {
@@ -169,6 +181,7 @@ model PageSection {
   @@index([pageId, sectionKey])
   @@index([active, sortOrder])
   @@map("page_sections")
+  @@schema("shared")
 }
 
 model SiteSection {
@@ -184,6 +197,7 @@ model SiteSection {
 
   @@index([active, sortOrder])
   @@map("site_sections")
+  @@schema("shared")
 }
 
 model RouteSection {
@@ -203,6 +217,7 @@ model RouteSection {
   @@unique([pageId, sectionKey])
   @@index([pageId])
   @@map("route_sections")
+  @@schema("shared")
 }
 
 model ContentRelationship {
@@ -218,6 +233,7 @@ model ContentRelationship {
 
   @@unique([parentId, childId, relationshipType])
   @@map("content_relationships")
+  @@schema("shared")
 }
 
 model MediaAsset {
@@ -234,6 +250,7 @@ model MediaAsset {
   createdAt    DateTime @default(now()) @map("created_at")
 
   @@map("media_assets")
+  @@schema("shared")
 }
 
 model Faq {
@@ -246,6 +263,7 @@ model Faq {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("faqs")
+  @@schema("shared")
 }
 
 model TeamMember {
@@ -261,6 +279,7 @@ model TeamMember {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("team_members")
+  @@schema("shared")
 }
 
 model AboutStat {
@@ -272,6 +291,7 @@ model AboutStat {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("about_stats")
+  @@schema("shared")
 }
 
 model CoreValue {
@@ -284,6 +304,7 @@ model CoreValue {
   createdAt   DateTime @default(now()) @map("created_at")
 
   @@map("core_values")
+  @@schema("shared")
 }
 
 model LessonModule {
@@ -299,6 +320,7 @@ model LessonModule {
   createdAt          DateTime @default(now()) @map("created_at")
 
   @@map("lesson_modules")
+  @@schema("shared")
 }
 
 model TeacherBenefit {
@@ -310,6 +332,7 @@ model TeacherBenefit {
   createdAt   DateTime @default(now()) @map("created_at")
 
   @@map("teacher_benefits")
+  @@schema("shared")
 }
 
 model Testimonial {
@@ -322,4 +345,151 @@ model Testimonial {
   createdAt  DateTime @default(now()) @map("created_at")
 
   @@map("testimonials")
+  @@schema("shared")
+}
+
+model Student {
+  id               Int      @id @default(autoincrement())
+  fullName         String   @map("full_name")
+  email            String?  @db.Text
+  level            String
+  unitId           String   @map("unit_id")
+  nativeLanguage   String?  @map("native_language") @db.Text
+  guardianName     String?  @map("guardian_name") @db.Text
+  guardianContact  String?  @map("guardian_contact") @db.Text
+  attendanceRate   Float?   @map("attendance_rate")
+  performanceLevel String?  @map("performance_level") @db.Text
+  notes            String?  @db.Text
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@map("students")
+  @@schema("teachers")
+}
+
+model Lesson {
+  id         Int      @id @default(autoincrement())
+  title      String
+  subject    String
+  description String? @db.Text
+  classId    String   @map("class_id")
+  date       DateTime
+  startTime  String   @map("start_time")
+  endTime    String   @map("end_time")
+  location   String?  @db.Text
+  status     String?  @db.VarChar(64)
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  lessonMaterials LessonMaterial[]
+
+  @@map("lessons")
+  @@schema("teachers")
+}
+
+model Curriculum {
+  id          Int      @id @default(autoincrement())
+  title       String
+  subject     String
+  level       String
+  description String?  @db.Text
+  objectives  String?  @db.Text
+  units       Json?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("curriculum")
+  @@schema("teachers")
+}
+
+model Event {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?  @db.Text
+  date        DateTime
+  startTime   String   @map("start_time")
+  endTime     String   @map("end_time")
+  location    String?  @db.Text
+  type        String?  @db.VarChar(64)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("events")
+  @@schema("teachers")
+}
+
+model Message {
+  id         Int      @id @default(autoincrement())
+  senderId   Int      @map("sender_id")
+  receiverId Int      @map("receiver_id")
+  content    String   @db.Text
+  isRead     Boolean  @default(false) @map("is_read")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@map("messages")
+  @@schema("teachers")
+}
+
+model Announcement {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String   @db.Text
+  priority  String?  @db.VarChar(64)
+  createdBy Int      @map("created_by")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("announcements")
+  @@schema("teachers")
+}
+
+model Task {
+  id        Int      @id @default(autoincrement())
+  title     String
+  completed Boolean  @default(false)
+  dueDate   DateTime? @map("due_date")
+  userId    Int      @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("tasks")
+  @@schema("teachers")
+}
+
+model Material {
+  id        Int      @id @default(autoincrement())
+  title     String
+  description String? @db.Text
+  category  String
+  url       String   @db.Text
+  createdBy Int      @map("created_by")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  lessonMaterials LessonMaterial[]
+
+  @@map("materials")
+  @@schema("teachers")
+}
+
+model Bookmark {
+  id        Int      @id @default(autoincrement())
+  title     String
+  url       String   @db.Text
+  category  String?  @db.VarChar(128)
+  userId    Int      @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("bookmarks")
+  @@schema("teachers")
+}
+
+model LessonMaterial {
+  id         Int      @id @default(autoincrement())
+  lessonId   Int      @map("lesson_id")
+  materialId Int      @map("material_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  lesson   Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  material Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+
+  @@unique([lessonId, materialId])
+  @@map("lesson_materials")
+  @@schema("teachers")
 }

@@ -1,0 +1,202 @@
+.menubar {
+  display: flex;
+  height: 2.5rem;
+  align-items: center;
+  gap: var(--spacing-xs);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background-color: var(--theme-background);
+  padding: var(--spacing-xs);
+}
+
+.trigger {
+  display: flex;
+  cursor: default;
+  user-select: none;
+  align-items: center;
+  border-radius: var(--radius-sm);
+  padding: 0.375rem 0.75rem;
+  font-size: var(--font-sm);
+  font-weight: var(--font-medium);
+  outline: none;
+  transition: var(--transition-colors);
+}
+
+.trigger:focus {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.trigger[data-state="open"] {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.subTrigger {
+  display: flex;
+  cursor: default;
+  user-select: none;
+  align-items: center;
+  border-radius: var(--radius-sm);
+  padding: 0.375rem 0.5rem;
+  font-size: var(--font-sm);
+  outline: none;
+  transition: var(--transition-colors);
+}
+
+.subTrigger:focus {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.subTrigger[data-state="open"] {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.inset {
+  padding-left: 2rem;
+}
+
+.chevron {
+  margin-left: auto;
+  height: 1rem;
+  width: 1rem;
+}
+
+.subContent {
+  z-index: 50;
+  min-width: 8rem;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--card-foreground);
+  padding: var(--spacing-xs);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  transition: var(--transition-all);
+}
+
+.content {
+  z-index: 50;
+  min-width: 12rem;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--card-foreground);
+  padding: var(--spacing-xs);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  transition: var(--transition-all);
+}
+
+.item {
+  position: relative;
+  display: flex;
+  cursor: default;
+  user-select: none;
+  align-items: center;
+  border-radius: var(--radius-sm);
+  padding: 0.375rem 0.5rem;
+  font-size: var(--font-sm);
+  outline: none;
+  transition: var(--transition-colors);
+}
+
+.item:focus {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.item[data-disabled] {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.checkboxItem {
+  position: relative;
+  display: flex;
+  cursor: default;
+  user-select: none;
+  align-items: center;
+  border-radius: var(--radius-sm);
+  padding: 0.375rem 0 0.375rem 2rem;
+  padding-right: 0.5rem;
+  font-size: var(--font-sm);
+  outline: none;
+  transition: var(--transition-colors);
+}
+
+.checkboxItem:focus {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.checkboxItem[data-disabled] {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.radioItem {
+  position: relative;
+  display: flex;
+  cursor: default;
+  user-select: none;
+  align-items: center;
+  border-radius: var(--radius-sm);
+  padding: 0.375rem 0 0.375rem 2rem;
+  padding-right: 0.5rem;
+  font-size: var(--font-sm);
+  outline: none;
+  transition: var(--transition-colors);
+}
+
+.radioItem:focus {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.radioItem[data-disabled] {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.indicator {
+  position: absolute;
+  left: 0.5rem;
+  display: flex;
+  height: 0.875rem;
+  width: 0.875rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkIcon {
+  height: 1rem;
+  width: 1rem;
+}
+
+.circleIcon {
+  height: 0.5rem;
+  width: 0.5rem;
+  fill: currentColor;
+}
+
+.label {
+  padding: 0.375rem 0.5rem;
+  font-size: var(--font-sm);
+  font-weight: var(--font-semibold);
+}
+
+.separator {
+  margin: 0.25rem -0.25rem;
+  height: 1px;
+  background-color: var(--muted);
+}
+
+.shortcut {
+  margin-left: auto;
+  font-size: var(--font-xs);
+  letter-spacing: 0.1em;
+  color: var(--muted-foreground);
+}

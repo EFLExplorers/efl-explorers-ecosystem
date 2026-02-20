@@ -1,0 +1,44 @@
+.input {
+  display: flex;
+  height: 2.5rem;
+  width: 100%;
+  border-radius: var(--radius-md);
+  border: 1px solid #d1d5db;
+  background-color: #ffffff;
+  color: #111827;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-sm);
+  transition: var(--transition-colors);
+}
+
+.input::placeholder {
+  color: #9ca3af;
+}
+
+.input:focus-visible {
+  outline: none;
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.input:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* File input styles */
+.input[type="file"] {
+  border: 0;
+  background-color: transparent;
+  font-size: var(--font-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+}
+
+.input[type="file"]::file-selector-button {
+  border: 0;
+  background-color: transparent;
+  font-size: var(--font-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+}

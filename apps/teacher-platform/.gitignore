@@ -1,0 +1,26 @@
+node_modules
+dist
+.DS_Store
+server/public
+vite.config.ts.*
+# Keep secrets and local overrides out of git
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+*.tar.gz
+.next
+.next/
+.next/static/
+.next/static/chunks/
+.next/static/chunks/pages/
+.next/static/chunks/app/
+.next/static/chunks/app/page.js
+.next/static/chunks/app/page.js.map
+.next/static/chunks/app/page.js.map.br
+.next/static/chunks/app/page.js.map.gz
+.next/static/chunks/app/page.js.map.br.gz
+.next/static/chunks/app/page.js.map.br.gz.br
+.next/static/chunks/app/page.js.map.br.gz.br.gz

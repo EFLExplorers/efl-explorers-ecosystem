@@ -1,0 +1,608 @@
+.container {
+  max-width: 80rem;
+  margin: 0 auto;
+  min-height: calc(100vh - 2rem);
+  padding: var(--spacing-lg);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--spacing-lg);
+}
+
+@media (min-width: 768px) {
+  .header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.headerContent {
+  flex: 1;
+}
+
+.title {
+  font-size: var(--font-2xl);
+  font-weight: var(--font-bold);
+  color: #1f2937;
+}
+
+.subtitle {
+  color: #6b7280;
+}
+
+.headerActions {
+  margin-top: var(--spacing-md);
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+@media (min-width: 768px) {
+  .headerActions {
+    margin-top: 0;
+  }
+}
+
+.newFolderButton {
+  display: flex;
+  align-items: center;
+  color: #111827;
+  border-color: #d1d5db;
+}
+
+.newFolderButton:hover {
+  background-color: #f9fafb;
+  color: #9333ea;
+}
+
+.addButton {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  transition: var(--transition-colors);
+  display: flex;
+  align-items: center;
+}
+
+.addButton:hover {
+  background-color: color-mix(in srgb, var(--primary) 90%, black);
+}
+
+.actionIcon {
+  height: 1rem;
+  width: 1rem;
+  margin-right: var(--spacing-sm);
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-lg);
+}
+
+@media (min-width: 1024px) {
+  .contentGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 1024px) {
+  .sidebar {
+    grid-column: span 1;
+  }
+}
+
+.foldersCard {
+  border: 1px solid #93c5fd;
+  background-color: #dbeafe;
+  color: #1f2937;
+}
+
+.foldersHeader {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.foldersTitle {
+  font-size: var(--font-lg);
+  font-weight: var(--font-semibold);
+  color: #111827;
+}
+
+.foldersContent {
+  padding: 0;
+}
+
+.foldersList {
+  display: flex;
+  flex-direction: column;
+}
+
+.folderButton {
+  width: 100%;
+  justify-content: flex-start;
+  border-radius: 0;
+  padding: var(--spacing-md) var(--spacing-lg);
+  color: #111827;
+}
+
+.folderButton:hover {
+  background-color: #dbeafe;
+  color: #111827;
+}
+
+.folderButtonActive {
+  background-color: #dbeafe;
+  color: #111827;
+}
+
+.folderIcon {
+  height: 1rem;
+  width: 1rem;
+  margin-right: var(--spacing-md);
+  color: #9333ea;
+}
+
+.folderName {
+  flex: 1;
+  text-align: left;
+}
+
+.folderBadge {
+  margin-left: var(--spacing-sm);
+}
+
+.starredSection {
+  margin-top: var(--spacing-md);
+}
+
+.starredButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  color: #111827;
+  border-color: #d1d5db;
+}
+
+.starredButton:hover {
+  background-color: #f9fafb;
+  color: #9333ea;
+}
+
+.starredIcon {
+  height: 1rem;
+  width: 1rem;
+  margin-right: var(--spacing-sm);
+}
+
+.starredIconActive {
+  color: #eab308;
+}
+
+.mainContent {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 1024px) {
+  .mainContent {
+    grid-column: span 3;
+  }
+}
+
+.bookmarksCard {
+  border: 1px solid #93c5fd;
+  background-color: #dbeafe;
+  color: #1f2937;
+}
+
+.bookmarksHeader {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.bookmarksHeaderContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+@media (min-width: 640px) {
+  .bookmarksHeaderContent {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.bookmarksSearch {
+  position: relative;
+  width: 100%;
+  max-width: 20rem;
+}
+
+.bookmarksSearchIcon {
+  position: absolute;
+  left: 0.75rem;
+  top: 0.625rem;
+  height: 1rem;
+  width: 1rem;
+  color: #6b7280;
+}
+
+.bookmarksSearchInput {
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+  width: 100%;
+}
+
+.clearSearchButton {
+  position: absolute;
+  right: 0.25rem;
+  top: 0.25rem;
+  height: 1.75rem;
+  width: 1.75rem;
+  padding: 0;
+  color: #6b7280;
+}
+
+.clearSearchButton:hover {
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+.clearSearchIcon {
+  height: 1rem;
+  width: 1rem;
+}
+
+.viewToggle {
+  display: flex;
+  border-radius: var(--radius-md);
+  border: 1px solid #d1d5db;
+  overflow: hidden;
+  background-color: #ffffff;
+}
+
+.viewButton {
+  border-radius: 0;
+  color: #111827;
+}
+
+.viewButton:hover {
+  background-color: #f9fafb;
+  color: #9333ea;
+}
+
+.viewButtonLeft {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: 1px solid #d1d5db;
+}
+
+.viewButtonRight {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.viewIcon {
+  height: 1rem;
+  width: 1rem;
+}
+
+.bookmarksContent {
+  padding: var(--spacing-lg);
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.emptyStateIcon {
+  background-color: #dbeafe;
+  border-radius: var(--radius-full);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.emptyIcon {
+  height: 2rem;
+  width: 2rem;
+  color: #9333ea;
+}
+
+.emptyStateTitle {
+  font-size: var(--font-lg);
+  font-weight: var(--font-semibold);
+  color: #111827;
+  margin-bottom: var(--spacing-sm);
+}
+
+.emptyStateDescription {
+  color: #6b7280;
+  margin-bottom: var(--spacing-lg);
+  max-width: 24rem;
+}
+
+.emptyStateButton {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.emptyStateButtonIcon {
+  height: 1rem;
+  width: 1rem;
+}
+
+.bookmarksGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+}
+
+@media (min-width: 640px) {
+  .bookmarksGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .bookmarksGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.bookmarkCard {
+  border: 1px solid #e5e7eb;
+  background-color: #ffffff;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.bookmarkCard:hover {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  border-color: #93c5fd;
+}
+
+.bookmarkCardHeader {
+  height: 0.75rem;
+}
+
+.folderPrimary {
+  background-color: #9333ea;
+}
+
+.folderBlue {
+  background-color: #3b82f6;
+}
+
+.folderPurple {
+  background-color: #9333ea;
+}
+
+.folderGreen {
+  background-color: #10b981;
+}
+
+.folderGray {
+  background-color: #6b7280;
+}
+
+.bookmarkCardContent {
+  padding: var(--spacing-md);
+}
+
+.bookmarkCardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-sm);
+}
+
+.bookmarkTitle {
+  font-weight: var(--font-medium);
+  color: #111827;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.starButton {
+  height: 2rem;
+  width: 2rem;
+  padding: 0;
+  color: #6b7280;
+}
+
+.starButton:hover {
+  background-color: #f9fafb;
+  color: #eab308;
+}
+
+.starIcon {
+  height: 1rem;
+  width: 1rem;
+}
+
+.starIconFilled {
+  height: 1rem;
+  width: 1rem;
+  fill: #eab308;
+}
+
+.bookmarkUrl {
+  font-size: var(--font-sm);
+  color: #6b7280;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: var(--spacing-md);
+  display: flex;
+  align-items: center;
+  transition: var(--transition-colors);
+}
+
+.bookmarkUrl:hover {
+  color: #9333ea;
+}
+
+.bookmarkUrlIcon {
+  height: 0.75rem;
+  width: 0.75rem;
+  margin-left: var(--spacing-xs);
+  display: inline;
+}
+
+.bookmarkCardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bookmarkBadge {
+  font-size: var(--font-xs);
+  text-transform: capitalize;
+}
+
+.bookmarkMenuButton {
+  height: 2rem;
+  width: 2rem;
+  padding: 0;
+  color: #6b7280;
+}
+
+.bookmarkMenuButton:hover {
+  background-color: #f9fafb;
+  color: #111827;
+}
+
+.bookmarkMenuIcon {
+  height: 1rem;
+  width: 1rem;
+}
+
+.bookmarksList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.bookmarkListItem {
+  border: 1px solid #e5e7eb;
+  background-color: #ffffff;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+  transition: box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+}
+
+.bookmarkListItem:hover {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  border-color: #93c5fd;
+}
+
+.listStarButton {
+  height: 2rem;
+  width: 2rem;
+  padding: 0;
+  color: #6b7280;
+  margin-right: var(--spacing-md);
+}
+
+.listStarButton:hover {
+  background-color: #f9fafb;
+  color: #eab308;
+}
+
+.bookmarkListInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.bookmarkListTitle {
+  font-weight: var(--font-medium);
+  color: #111827;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bookmarkListUrl {
+  font-size: var(--font-sm);
+  color: #6b7280;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  transition: var(--transition-colors);
+}
+
+.bookmarkListUrl:hover {
+  color: #9333ea;
+}
+
+.bookmarkListUrlIcon {
+  height: 0.75rem;
+  width: 0.75rem;
+  margin-left: var(--spacing-xs);
+  display: inline;
+}
+
+.bookmarkListActions {
+  display: flex;
+  align-items: center;
+  margin-left: var(--spacing-md);
+}
+
+.bookmarkListBadge {
+  font-size: var(--font-xs);
+  text-transform: capitalize;
+  margin-right: var(--spacing-sm);
+}
+
+.bookmarkListMenuButton {
+  height: 2rem;
+  width: 2rem;
+  padding: 0;
+  color: #6b7280;
+}
+
+.bookmarkListMenuButton:hover {
+  background-color: #f9fafb;
+  color: #111827;
+}
+
+.bookmarkListMenuIcon {
+  height: 1rem;
+  width: 1rem;
+}
+
+.dropdownIcon {
+  height: 1rem;
+  width: 1rem;
+  margin-right: var(--spacing-sm);
+}
+
+.deleteItem {
+  color: #dc2626;
+}
+
+.deleteItem:focus {
+  color: #b91c1c;
+}

@@ -1,0 +1,117 @@
+.command {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background-color: var(--card);
+  color: var(--card-foreground);
+}
+
+.dialogContent {
+  overflow: hidden;
+  padding: 0;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.commandInDialog {
+  /* Additional styles for command in dialog */
+}
+
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  padding: 0 var(--spacing-md);
+}
+
+.searchIcon {
+  margin-right: var(--spacing-sm);
+  height: 1rem;
+  width: 1rem;
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+
+.input {
+  display: flex;
+  height: 2.75rem;
+  width: 100%;
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  padding: var(--spacing-md) 0;
+  font-size: var(--font-sm);
+  outline: none;
+  color: var(--text-primary);
+}
+
+.input::placeholder {
+  color: var(--muted-foreground);
+}
+
+.input:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.list {
+  max-height: 18.75rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.empty {
+  padding: 1.5rem 0;
+  text-align: center;
+  font-size: var(--font-sm);
+}
+
+.group {
+  overflow: hidden;
+  padding: var(--spacing-xs);
+  color: var(--text-primary);
+}
+
+.group[cmdk-group-heading] {
+  padding: 0.375rem 0.5rem;
+  font-size: var(--font-xs);
+  font-weight: var(--font-medium);
+  color: var(--muted-foreground);
+}
+
+.separator {
+  margin: 0 calc(-1 * var(--spacing-xs));
+  height: 1px;
+  background-color: var(--border);
+}
+
+.item {
+  position: relative;
+  display: flex;
+  cursor: default;
+  user-select: none;
+  align-items: center;
+  border-radius: var(--radius-sm);
+  padding: 0.375rem 0.5rem;
+  font-size: var(--font-sm);
+  outline: none;
+  transition: var(--transition-colors);
+}
+
+.item[data-selected="true"] {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.item[data-disabled="true"] {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.shortcut {
+  margin-left: auto;
+  font-size: var(--font-xs);
+  letter-spacing: 0.1em;
+  color: var(--muted-foreground);
+}
