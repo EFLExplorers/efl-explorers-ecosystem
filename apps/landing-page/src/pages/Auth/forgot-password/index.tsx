@@ -129,6 +129,23 @@ export const ForgotPasswordPage = ({
 
 export default ForgotPasswordPage;
 
+const fallbackProps = {
+  title: "Forgot Password",
+  subtitle: "Enter your email to reset your password",
+  emailLabel: "Email",
+  submitButtonLabel: "Send Reset Link",
+  submitButtonLoadingLabel: "Sending...",
+  backToLoginText: "Back to Login",
+  backToLoginHref: "/Auth/login",
+  successTitle: "Check Your Email",
+  successSubtitle: "We've sent you a password reset link",
+  successMessage1: "We've sent a password reset link to {email}.",
+  successMessage2:
+    "Please check your email and click the link to reset your password. The link will expire in 1 hour.",
+  successReturnText: "Return to Login",
+  successReturnHref: "/Auth/login",
+};
+
 export const getStaticProps: GetStaticProps<ForgotPasswordPageProps> =
   async () => {
     const { headerContent, footerContent } = await getGlobalLayoutContent();
@@ -139,9 +156,14 @@ export const getStaticProps: GetStaticProps<ForgotPasswordPageProps> =
     });
 
     if (!pageData?.id) {
-      throw new Error(
-        "[ForgotPassword] Missing pages row for route '/Auth/forgot-password': no id"
-      );
+      return {
+        props: {
+          headerContent,
+          footerContent,
+          ...fallbackProps,
+        },
+        revalidate: 300,
+      };
     }
 
     const sectionData = await prisma.pageSection.findFirst({
@@ -154,16 +176,26 @@ export const getStaticProps: GetStaticProps<ForgotPasswordPageProps> =
     });
 
     if (!sectionData) {
-      throw new Error(
-        "[ForgotPassword] Missing page_sections for '/Auth/forgot-password' (form): no data"
-      );
+      return {
+        props: {
+          headerContent,
+          footerContent,
+          ...fallbackProps,
+        },
+        revalidate: 300,
+      };
     }
 
     const content = parsePrismaJson<Record<string, any>>(sectionData.content);
     if (!content || !content.form || !content.success) {
-      throw new Error(
-        "[ForgotPassword] Missing form or success content in section"
-      );
+      return {
+        props: {
+          headerContent,
+          footerContent,
+          ...fallbackProps,
+        },
+        revalidate: 300,
+      };
     }
 
     const formContent = content.form;
@@ -178,9 +210,14 @@ export const getStaticProps: GetStaticProps<ForgotPasswordPageProps> =
       !formContent.back_to_login_text ||
       !formContent.back_to_login_href
     ) {
-      throw new Error(
-        "[ForgotPassword] Missing required form content fields"
-      );
+      return {
+        props: {
+          headerContent,
+          footerContent,
+          ...fallbackProps,
+        },
+        revalidate: 300,
+      };
     }
 
     if (
@@ -191,9 +228,14 @@ export const getStaticProps: GetStaticProps<ForgotPasswordPageProps> =
       !successContent.return_text ||
       !successContent.return_href
     ) {
-      throw new Error(
-        "[ForgotPassword] Missing required success content fields"
-      );
+      return {
+        props: {
+          headerContent,
+          footerContent,
+          ...fallbackProps,
+        },
+        revalidate: 300,
+      };
     }
 
     return {
