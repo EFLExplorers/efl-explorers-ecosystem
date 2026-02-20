@@ -1,6 +1,5 @@
 import { z } from "zod";
 import type {
-  User,
   Student,
   Lesson,
   Curriculum,
@@ -15,7 +14,6 @@ import type {
 
 // 1. Export Prisma Types Directly
 export type {
-  User,
   Student,
   Lesson,
   Curriculum,
@@ -26,6 +24,17 @@ export type {
   Material,
   Bookmark,
   LessonMaterial,
+};
+
+export type User = {
+  id: number;
+  username: string;
+  password?: string;
+  fullName: string;
+  email: string;
+  role: string | null;
+  avatarUrl: string | null;
+  createdAt: Date;
 };
 
 // 2. Pure Zod Validation Schemas (No Drizzle needed)

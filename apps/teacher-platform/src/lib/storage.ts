@@ -15,7 +15,7 @@ import type {
 
 // Import Prisma client
 import { getPrisma } from "./db";
-import type { Prisma } from "@prisma/client";
+import type { Prisma } from "@repo/database";
 
 export interface IStorage {
   // Users
@@ -432,10 +432,12 @@ export class MemStorage implements IStorage {
   
   async createStudent(insertStudent: InsertStudent): Promise<Student> {
     const id = this.currentStudentId++;
+    const now = new Date();
     const student: Student = { 
       ...insertStudent, 
       id, 
-      createdAt: new Date(),
+      createdAt: now,
+      updatedAt: now,
       email: insertStudent.email ?? null,
       nativeLanguage: insertStudent.nativeLanguage ?? null,
       guardianName: insertStudent.guardianName ?? null,
@@ -452,7 +454,7 @@ export class MemStorage implements IStorage {
     const student = this.students.get(id);
     if (!student) return undefined;
     
-    const updatedStudent = { ...student, ...updatedFields };
+    const updatedStudent = { ...student, ...updatedFields, updatedAt: new Date() };
     this.students.set(id, updatedStudent);
     return updatedStudent;
   }
@@ -473,8 +475,10 @@ export class MemStorage implements IStorage {
   async createLesson(insertLesson: InsertLesson): Promise<Lesson> {
     const id = this.currentLessonId++;
     const now = new Date();
+    const lessonDate = new Date(insertLesson.date);
     const lesson: Lesson = { 
-      ...insertLesson, 
+      ...insertLesson,
+      date: lessonDate,
       id, 
       createdAt: now,
       updatedAt: now,
@@ -493,6 +497,7 @@ export class MemStorage implements IStorage {
     const updatedLesson = { 
       ...lesson, 
       ...updatedFields,
+      date: updatedFields.date ? new Date(updatedFields.date) : lesson.date,
       updatedAt: new Date()
     };
     this.lessons.set(id, updatedLesson);
@@ -556,8 +561,10 @@ export class MemStorage implements IStorage {
   
   async createEvent(insertEvent: InsertEvent): Promise<Event> {
     const id = this.currentEventId++;
+    const eventDate = new Date(insertEvent.date);
     const event: Event = { 
       ...insertEvent, 
+      date: eventDate,
       id, 
       createdAt: new Date(),
       description: insertEvent.description ?? null,
@@ -572,7 +579,11 @@ export class MemStorage implements IStorage {
     const event = this.events.get(id);
     if (!event) return undefined;
     
-    const updatedEvent = { ...event, ...updatedFields };
+    const updatedEvent = { 
+      ...event, 
+      ...updatedFields,
+      date: updatedFields.date ? new Date(updatedFields.date) : event.date
+    };
     this.events.set(id, updatedEvent);
     return updatedEvent;
   }
@@ -664,12 +675,13 @@ export class MemStorage implements IStorage {
   
   async createTask(insertTask: InsertTask): Promise<Task> {
     const id = this.currentTaskId++;
+    const dueDate = insertTask.dueDate ? new Date(insertTask.dueDate) : null;
     const task: Task = { 
       ...insertTask, 
       id, 
       createdAt: new Date(),
       completed: insertTask.completed ?? false,
-      dueDate: insertTask.dueDate ?? null
+      dueDate
     };
     this.tasks.set(id, task);
     return task;
@@ -679,7 +691,13 @@ export class MemStorage implements IStorage {
     const task = this.tasks.get(id);
     if (!task) return undefined;
     
-    const updatedTask = { ...task, ...updatedFields };
+    const updatedTask = { 
+      ...task, 
+      ...updatedFields,
+      dueDate: updatedFields.dueDate
+        ? new Date(updatedFields.dueDate)
+        : task.dueDate
+    };
     this.tasks.set(id, updatedTask);
     return updatedTask;
   }
@@ -852,26 +870,11 @@ export class DatabaseStorage implements IStorage {
   
   // Lesson methods
   async getLessons(): Promise<Lesson[]> {
-    const lessons = await this.prisma.lesson.findMany();
-    return lessons.map(lesson => ({
-      ...lesson,
-      date: lesson.date.toISOString().split('T')[0], // Convert Date to string format
-      status: lesson.status,
-      description: lesson.description,
-      location: lesson.location
-    })) as Lesson[];
+    return await this.prisma.lesson.findMany();
   }
 
   async getLesson(id: number): Promise<Lesson | undefined> {
-    const lesson = await this.prisma.lesson.findUnique({ where: { id } });
-    if (!lesson) return undefined;
-    return {
-      ...lesson,
-      date: lesson.date.toISOString().split('T')[0], // Convert Date to string format
-      status: lesson.status,
-      description: lesson.description,
-      location: lesson.location
-    } as Lesson;
+    return (await this.prisma.lesson.findUnique({ where: { id } })) ?? undefined;
   }
 
   async createLesson(insertLesson: InsertLesson): Promise<Lesson> {
@@ -882,14 +885,7 @@ export class DatabaseStorage implements IStorage {
       description: insertLesson.description || null,
       location: insertLesson.location || null
     };
-    const lesson = await this.prisma.lesson.create({ data });
-    return {
-      ...lesson,
-      date: lesson.date.toISOString().split('T')[0], // Convert back to string
-      status: lesson.status,
-      description: lesson.description,
-      location: lesson.location
-    } as Lesson;
+    return await this.prisma.lesson.create({ data });
   }
 
   async updateLesson(id: number, updatedFields: Partial<InsertLesson>): Promise<Lesson | undefined> {
@@ -900,18 +896,7 @@ export class DatabaseStorage implements IStorage {
       description: updatedFields.description !== undefined ? updatedFields.description || null : undefined,
       location: updatedFields.location !== undefined ? updatedFields.location || null : undefined
     };
-    const lesson = await this.prisma.lesson.update({
-      where: { id },
-      data
-    });
-    if (!lesson) return undefined;
-    return {
-      ...lesson,
-      date: lesson.date.toISOString().split('T')[0], // Convert back to string
-      status: lesson.status,
-      description: lesson.description,
-      location: lesson.location
-    } as Lesson;
+    return (await this.prisma.lesson.update({ where: { id }, data })) ?? undefined;
   }
   
   async deleteLesson(id: number): Promise<boolean> {
@@ -996,26 +981,11 @@ export class DatabaseStorage implements IStorage {
   
   // Event methods
   async getEvents(): Promise<Event[]> {
-    const events = await this.prisma.event.findMany();
-    return events.map(event => ({
-      ...event,
-      date: event.date.toISOString().split('T')[0], // Convert Date to string format
-      type: event.type,
-      description: event.description,
-      location: event.location
-    })) as Event[];
+    return await this.prisma.event.findMany();
   }
 
   async getEvent(id: number): Promise<Event | undefined> {
-    const event = await this.prisma.event.findUnique({ where: { id } });
-    if (!event) return undefined;
-    return {
-      ...event,
-      date: event.date.toISOString().split('T')[0], // Convert Date to string format
-      type: event.type ?? null,
-      description: event.description ?? null,
-      location: event.location ?? null
-    };
+    return (await this.prisma.event.findUnique({ where: { id } })) ?? undefined;
   }
 
   async createEvent(insertEvent: InsertEvent): Promise<Event> {
@@ -1026,14 +996,7 @@ export class DatabaseStorage implements IStorage {
       description: insertEvent.description || null,
       location: insertEvent.location || null
     };
-    const event = await this.prisma.event.create({ data });
-    return {
-      ...event,
-      date: event.date.toISOString().split('T')[0], // Convert back to string
-      type: event.type,
-      description: event.description,
-      location: event.location
-    } as Event;
+    return await this.prisma.event.create({ data });
   }
 
   async updateEvent(id: number, updatedFields: Partial<InsertEvent>): Promise<Event | undefined> {
@@ -1044,18 +1007,7 @@ export class DatabaseStorage implements IStorage {
       description: updatedFields.description !== undefined ? updatedFields.description || null : undefined,
       location: updatedFields.location !== undefined ? updatedFields.location || null : undefined
     };
-    const event = await this.prisma.event.update({
-      where: { id },
-      data
-    });
-    if (!event) return undefined;
-    return {
-      ...event,
-      date: event.date.toISOString().split('T')[0], // Convert back to string
-      type: event.type,
-      description: event.description,
-      location: event.location
-    } as Event;
+    return (await this.prisma.event.update({ where: { id }, data })) ?? undefined;
   }
   
   async deleteEvent(id: number): Promise<boolean> {
@@ -1178,22 +1130,11 @@ export class DatabaseStorage implements IStorage {
   
   // Task methods
   async getTasks(userId: number): Promise<Task[]> {
-    const tasks = await this.prisma.task.findMany({ where: { userId } });
-    return tasks.map(task => ({
-      ...task,
-      dueDate: task.dueDate ? task.dueDate.toISOString().split('T')[0] : null, // Convert Date to string or keep null
-      completed: task.completed // boolean is fine as-is
-    }));
+    return await this.prisma.task.findMany({ where: { userId } });
   }
 
   async getTask(id: number): Promise<Task | undefined> {
-    const task = await this.prisma.task.findUnique({ where: { id } });
-    if (!task) return undefined;
-    return {
-      ...task,
-      dueDate: task.dueDate ? task.dueDate.toISOString().split('T')[0] : null, // Convert Date to string or keep null
-      completed: task.completed
-    };
+    return (await this.prisma.task.findUnique({ where: { id } })) ?? undefined;
   }
 
   async createTask(insertTask: InsertTask): Promise<Task> {
@@ -1202,12 +1143,7 @@ export class DatabaseStorage implements IStorage {
       dueDate: insertTask.dueDate ? new Date(insertTask.dueDate) : null, // Convert string to Date or keep null
       completed: insertTask.completed || false
     };
-    const task = await this.prisma.task.create({ data });
-    return {
-      ...task,
-      dueDate: task.dueDate ? task.dueDate.toISOString().split('T')[0] : null, // Convert back to string
-      completed: task.completed
-    };
+    return await this.prisma.task.create({ data });
   }
 
   async updateTask(id: number, updatedFields: Partial<InsertTask>): Promise<Task | undefined> {
@@ -1216,16 +1152,7 @@ export class DatabaseStorage implements IStorage {
       dueDate: updatedFields.dueDate ? new Date(updatedFields.dueDate) : undefined, // Convert string to Date if provided
       completed: updatedFields.completed || undefined
     };
-    const task = await this.prisma.task.update({
-      where: { id },
-      data
-    });
-    if (!task) return undefined;
-    return {
-      ...task,
-      dueDate: task.dueDate ? task.dueDate.toISOString().split('T')[0] : null, // Convert back to string
-      completed: task.completed
-    };
+    return (await this.prisma.task.update({ where: { id }, data })) ?? undefined;
   }
   
   async deleteTask(id: number): Promise<boolean> {
