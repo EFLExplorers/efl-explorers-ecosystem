@@ -383,6 +383,570 @@ const parseFaqs = (sql) => {
   return statement ? parseSimpleInsert(statement) : [];
 };
 
+const REQUIRED_PAGES = [
+  {
+    route: "/",
+    title: "EFL Explorers - Home",
+    metaDescription: "Start your English learning journey with EFL Explorers",
+  },
+  {
+    route: "/about",
+    title: "About EFL Explorers",
+    metaDescription:
+      "Learn more about the EFL Explorers team, mission, and vision",
+  },
+  {
+    route: "/contact",
+    title: "Contact EFL Explorers",
+    metaDescription:
+      "Get in touch with EFL Explorers for course and platform information",
+  },
+  {
+    route: "/pricing",
+    title: "Pricing - EFL Explorers",
+    metaDescription:
+      "Choose the best plan to improve your English skills with EFL Explorers.",
+  },
+  {
+    route: "/platforms/student",
+    title: "Student Platform - EFL Explorers",
+    metaDescription:
+      "Explore the student portal and learning journey inside EFL Explorers.",
+  },
+  {
+    route: "/platforms/teacher",
+    title: "Teacher Platform - EFL Explorers",
+    metaDescription:
+      "Explore the teacher portal and teaching toolkit inside EFL Explorers.",
+  },
+  {
+    route: "/Auth/login",
+    title: "Login - EFL Explorers",
+    metaDescription: "Login to your EFL Explorers account",
+  },
+  {
+    route: "/Auth/register",
+    title: "Register - EFL Explorers",
+    metaDescription: "Create your EFL Explorers account",
+  },
+  {
+    route: "/Auth/forgot-password",
+    title: "Forgot Password - EFL Explorers",
+    metaDescription: "Reset your password",
+  },
+  {
+    route: "/Auth/reset-password",
+    title: "Reset Password - EFL Explorers",
+    metaDescription: "Set your new password",
+  },
+  {
+    route: "/Auth/register/teacher/pending",
+    title: "Registration Pending - EFL Explorers",
+    metaDescription: "Your teacher registration is under review",
+  },
+];
+
+const AUTH_LOGIN_CONTENT = {
+  title: "Welcome Back",
+  subtitle: "Select your platform to continue:",
+  student_button_label: "Student Login",
+  teacher_button_label: "Teacher Login",
+  register_prompt: "New to EFL Explorers?",
+  register_link_text: "Register here",
+  register_href: "/Auth/register",
+};
+
+const AUTH_REGISTER_CONTENT = {
+  title: "Join EFL Explorers",
+  subtitle: "Choose your account type:",
+  student_button_label: "Register as Student",
+  teacher_button_label: "Register as Teacher",
+  login_prompt: "Already have an account?",
+  login_link_text: "Login here",
+  login_href: "/Auth/login",
+};
+
+const AUTH_FORGOT_PASSWORD_CONTENT = {
+  form: {
+    title: "Forgot Password",
+    subtitle: "Enter your email to reset your password",
+    email_label: "Email",
+    submit_button_label: "Send Reset Link",
+    submit_button_loading_label: "Sending...",
+    back_to_login_text: "Back to Login",
+    back_to_login_href: "/Auth/login",
+  },
+  success: {
+    title: "Check Your Email",
+    subtitle: "We've sent you a password reset link",
+    message1: "We've sent a password reset link to {email}.",
+    message2:
+      "Please check your email and click the link to reset your password. The link will expire in 1 hour.",
+    return_text: "Return to Login",
+    return_href: "/Auth/login",
+  },
+};
+
+const AUTH_RESET_PASSWORD_CONTENT = {
+  form: {
+    title: "Reset Password",
+    subtitle: "Enter your new password",
+    new_password_label: "New Password",
+    confirm_password_label: "Confirm New Password",
+    submit_button_label: "Update Password",
+    submit_button_loading_label: "Updating...",
+    back_to_login_text: "Back to Login",
+    back_to_login_href: "/Auth/login",
+  },
+  success: {
+    title: "Password Updated",
+    subtitle: "Your password has been successfully reset",
+    message:
+      "Your password has been successfully updated. You can now log in with your new password.",
+    go_to_login_text: "Go to Login",
+    go_to_login_href: "/Auth/login",
+  },
+};
+
+const AUTH_PENDING_CONTENT = {
+  title: "Registration Pending",
+  messages: [
+    "Thank you for registering as a teacher with EFL Explorers. Your application is currently under review.",
+  ],
+  button_label: "Return to Login",
+  button_href: "/Auth/login",
+};
+
+const DEFAULT_SITE_SECTIONS = [
+  {
+    sectionKey: "header",
+    sectionType: "header",
+    content: {
+      navbar: {
+        dropdown: {
+          label: "Platforms",
+          items: [
+            { label: "Teacher", href: "/platforms/teacher" },
+            { label: "Student", href: "/platforms/student" },
+          ],
+        },
+        links: [
+          { label: "Pricing", href: "/pricing" },
+          { label: "About", href: "/about" },
+          { label: "Contact", href: "/contact" },
+        ],
+      },
+      auth_buttons: {
+        login: { label: "Login", href: "/Auth/login" },
+        register: { label: "Get Started", href: "/Auth/register" },
+      },
+    },
+    sortOrder: 10,
+    active: true,
+  },
+  {
+    sectionKey: "footer",
+    sectionType: "footer",
+    content: {
+      columns: [],
+      bottom_bar: ["All rights reserved"],
+    },
+    sortOrder: 20,
+    active: true,
+  },
+  {
+    sectionKey: "404",
+    sectionType: "error",
+    content: {
+      title: "404 - Page Not Found",
+      message: "The page you're looking for doesn't exist.",
+      home_link_text: "Go back home",
+    },
+    sortOrder: 30,
+    active: true,
+  },
+];
+
+const REQUIRED_PAGE_SECTIONS = [
+  { route: "/", sectionKey: "hero", sectionType: "hero", content: {}, sortOrder: 10 },
+  { route: "/", sectionKey: "tagline", sectionType: "content", content: {}, sortOrder: 20 },
+  { route: "/", sectionKey: "learning-tools", sectionType: "content", content: {}, sortOrder: 30 },
+  { route: "/", sectionKey: "how-we-teach", sectionType: "tabs", content: {}, sortOrder: 40 },
+  { route: "/", sectionKey: "services", sectionType: "content", content: {}, sortOrder: 50 },
+  { route: "/", sectionKey: "pricing", sectionType: "content", content: {}, sortOrder: 60 },
+  { route: "/", sectionKey: "register-cta", sectionType: "cta", content: {}, sortOrder: 100 },
+  { route: "/about", sectionKey: "hero", sectionType: "hero", content: {}, sortOrder: 10 },
+  { route: "/about", sectionKey: "description", sectionType: "content", content: {}, sortOrder: 20 },
+  { route: "/about", sectionKey: "tagline", sectionType: "content", content: {}, sortOrder: 30 },
+  { route: "/about", sectionKey: "mission", sectionType: "content", content: {}, sortOrder: 40 },
+  { route: "/about", sectionKey: "vision", sectionType: "content", content: {}, sortOrder: 50 },
+  { route: "/about", sectionKey: "team-intro", sectionType: "content", content: {}, sortOrder: 60 },
+  { route: "/about", sectionKey: "values-header", sectionType: "content", content: {}, sortOrder: 70 },
+  { route: "/contact", sectionKey: "hero", sectionType: "content", content: {}, sortOrder: 10 },
+  { route: "/contact", sectionKey: "form", sectionType: "content", content: {}, sortOrder: 20 },
+  { route: "/contact", sectionKey: "faq", sectionType: "content", content: {}, sortOrder: 30 },
+  { route: "/pricing", sectionKey: "pricing-header", sectionType: "content", content: {}, sortOrder: 10 },
+  { route: "/pricing", sectionKey: "pricing-footer", sectionType: "content", content: {}, sortOrder: 30 },
+  { route: "/platforms/student", sectionKey: "hero", sectionType: "content", content: {}, sortOrder: 10 },
+  { route: "/platforms/student", sectionKey: "characters", sectionType: "content", content: {}, sortOrder: 20 },
+  { route: "/platforms/student", sectionKey: "planets", sectionType: "content", content: {}, sortOrder: 30 },
+  { route: "/platforms/student", sectionKey: "cta", sectionType: "content", content: {}, sortOrder: 40 },
+  { route: "/platforms/teacher", sectionKey: "hero", sectionType: "content", content: {}, sortOrder: 10 },
+  { route: "/platforms/teacher", sectionKey: "tools", sectionType: "content", content: {}, sortOrder: 20 },
+  { route: "/platforms/teacher", sectionKey: "lesson-modules", sectionType: "content", content: {}, sortOrder: 30 },
+  { route: "/platforms/teacher", sectionKey: "benefits", sectionType: "content", content: {}, sortOrder: 40 },
+  { route: "/platforms/teacher", sectionKey: "cta", sectionType: "content", content: {}, sortOrder: 50 },
+  {
+    route: "/Auth/login",
+    sectionKey: "selection",
+    sectionType: "content",
+    content: AUTH_LOGIN_CONTENT,
+    sortOrder: 10,
+  },
+  {
+    route: "/Auth/register",
+    sectionKey: "selection",
+    sectionType: "content",
+    content: AUTH_REGISTER_CONTENT,
+    sortOrder: 10,
+  },
+  {
+    route: "/Auth/forgot-password",
+    sectionKey: "form",
+    sectionType: "content",
+    content: AUTH_FORGOT_PASSWORD_CONTENT,
+    sortOrder: 10,
+  },
+  {
+    route: "/Auth/reset-password",
+    sectionKey: "form",
+    sectionType: "content",
+    content: AUTH_RESET_PASSWORD_CONTENT,
+    sortOrder: 10,
+  },
+  {
+    route: "/Auth/register/teacher/pending",
+    sectionKey: "content",
+    sectionType: "content",
+    content: AUTH_PENDING_CONTENT,
+    sortOrder: 10,
+  },
+];
+
+const REQUIRED_CONTENT_ITEMS = [
+  {
+    route: "/",
+    contentType: "pricing",
+    sectionKey: "pricing",
+    slug: "pricing-default",
+    title: "Free Access",
+    content: { price: "Free", description: "Basic access" },
+    sortOrder: 10,
+  },
+  {
+    route: "/",
+    contentType: "service",
+    sectionKey: "services",
+    slug: "service-default",
+    title: "Service",
+    description: "Default service",
+    content: { icon: "book", background_icons: [] },
+    sortOrder: 10,
+  },
+  {
+    route: "/",
+    contentType: "learning_tool",
+    sectionKey: "learning-tools",
+    slug: "learning-tool-default",
+    title: "Learning Tool",
+    description: "Default learning tool",
+    content: { icon: "tool" },
+    sortOrder: 10,
+  },
+  {
+    route: "/about",
+    contentType: "team_member",
+    sectionKey: "team",
+    slug: "team-member-default",
+    title: "Team Member",
+    subtitle: "Role",
+    description: "Team member bio",
+    content: { role: "Role", image: "", expertise: [] },
+    sortOrder: 10,
+  },
+  {
+    route: "/about",
+    contentType: "about_stat",
+    sectionKey: "stats",
+    slug: "about-stat-default",
+    title: "1",
+    description: "Default stat",
+    sortOrder: 10,
+  },
+  {
+    route: "/about",
+    contentType: "core_value",
+    sectionKey: "values",
+    slug: "core-value-default",
+    title: "Core Value",
+    description: "Default core value",
+    content: { icon: "star" },
+    sortOrder: 10,
+  },
+  {
+    route: "/contact",
+    contentType: "faq",
+    sectionKey: "faq",
+    slug: "faq-default",
+    title: "How do I get started?",
+    description: "Reach out to get started.",
+    content: { category: "contact" },
+    sortOrder: 10,
+  },
+  {
+    route: "/pricing",
+    contentType: "pricing_plan",
+    sectionKey: "pricing-plans",
+    slug: "pricing-plan-default",
+    title: "Basic",
+    description: "Default pricing plan",
+    content: { price: "0", currency: "$", period: "/month", features: [] },
+    sortOrder: 10,
+  },
+  {
+    route: "/platforms/student",
+    contentType: "student_character",
+    sectionKey: "characters",
+    slug: "student-character-default",
+    title: "Student",
+    content: { imageUrl: "/assets/images/characters/Student.png" },
+    sortOrder: 10,
+  },
+  {
+    route: "/platforms/student",
+    contentType: "student_planet",
+    sectionKey: "planets",
+    slug: "student-planet-default",
+    title: "Planet",
+    content: { color: "var(--accent)", icon: "planet" },
+    sortOrder: 10,
+  },
+  {
+    route: "/platforms/teacher",
+    contentType: "teaching_tool",
+    sectionKey: "tools",
+    slug: "teacher-tool-default",
+    title: "Teaching Tool",
+    description: "Default teaching tool",
+    content: { icon: "tool" },
+    sortOrder: 10,
+  },
+  {
+    route: "/platforms/teacher",
+    contentType: "lesson_module",
+    sectionKey: "lesson-modules",
+    slug: "lesson-module-default",
+    title: "Lesson Module",
+    description: "Default lesson module",
+    content: {
+      students: "10",
+      lessons: "10",
+      duration: "4 weeks",
+      colorKey: "muted",
+    },
+    sortOrder: 10,
+  },
+  {
+    route: "/platforms/teacher",
+    contentType: "teacher_benefit",
+    sectionKey: "benefits",
+    slug: "teacher-benefit-default",
+    title: "Benefit",
+    description: "Default benefit",
+    sortOrder: 10,
+  },
+];
+
+const REQUIRED_SECTION_FIELDS = {
+  "/Auth/login|selection": [
+    "title",
+    "subtitle",
+    "student_button_label",
+    "teacher_button_label",
+    "register_prompt",
+    "register_link_text",
+    "register_href",
+  ],
+  "/Auth/register|selection": [
+    "title",
+    "subtitle",
+    "student_button_label",
+    "teacher_button_label",
+    "login_prompt",
+    "login_link_text",
+    "login_href",
+  ],
+  "/Auth/forgot-password|form": [
+    "form.title",
+    "form.subtitle",
+    "form.email_label",
+    "form.submit_button_label",
+    "form.submit_button_loading_label",
+    "form.back_to_login_text",
+    "form.back_to_login_href",
+    "success.title",
+    "success.subtitle",
+    "success.message1",
+    "success.message2",
+    "success.return_text",
+    "success.return_href",
+  ],
+  "/Auth/reset-password|form": [
+    "form.title",
+    "form.subtitle",
+    "form.new_password_label",
+    "form.confirm_password_label",
+    "form.submit_button_label",
+    "form.submit_button_loading_label",
+    "form.back_to_login_text",
+    "form.back_to_login_href",
+    "success.title",
+    "success.subtitle",
+    "success.message",
+    "success.go_to_login_text",
+    "success.go_to_login_href",
+  ],
+  "/Auth/register/teacher/pending|content": [
+    "title",
+    "messages",
+    "button_label",
+    "button_href",
+  ],
+};
+
+const getNestedValue = (value, path) =>
+  path.split(".").reduce((acc, key) => (acc ? acc[key] : undefined), value);
+
+const hasRequiredFields = (content, paths) =>
+  paths.every((path) => {
+    const value = getNestedValue(content, path);
+    if (Array.isArray(value)) return value.length > 0;
+    return Boolean(value);
+  });
+
+const ensureLandingPageDefaults = async (pagesByRoute) => {
+  for (const page of REQUIRED_PAGES) {
+    const existing = await prisma.page.findUnique({
+      where: { route: page.route },
+      select: { id: true, title: true, metaDescription: true },
+    });
+    if (!existing) {
+      const created = await prisma.page.create({
+        data: {
+          route: page.route,
+          title: page.title,
+          metaDescription: page.metaDescription,
+        },
+      });
+      pagesByRoute.set(page.route, created.id);
+      continue;
+    }
+    pagesByRoute.set(page.route, existing.id);
+    const updates = {};
+    if (!existing.title && page.title) updates.title = page.title;
+    if (!existing.metaDescription && page.metaDescription)
+      updates.metaDescription = page.metaDescription;
+    if (Object.keys(updates).length > 0) {
+      await prisma.page.update({
+        where: { route: page.route },
+        data: updates,
+      });
+    }
+  }
+
+  for (const section of DEFAULT_SITE_SECTIONS) {
+    const existing = await prisma.siteSection.findUnique({
+      where: { sectionKey: section.sectionKey },
+      select: { id: true, content: true },
+    });
+    if (!existing) {
+      await prisma.siteSection.create({ data: section });
+      continue;
+    }
+    if (section.sectionKey === "404") {
+      const content = existing.content ?? {};
+      const requiredPaths = ["title", "message", "home_link_text"];
+      if (!hasRequiredFields(content, requiredPaths)) {
+        await prisma.siteSection.update({
+          where: { sectionKey: section.sectionKey },
+          data: { content: section.content },
+        });
+      }
+    }
+  }
+
+  for (const section of REQUIRED_PAGE_SECTIONS) {
+    const pageId = pagesByRoute.get(section.route);
+    if (!pageId) continue;
+
+    const existing = await prisma.pageSection.findUnique({
+      where: { pageId_sectionKey: { pageId, sectionKey: section.sectionKey } },
+      select: { id: true, content: true },
+    });
+
+    if (!existing) {
+      await prisma.pageSection.create({
+        data: {
+          pageId,
+          sectionKey: section.sectionKey,
+          sectionType: section.sectionType,
+          content: section.content,
+          sortOrder: section.sortOrder ?? 0,
+          active: true,
+        },
+      });
+      continue;
+    }
+
+    const requiredPaths =
+      REQUIRED_SECTION_FIELDS[`${section.route}|${section.sectionKey}`];
+    if (requiredPaths && !hasRequiredFields(existing.content ?? {}, requiredPaths)) {
+      await prisma.pageSection.update({
+        where: { pageId_sectionKey: { pageId, sectionKey: section.sectionKey } },
+        data: { content: section.content },
+      });
+    }
+  }
+
+  for (const item of REQUIRED_CONTENT_ITEMS) {
+    const pageId = pagesByRoute.get(item.route);
+    if (!pageId) continue;
+
+    const existingCount = await prisma.contentItem.count({
+      where: { pageId, contentType: item.contentType },
+    });
+
+    if (existingCount > 0) {
+      continue;
+    }
+
+    await prisma.contentItem.create({
+      data: compactObject({
+        pageId,
+        sectionKey: item.sectionKey,
+        contentType: item.contentType,
+        slug: item.slug,
+        title: item.title,
+        subtitle: item.subtitle,
+        description: item.description,
+        content: item.content,
+        sortOrder: item.sortOrder ?? 0,
+        active: true,
+      }),
+    });
+  }
+};
+
 const run = async () => {
   const raw = await fs.readFile(seedFilePath, "utf-8");
   const sql = stripComments(raw).replace(/\r\n/g, "\n");
@@ -505,6 +1069,8 @@ const run = async () => {
       await prisma.faq.create({ data: compactObject(faq) });
     }
   }
+
+  await ensureLandingPageDefaults(pagesByRoute);
 
   console.log("Seed complete.");
 };
