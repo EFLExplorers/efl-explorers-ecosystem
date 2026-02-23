@@ -25,6 +25,7 @@ export const TeacherBenefitsSection = ({
   return (
     <section
       className={styles.teacherBenefits}
+      id="teacher-benefits"
       data-cy="teacher-benefits-section"
     >
       <h2 data-cy="teacher-benefits-title">{title}</h2>

@@ -121,7 +121,7 @@ export const AboutUsSection = ({
     <section className={styles.aboutUs} data-cy="about-page">
       <div className={styles.container}>
         {heroTitle || heroSubtitle ? (
-          <div className={styles.heroSection}>
+          <div className={styles.heroSection} id="about-hero">
             {heroTitle ? (
               <h1 className={styles.title} data-cy="about-title">
                 {heroTitle}
@@ -136,7 +136,11 @@ export const AboutUsSection = ({
         ) : null}
 
         {descriptionText || safeStats.length ? (
-          <div className={styles.description} data-cy="about-description">
+          <div
+            className={styles.description}
+            id="about-description"
+            data-cy="about-description"
+          >
             {descriptionText ? <p>{descriptionText}</p> : null}
             {safeStats.length ? (
               <div className={styles.statsGrid} data-cy="about-stats">
@@ -156,7 +160,11 @@ export const AboutUsSection = ({
         ) : null}
 
         {taglineText ? (
-          <div className={styles.tagline} data-cy="about-tagline">
+          <div
+            className={styles.tagline}
+            id="about-tagline"
+            data-cy="about-tagline"
+          >
             <span className={styles.quoteMark}>"</span>
             {taglineText}
             <span className={styles.quoteMark}>"</span>
@@ -165,7 +173,7 @@ export const AboutUsSection = ({
 
         <div className={styles.infoSections}>
           {missionTitle || missionBody || missionPoints.length ? (
-            <div className={styles.mission} data-cy="about-mission">
+            <div className={styles.mission} id="about-mission" data-cy="about-mission">
               <div className={styles.sectionHeader}>
                 <div className={styles.iconContainer}>
                   <span className={styles.icon}>🎯</span>
@@ -186,7 +194,7 @@ export const AboutUsSection = ({
           ) : null}
 
           {visionTitle || visionBody || visionGoals.length ? (
-            <div className={styles.vision} data-cy="about-vision">
+            <div className={styles.vision} id="about-vision" data-cy="about-vision">
               <div className={styles.sectionHeader}>
                 <div className={styles.iconContainer}>
                   <span className={styles.icon}>🔮</span>
@@ -207,7 +215,7 @@ export const AboutUsSection = ({
           ) : null}
 
           {safeTeamMembers.length ? (
-            <div className={styles.team} data-cy="about-team">
+            <div className={styles.team} id="about-team" data-cy="about-team">
               <div className={styles.sectionHeader}>
                 <div className={styles.iconContainer}>
                   <span className={styles.icon}>👥</span>
@@ -274,7 +282,7 @@ export const AboutUsSection = ({
         </div>
 
         {safeValues.length ? (
-          <div className={styles.values} data-cy="about-values">
+          <div className={styles.values} id="about-values" data-cy="about-values">
             {valuesHeaderTitle ? <h2>{valuesHeaderTitle}</h2> : null}
             <div className={styles.valuesGrid} data-cy="about-values-grid">
               {safeValues.map((value) => (

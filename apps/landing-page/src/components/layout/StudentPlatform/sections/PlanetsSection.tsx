@@ -65,7 +65,11 @@ export const StudentPlanetsSection = ({
   }, [isSpinning, autoplayMs]);
 
   return (
-    <section className={styles.planets} data-cy="student-planets-section">
+    <section
+      className={styles.planets}
+      id="student-planets"
+      data-cy="student-planets-section"
+    >
       <h2 data-cy="student-planets-title">{title}</h2>
       <div className={styles.planetCarousel}>
         <button

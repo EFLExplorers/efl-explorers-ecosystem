@@ -27,7 +27,11 @@ export const TeachingToolsSection = ({
   const badge = (section.content as any)?.badge ?? "⚡️";
 
   return (
-    <section className={styles.section} data-cy="teaching-tools-section">
+    <section
+      className={styles.section}
+      id="teaching-tools"
+      data-cy="teaching-tools-section"
+    >
       <div className={styles.card} data-cy="teaching-tools-card">
         <header className={styles.cardHeader}>
           <div>

@@ -41,7 +41,7 @@ export const ServicesSection = ({ services, section }: ServicesSectionProps) => 
   const subtitle = getSectionText(section, "subtitle") || getSectionText(section);
 
   return (
-    <section className={styles.services} data-cy="services-section">
+    <section className={styles.services} id="services" data-cy="services-section">
       <div className={styles.content}>
         {title ? (
           <h2 className={styles.title} data-cy="services-title">

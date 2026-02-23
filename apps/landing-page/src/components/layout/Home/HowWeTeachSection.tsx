@@ -28,7 +28,7 @@ export const HowWeTeachSection = ({ section }: HowWeTeachSectionProps) => {
   if (!cards.length) return null;
 
   return (
-    <section className={styles.teaching}>
+    <section className={styles.teaching} id="how-we-teach">
       <div className={styles.content}>
         {title && <h2 className={styles.title}>{title}</h2>}
         {description && <p className={styles.subtitle}>{description}</p>}

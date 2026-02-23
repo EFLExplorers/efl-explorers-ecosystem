@@ -44,7 +44,11 @@ export const LearningToolsSection = ({
   const subtitle = getSectionText(section, "subtitle") || getSectionText(section);
 
   return (
-    <section className={styles.tools} data-cy="learning-tools-section">
+    <section
+      className={styles.tools}
+      id="learning-tools"
+      data-cy="learning-tools-section"
+    >
       <div className={styles.content}>
         {title ? (
           <h2 className={styles.title} data-cy="learning-tools-title">

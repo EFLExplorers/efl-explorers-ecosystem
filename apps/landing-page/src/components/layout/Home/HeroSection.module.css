@@ -17,6 +17,7 @@
   padding: var(--spacing-2xl);
   position: relative;
   overflow: hidden;
+  scroll-margin-top: var(--header-height);
 }
 
 .hero::before {

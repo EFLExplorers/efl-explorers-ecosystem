@@ -28,7 +28,11 @@ export const RegisterCTASection = ({ section }: RegisterCTASectionProps) => {
     "";
 
   return (
-    <section className={styles.registerCta} data-cy="register-cta-section">
+    <section
+      className={styles.registerCta}
+      id="register-cta"
+      data-cy="register-cta-section"
+    >
       <div className={styles.registerCtaContent}>
         <h2 className={styles.registerCtaTitle} data-cy="register-cta-title">
           {title}

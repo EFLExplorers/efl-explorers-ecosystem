@@ -1,6 +1,8 @@
 import { ReactNode, useEffect, useState } from "react";
 import { Header, type HeaderContent } from "./Header-Footer/Header";
 import { Footer, type FooterContent } from "./Header-Footer/Footer";
+import { BackToTopButton } from "../ui/BackToTopButton";
+import { SideRail } from "../ui/SideRail";
 import styles from "../../styles/Layout.module.css";
 
 interface LayoutProps {
@@ -31,6 +33,8 @@ export const Layout = ({
       <main className={styles.main} id="top">
         {children}
       </main>
+      <SideRail />
+      <BackToTopButton />
       <Footer content={resolvedFooterContent} />
     </div>
   );

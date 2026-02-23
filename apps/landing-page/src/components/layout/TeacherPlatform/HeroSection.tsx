@@ -38,7 +38,11 @@ export const TeacherHeroSection = ({ section }: TeacherHeroSectionProps) => {
   const imageHeight = image?.height ?? 300;
 
   return (
-    <section className={styles.hero} data-cy="teacher-hero-section">
+    <section
+      className={styles.hero}
+      id="teacher-hero"
+      data-cy="teacher-hero-section"
+    >
       <div className={styles.heroContent}>
         <h1 data-cy="teacher-hero-title">{title}</h1>
         <p data-cy="teacher-hero-subtitle">{subtitle}</p>

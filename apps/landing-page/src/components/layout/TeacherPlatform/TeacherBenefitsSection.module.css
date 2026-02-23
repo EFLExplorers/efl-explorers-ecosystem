@@ -6,6 +6,7 @@
   margin-left: auto;
   margin-right: auto;
   animation: fadeInUp 0.8s ease-out 0.8s both;
+  scroll-margin-top: var(--header-height);
 }
 
 .teacherBenefits h2 {

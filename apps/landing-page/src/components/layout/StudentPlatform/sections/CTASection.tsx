@@ -14,7 +14,11 @@ export const StudentCTASection = ({ section }: StudentCTASectionProps) => {
   const buttonHref = (section.content as any)?.button?.href ?? "";
 
   return (
-    <section className={styles.cta} data-cy="student-cta-section">
+    <section
+      className={styles.cta}
+      id="student-cta"
+      data-cy="student-cta-section"
+    >
       <div className={styles.ctaContent}>
         <h2 data-cy="student-cta-title">{title}</h2>
         {buttonLabel && buttonHref ? (

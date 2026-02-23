@@ -13,7 +13,6 @@ export default function Document() {
         />
         
         {/* Preload critical CSS */}
-        <link rel="preload" href="/_next/static/css/app.css" as="style" />
       </Head>
       <body>
         <Main />

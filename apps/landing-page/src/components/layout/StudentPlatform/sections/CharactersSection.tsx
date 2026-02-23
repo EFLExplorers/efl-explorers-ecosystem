@@ -24,7 +24,11 @@ export const StudentCharactersSection = ({
   const outro = (section.content as any)?.outro ?? "";
 
   return (
-    <section className={styles.characters} data-cy="student-characters-section">
+    <section
+      className={styles.characters}
+      id="student-characters"
+      data-cy="student-characters-section"
+    >
       <div className={styles.characterContent}>
         <div className={styles.characterGridContainer}>
           <p className={styles.characterText} data-cy="student-characters-copy">

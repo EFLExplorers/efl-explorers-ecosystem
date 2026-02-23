@@ -33,7 +33,7 @@ export const HeroSection = ({ section }: HeroSectionProps) => {
     .filter((button) => button.label && button.href);
 
   return (
-    <section className={styles.hero} data-cy="hero-section">
+    <section className={styles.hero} id="hero" data-cy="hero-section">
       <div className={styles.content}>
         <h1 className={styles.title} data-cy="hero-title">
           {title}

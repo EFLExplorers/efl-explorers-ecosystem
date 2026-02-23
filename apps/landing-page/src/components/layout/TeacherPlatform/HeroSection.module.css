@@ -10,6 +10,7 @@
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
+  scroll-margin-top: var(--header-height);
 }
 
 .heroContent {

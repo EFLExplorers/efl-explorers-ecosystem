@@ -34,8 +34,8 @@ export const PricingTable = ({
   const footerHelpLabel = (footerSection?.content as any)?.help_label ?? "";
 
   return (
-    <section className={styles.pricing} data-cy="pricing-page">
-      <div className={styles.header}>
+    <section className={styles.pricing} id="pricing-top" data-cy="pricing-page">
+      <div className={styles.header} id="pricing-header">
         <div className={styles.badge} data-cy="pricing-badge">
           {headerBadge}
         </div>
@@ -43,7 +43,7 @@ export const PricingTable = ({
         <p data-cy="pricing-subtitle">{headerSubtitle}</p>
       </div>
 
-      <div className={styles.plans} data-cy="pricing-plans">
+      <div className={styles.plans} id="pricing-plans" data-cy="pricing-plans">
         {plans.map((plan) => {
           const variant = (plan.content as any)?.variant as
             | "basic"
@@ -150,7 +150,7 @@ export const PricingTable = ({
         })}
       </div>
 
-      <div className={styles.footer} data-cy="pricing-footer">
+      <div className={styles.footer} id="pricing-footer" data-cy="pricing-footer">
         {footerNote ? <p>{footerNote}</p> : null}
         {footerHelpText && footerHelpHref && footerHelpLabel ? (
           <p>

@@ -18,7 +18,7 @@ export const ContactHeroSection = ({ section }: ContactHeroSectionProps) => {
     }>) || [];
 
   return (
-    <section className={styles.hero} data-cy="contact-hero">
+    <section className={styles.hero} id="contact-hero" data-cy="contact-hero">
       <div className={styles.content}>
         <h1 className={styles.title} data-cy="contact-title">
           {title}

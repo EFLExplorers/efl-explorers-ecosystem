@@ -67,7 +67,11 @@ export const ContactFormSection = ({ section }: ContactFormSectionProps) => {
   };
 
   return (
-    <section className={styles.section} data-cy="contact-form-section">
+    <section
+      className={styles.section}
+      id="contact-form"
+      data-cy="contact-form-section"
+    >
       <div className={styles.content}>
         <div className={styles.header}>
           <h2 className={styles.title} data-cy="contact-form-title">

@@ -60,7 +60,11 @@ export const LessonModulesSection = ({
   const activeColorClass = colorClassByKey[active.colorKey] ?? "";
 
   return (
-    <section className={styles.planets} data-cy="lesson-modules-section">
+    <section
+      className={styles.planets}
+      id="lesson-modules"
+      data-cy="lesson-modules-section"
+    >
       <h2 data-cy="lesson-modules-title">{title}</h2>
       <p className={styles.modulesSubtitle} data-cy="lesson-modules-subtitle">
         {subtitle}

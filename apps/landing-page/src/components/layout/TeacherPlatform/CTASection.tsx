@@ -28,7 +28,11 @@ export const TeacherCTASection = ({ section }: TeacherCTASectionProps) => {
     "";
 
   return (
-    <section className={styles.cta} data-cy="teacher-cta-section">
+    <section
+      className={styles.cta}
+      id="teacher-cta"
+      data-cy="teacher-cta-section"
+    >
       <h2 data-cy="teacher-cta-title">{title}</h2>
       <p data-cy="teacher-cta-subtitle">{subtitle}</p>
       {buttonLabel && buttonHref ? (

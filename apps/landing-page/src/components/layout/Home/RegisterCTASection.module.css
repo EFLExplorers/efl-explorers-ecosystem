@@ -13,6 +13,7 @@
   justify-content: center;
   min-height: 400px;
   overflow: hidden;
+  scroll-margin-top: var(--header-height);
 }
 
 .registerCta::before {

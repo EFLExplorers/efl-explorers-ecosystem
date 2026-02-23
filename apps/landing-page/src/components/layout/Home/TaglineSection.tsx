@@ -18,7 +18,7 @@ export const TaglineSection = ({ section }: TaglineSectionProps) => {
     "";
 
   return (
-    <section className={styles.tagline} data-cy="tagline-section">
+    <section className={styles.tagline} id="tagline" data-cy="tagline-section">
       <div className={styles.content}>
         {title && (
           <h2 className={styles.title} data-cy="tagline-title">

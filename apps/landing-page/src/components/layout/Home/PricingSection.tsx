@@ -44,7 +44,7 @@ export const PricingSection = ({
   const subtitle = getSectionText(section, "subtitle") || getSectionText(section);
 
   return (
-    <section className={styles.pricing} data-cy="pricing-section">
+    <section className={styles.pricing} id="pricing" data-cy="pricing-section">
       {title ? (
         <h2 className={styles.title} data-cy="pricing-title">
           {title}
