@@ -19,6 +19,13 @@ interface LoginPageProps {
   registerHref: string;
 }
 
+const AUTH_ERROR_MESSAGES: Record<string, string> = {
+  Configuration: "There is a problem with the server configuration.",
+  AccessDenied: "Access denied.",
+  Verification: "The sign-in link may have expired or already been used.",
+  Default: "Sign-in failed. Please try again.",
+};
+
 export const LoginPage = ({
   title,
   subtitle,
@@ -29,6 +36,11 @@ export const LoginPage = ({
   registerHref,
 }: LoginPageProps) => {
   const router = useRouter();
+  const errorCode =
+    typeof router.query.error === "string" ? router.query.error : null;
+  const errorMessage = errorCode
+    ? AUTH_ERROR_MESSAGES[errorCode] ?? AUTH_ERROR_MESSAGES.Default
+    : null;
 
   const handlePlatformSelect = (platform: "student" | "teacher") => {
     router.push(`/Auth/login/${platform}`);
@@ -39,6 +51,12 @@ export const LoginPage = ({
       <div className={styles.formContainer}>
         <h1 className={styles.title}>{title}</h1>
         <p className={styles.subtitle}>{subtitle}</p>
+
+        {errorMessage && (
+          <div className={styles.errorBanner} role="alert">
+            {errorMessage}
+          </div>
+        )}
 
         <div className={styles.buttonGroup}>
           <button

@@ -74,6 +74,17 @@
   animation: fadeInUp 0.8s ease-out 0.4s both;
 }
 
+.errorBanner {
+  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-md);
+  font-size: var(--font-sm);
+  text-align: center;
+  color: var(--text-primary);
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  border-radius: var(--radius-md);
+}
+
 .buttonGroup {
   display: flex;
   flex-direction: column;
