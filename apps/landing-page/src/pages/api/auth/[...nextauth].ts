@@ -5,6 +5,9 @@ import type { PrismaClient } from "@repo/database";
 import { compare } from "bcryptjs";
 import { prisma } from "@repo/database";
 
+// Required on Vercel and locally: NEXTAUTH_SECRET, NEXTAUTH_URL, DATABASE_URL (or DIRECT_URL)
+const nextAuthSecret = process.env.NEXTAUTH_SECRET;
+
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma as PrismaClient),
   session: {
@@ -91,7 +94,7 @@ export const authOptions: NextAuthOptions = {
     signIn: "/Auth/login",
     error: "/Auth/login",
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: nextAuthSecret,
 };
 
 export default NextAuth(authOptions);
