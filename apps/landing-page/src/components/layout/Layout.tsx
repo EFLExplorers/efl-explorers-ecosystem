@@ -28,7 +28,9 @@ export const Layout = ({
   return (
     <div className={styles.appContainer}>
       <Header content={resolvedHeaderContent} />
-      <main className={styles.main}>{children}</main>
+      <main className={styles.main} id="top">
+        {children}
+      </main>
       <Footer content={resolvedFooterContent} />
     </div>
   );

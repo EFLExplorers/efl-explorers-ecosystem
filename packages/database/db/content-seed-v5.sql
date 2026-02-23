@@ -12,6 +12,8 @@ VALUES
   ('/about', 'About EFL Explorers', 'Learn more about the EFL Explorers team, mission, and vision'),
   ('/contact', 'Contact EFL Explorers', 'Get in touch with EFL Explorers for course and platform information'),
   ('/pricing', 'Pricing - EFL Explorers', 'Choose the best plan to improve your English skills with EFL Explorers.'),
+  ('/terms', 'Terms of Service - EFL Explorers', 'Review the terms and conditions for using EFL Explorers.'),
+  ('/cookies', 'Cookie Policy - EFL Explorers', 'Learn how EFL Explorers uses cookies and similar technologies.'),
   ('/platforms/student', 'Student Platform - EFL Explorers', 'Explore the student portal and learning journey inside EFL Explorers.'),
   ('/platforms/teacher', 'Teacher Platform - EFL Explorers', 'Explore the teacher portal and teaching toolkit inside EFL Explorers.'),
   ('/Auth/login', 'Login - EFL Explorers', 'Login to your EFL Explorers account'),
@@ -63,26 +65,25 @@ VALUES
         {
           "title": "Socials",
           "links": [
-            { "label": "LinkedIn", "href": "https://linkedin.com" },
-            { "label": "Instagram", "href": "https://instagram.com" },
-            { "label": "Facebook", "href": "https://facebook.com" }
+            { "label": "Instagram", "href": "#" },
+            { "label": "Facebook", "href": "#" }
           ]
         },
         {
           "title": "Company",
           "links": [
-            { "label": "About Us", "href": "/about" },
-            { "label": "Pricing", "href": "/pricing" },
-            { "label": "Register", "href": "/Auth/register" }
+            { "label": "About Us", "href": "/about#top" },
+            { "label": "Pricing", "href": "/pricing#top" },
+            { "label": "Register", "href": "/Auth/register#top" }
           ]
         },
         {
           "title": "Support",
           "links": [
-            { "label": "Contact Us", "href": "/contact" },
-            { "label": "FAQ", "href": "/faq" },
+            { "label": "Contact Us", "href": "/contact#top" },
+            { "label": "FAQ", "href": "/contact#faq" },
             { "label": "Terms & Conditions", "href": "/terms" },
-            { "label": "Cookie Policy", "href": "/privacy" }
+            { "label": "Cookie Policy", "href": "/cookies" }
           ]
         }
       ],

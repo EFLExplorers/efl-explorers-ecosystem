@@ -52,6 +52,13 @@
   transition: color 0.2s ease;
 }
 
+.disabledLink {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  opacity: 0.6;
+  cursor: default;
+}
+
 .column a:hover {
   color: var(--accent);
 }

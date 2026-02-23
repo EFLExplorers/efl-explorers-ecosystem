@@ -26,7 +26,11 @@ export const ContactFAQSection = ({ section, faqs }: ContactFAQSectionProps) => 
   };
 
   return (
-    <section className={styles.section} data-cy="contact-faq-section">
+    <section
+      className={styles.section}
+      id="faq"
+      data-cy="contact-faq-section"
+    >
       <div className={styles.content}>
         <div className={styles.header}>
           <h2 className={styles.title} data-cy="contact-faq-title">

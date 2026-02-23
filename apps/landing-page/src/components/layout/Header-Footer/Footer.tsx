@@ -35,11 +35,22 @@ export const Footer = ({ content }: FooterProps) => {
           {(content.columns || []).map((column) => (
             <div className={styles.column} key={column.title}>
               <h3>{column.title}</h3>
-              {column.links.map((link) => (
-                <Link href={link.href} key={link.href}>
-                  {link.label}
-                </Link>
-              ))}
+              {column.links.map((link) => {
+                const isDisabled = !link.href || link.href === "#";
+                if (isDisabled) {
+                  return (
+                    <span className={styles.disabledLink} key={link.label}>
+                      {link.label}
+                    </span>
+                  );
+                }
+
+                return (
+                  <Link href={link.href} key={link.href}>
+                    {link.label}
+                  </Link>
+                );
+              })}
             </div>
           ))}
         </div>
