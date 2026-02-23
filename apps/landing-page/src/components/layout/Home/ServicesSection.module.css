@@ -31,14 +31,32 @@
 }
 
 .title {
-  font-size: var(--font-4xl);
-  font-weight: var(--font-bold);
+  font-size: 2.5rem;
+  font-weight: 600;
   color: var(--text-primary);
-  padding-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
   text-align: center;
-  line-height: var(--leading-tight);
+  line-height: 1.2;
+  position: relative;
   text-shadow: 0 6px 12px rgba(0, 0, 0, 0.6), 0 3px 6px rgba(0, 0, 0, 0.5),
     0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.title::after {
+  content: "";
+  display: block;
+  width: 120px;
+  height: 5px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #ff6b35 50%,
+    transparent 100%
+  );
+  margin: 2rem auto 0;
+  border-radius: 9999px;
+  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.4);
+  animation: expandLine 0.8s ease-out 0.3s both;
 }
 
 .subtitle {
@@ -375,7 +393,13 @@
   }
 
   .title {
-    font-size: var(--font-3xl);
+    font-size: 2rem;
+  }
+
+  .title::after {
+    width: 100px;
+    height: 4px;
+    margin: 1.5rem auto 0;
   }
 
   .subtitle {
@@ -395,7 +419,7 @@
   }
 
   .title {
-    font-size: var(--font-2xl);
+    font-size: 2rem;
   }
 
   .subtitle {
@@ -405,5 +429,16 @@
 
   .serviceCard {
     padding: var(--spacing-lg);
+  }
+}
+
+@keyframes expandLine {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+  to {
+    width: 120px;
+    opacity: 1;
   }
 }

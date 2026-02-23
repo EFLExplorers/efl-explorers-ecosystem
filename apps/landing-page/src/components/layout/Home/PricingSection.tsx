@@ -56,7 +56,7 @@ export const PricingSection = ({
         </p>
       ) : null}
 
-      <div className={styles.pricingGrid} data-cy="pricing-grid">
+      <div className={styles.pricingList} data-cy="pricing-grid">
         {pricingTiers.map((tier) => {
           const name = tier.title || (tier.content as any)?.name || "";
           const price = (tier.content as any)?.price || "";
@@ -68,24 +68,32 @@ export const PricingSection = ({
           return (
             <div
               key={tier.id}
-              className={styles.pricingCard}
+              className={styles.pricingRow}
               data-cy="pricing-card"
             >
-              <h3 className={styles.tierName}>{name}</h3>
-              <div className={styles.priceContainer}>
-                <span className={styles.price}>{price}</span>
-                {period && <span className={styles.period}>{period}</span>}
+              <div className={styles.tierCol}>
+                <h3 className={styles.tierName}>{name}</h3>
               </div>
-              <p className={styles.description}>{description}</p>
-              {ctaLabel && ctaHref ? (
-                <a
-                  href={ctaHref}
-                  className={styles.getStarted}
-                  data-cy="pricing-cta"
-                >
-                  {ctaLabel}
-                </a>
-              ) : null}
+              <div className={styles.priceCol}>
+                <div className={styles.priceContainer}>
+                  <span className={styles.price}>{price}</span>
+                  {period && <span className={styles.period}>{period}</span>}
+                </div>
+              </div>
+              <div className={styles.descriptionCol}>
+                <p className={styles.description}>{description}</p>
+              </div>
+              <div className={styles.ctaCol}>
+                {ctaLabel && ctaHref ? (
+                  <a
+                    href={ctaHref}
+                    className={styles.getStarted}
+                    data-cy="pricing-cta"
+                  >
+                    {ctaLabel}
+                  </a>
+                ) : null}
+              </div>
             </div>
           );
         })}

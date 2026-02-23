@@ -33,15 +33,22 @@ export const HowWeTeachSection = ({ section }: HowWeTeachSectionProps) => {
         {title && <h2 className={styles.title}>{title}</h2>}
         {description && <p className={styles.subtitle}>{description}</p>}
 
-        <div className={styles.methodsGrid}>
+        <div className={styles.methodsAccordion}>
           {cards.map((card, index) => (
-            <div key={`${card.title}-${index}`} className={styles.methodCard}>
-              <div className={styles.methodIcon}>{card.icon || ""}</div>
-              <h3 className={styles.methodTitle}>{card.title}</h3>
+            <details
+              key={`${card.title}-${index}`}
+              className={styles.methodItem}
+            >
+              <summary className={styles.methodSummary}>
+                <span className={styles.methodIcon}>
+                  {card.icon || index + 1}
+                </span>
+                <span className={styles.methodTitle}>{card.title}</span>
+              </summary>
               <p className={styles.methodDescription}>
                 {card.content || card.description || ""}
               </p>
-            </div>
+            </details>
           ))}
         </div>
       </div>

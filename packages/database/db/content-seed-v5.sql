@@ -179,11 +179,10 @@ ON CONFLICT (page_id, section_key) DO UPDATE SET
 INSERT INTO public.page_sections (page_id, section_key, section_type, content, sort_order, active)
 SELECT p.id, 'hero', 'hero',
   '{
-    "title": "Start your learning journey today!",
+    "title": "Start your learning adventure today!",
     "subtitle": "We''re so happy you''re here! However, you will need to register to get started.",
     "buttons": [
-      { "label": "Register Student", "href": "/Auth/register/student" },
-      { "label": "Register Teacher", "href": "/Auth/register/teacher" }
+      { "label": "Register Now", "href": "/Auth/register" }
     ]
   }'::jsonb,
   10, true

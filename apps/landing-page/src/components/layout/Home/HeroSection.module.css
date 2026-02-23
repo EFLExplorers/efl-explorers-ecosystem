@@ -1,6 +1,6 @@
 .hero {
   width: 100%;
-  min-height: 80vh;
+  min-height: 90vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -70,7 +70,7 @@
 .subtitle {
   font-size: var(--font-xl);
   color: var(--text-secondary);
-  margin-bottom: var(--spacing-2xl);
+  margin-bottom: var(--spacing-xl);
   line-height: 1.6;
   max-width: 600px;
   margin-left: auto;
@@ -82,7 +82,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
-  max-width: 400px;
+  width: 100%;
+  max-width: 280px;
   margin: 0 auto;
   justify-content: center;
   align-items: center;
@@ -92,13 +93,13 @@
   padding: var(--spacing-md) var(--spacing-3xl);
   background: linear-gradient(135deg, var(--theme-background) 0%, var(--theme-accent-hover) 100%);
   color: var(--text-primary);
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.35);
   border-radius: var(--radius-full);
   font-size: var(--font-base);
   font-weight: var(--font-semibold);
   cursor: pointer;
   transition: var(--transition-all);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
   position: relative;
   overflow: hidden;
   letter-spacing: var(--tracking-wide);
@@ -108,9 +109,11 @@
   justify-content: center;
   white-space: nowrap;
   width: 100%;
+  max-width: 260px;
   text-align: center;
   opacity: 0.8;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
 }
 
 .button::before {
@@ -131,7 +134,7 @@
 
 .button:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-2xl);
 }
 
 @media (min-width: 640px) {
