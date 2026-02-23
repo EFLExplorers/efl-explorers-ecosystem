@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { FormInput } from "../shared/FormInput";
 import { PasswordInput } from "../shared/PasswordInput";
 import { LoadingSpinner } from "../shared/LoadingSpinner";
@@ -43,14 +43,28 @@ export const LoginForm = ({ platform }: LoginFormProps) => {
         throw new Error(response?.error || "Login failed");
       }
 
-      const ssoResponse = await fetch("/api/auth/sso-token", {
+      // Ensure session is established before requesting SSO token (avoids 401 race)
+      await getSession();
+
+      let ssoResponse = await fetch("/api/auth/sso-token", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ platform }),
+        credentials: "same-origin",
       });
 
+      if (ssoResponse.status === 401) {
+        await new Promise((r) => setTimeout(r, 200));
+        ssoResponse = await fetch("/api/auth/sso-token", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ platform }),
+          credentials: "same-origin",
+        });
+      }
+
       if (!ssoResponse.ok) {
-        const data = await ssoResponse.json();
+        const data = await ssoResponse.json().catch(() => ({}));
         throw new Error(data?.error || "Unable to start SSO session");
       }
 
