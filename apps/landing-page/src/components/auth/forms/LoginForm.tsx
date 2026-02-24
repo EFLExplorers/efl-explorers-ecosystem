@@ -40,7 +40,11 @@ export const LoginForm = ({ platform }: LoginFormProps) => {
       });
 
       if (!response || response.error) {
-        throw new Error(response?.error || "Login failed");
+        const message =
+          response?.error === "CredentialsSignin"
+            ? "Invalid email or password."
+            : response?.error || "Login failed";
+        throw new Error(message);
       }
 
       // Ensure session is established before requesting SSO token (avoids 401 race)
