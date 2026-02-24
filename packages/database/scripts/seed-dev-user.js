@@ -27,51 +27,111 @@ if (!isPostgresUrl(directUrl)) {
 const pool = new Pool({ connectionString: directUrl });
 const prisma = new PrismaClient({ adapter: new PrismaPg(pool) });
 
-const DEFAULT_EMAIL = "dev@example.com";
-const DEFAULT_PASSWORD = "Password1!";
-const DEFAULT_FIRST_NAME = "Dev";
-const DEFAULT_LAST_NAME = "Teacher";
+const DEFAULT_TEACHER_EMAIL = "dev@example.com";
+const DEFAULT_TEACHER_PASSWORD = "Password1!";
+const DEFAULT_TEACHER_FIRST_NAME = "Dev";
+const DEFAULT_TEACHER_LAST_NAME = "Teacher";
+
+const DEFAULT_STUDENT_EMAIL = "student@example.com";
+const DEFAULT_STUDENT_PASSWORD = "Password1!";
+const DEFAULT_STUDENT_FIRST_NAME = "Demo";
+const DEFAULT_STUDENT_LAST_NAME = "Student";
 const saltRounds = Number(process.env.BCRYPT_SALT_ROUNDS ?? "10");
 
-async function run() {
-  const email = (process.env.DEV_USER_EMAIL ?? DEFAULT_EMAIL).trim().toLowerCase();
-  const password = process.env.DEV_USER_PASSWORD ?? DEFAULT_PASSWORD;
+const normalizeEmail = (value) => value.trim().toLowerCase();
 
-  if (typeof password !== "string" || password.length < 6) {
-    throw new Error("DEV_USER_PASSWORD (or default) must be at least 6 characters.");
-  }
+const getAccountConfig = () => {
+  const teacherFirstName = (
+    process.env.DEV_TEACHER_FIRST_NAME ?? DEFAULT_TEACHER_FIRST_NAME
+  ).trim();
+  const teacherLastName = (
+    process.env.DEV_TEACHER_LAST_NAME ?? DEFAULT_TEACHER_LAST_NAME
+  ).trim();
+  const teacherComputedName = `${teacherFirstName} ${teacherLastName}`.trim();
 
-  const passwordHash = await hash(password, saltRounds);
-  const firstName = (process.env.DEV_USER_FIRST_NAME ?? DEFAULT_FIRST_NAME).trim();
-  const lastName = (process.env.DEV_USER_LAST_NAME ?? DEFAULT_LAST_NAME).trim();
-  const computedName = `${firstName} ${lastName}`.trim();
-  const name = (process.env.DEV_USER_NAME ?? computedName).trim() || "Teacher";
+  const studentFirstName = (
+    process.env.DEV_STUDENT_FIRST_NAME ?? DEFAULT_STUDENT_FIRST_NAME
+  ).trim();
+  const studentLastName = (
+    process.env.DEV_STUDENT_LAST_NAME ?? DEFAULT_STUDENT_LAST_NAME
+  ).trim();
+  const studentComputedName = `${studentFirstName} ${studentLastName}`.trim();
 
-  await prisma.user.upsert({
-    where: { email },
-    create: {
-      email,
-      passwordHash,
+  return [
+    {
       role: "teacher",
+      email: normalizeEmail(
+        process.env.DEV_TEACHER_EMAIL ??
+          process.env.DEV_USER_EMAIL ??
+          DEFAULT_TEACHER_EMAIL
+      ),
+      password:
+        process.env.DEV_TEACHER_PASSWORD ??
+        process.env.DEV_USER_PASSWORD ??
+        DEFAULT_TEACHER_PASSWORD,
+      firstName: teacherFirstName,
+      lastName: teacherLastName,
+      name:
+        (process.env.DEV_TEACHER_NAME ??
+          process.env.DEV_USER_NAME ??
+          teacherComputedName) ||
+        "Teacher",
       approved: true,
-      firstName,
-      lastName,
-      name,
+      loginPath: "/Auth/login/teacher",
+      label: "Dev teacher user",
     },
-    update: {
-      passwordHash,
+    {
+      role: "student",
+      email: normalizeEmail(process.env.DEV_STUDENT_EMAIL ?? DEFAULT_STUDENT_EMAIL),
+      password: process.env.DEV_STUDENT_PASSWORD ?? DEFAULT_STUDENT_PASSWORD,
+      firstName: studentFirstName,
+      lastName: studentLastName,
+      name: (process.env.DEV_STUDENT_NAME ?? studentComputedName) || "Student",
       approved: true,
-      firstName,
-      lastName,
-      name,
+      loginPath: "/Auth/login/student",
+      label: "Dev student user",
     },
-  });
+  ];
+};
 
-  console.log("Dev teacher user seeded successfully.");
-  console.log("  Name:", name);
-  console.log("Log in on the landing page at /Auth/login/teacher with:");
-  console.log("  Email:", email);
-  console.log("  Password:", password);
+async function run() {
+  const accounts = getAccountConfig();
+
+  for (const account of accounts) {
+    if (typeof account.password !== "string" || account.password.length < 6) {
+      throw new Error(
+        `${account.role.toUpperCase()} password must be at least 6 characters.`
+      );
+    }
+
+    const passwordHash = await hash(account.password, saltRounds);
+
+    await prisma.user.upsert({
+      where: { email: account.email },
+      create: {
+        email: account.email,
+        passwordHash,
+        role: account.role,
+        approved: account.approved,
+        firstName: account.firstName,
+        lastName: account.lastName,
+        name: account.name,
+      },
+      update: {
+        passwordHash,
+        approved: account.approved,
+        firstName: account.firstName,
+        lastName: account.lastName,
+        name: account.name,
+      },
+    });
+
+    console.log(`${account.label} seeded successfully.`);
+    console.log("  Name:", account.name);
+    console.log(`Log in on the landing page at ${account.loginPath} with:`);
+    console.log("  Email:", account.email);
+    console.log("  Password:", account.password);
+  }
 }
 
 run()
