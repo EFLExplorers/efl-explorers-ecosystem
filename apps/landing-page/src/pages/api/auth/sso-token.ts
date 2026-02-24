@@ -18,9 +18,18 @@ const getPlatformBaseUrl = (platform: "student" | "teacher") =>
     ? process.env.NEXT_PUBLIC_TEACHER_URL
     : process.env.NEXT_PUBLIC_STUDENT_URL;
 
+/** Use origin only so we always hit /sso on the platform (never /dashboard/sso etc). */
+function getOrigin(baseUrl: string): string {
+  try {
+    return new URL(baseUrl).origin;
+  } catch {
+    return baseUrl;
+  }
+}
+
 const buildRedirectUrl = (baseUrl: string, token: string) => {
-  const normalizedBase = baseUrl.replace(/\/+$/, "");
-  return `${normalizedBase}/sso?token=${encodeURIComponent(token)}`;
+  const origin = getOrigin(baseUrl);
+  return `${origin}/sso?token=${encodeURIComponent(token)}`;
 };
 
 export default async function handler(
