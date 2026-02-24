@@ -1,0 +1,33 @@
+.page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.card {
+  width: min(640px, 100%);
+  background: #ffffff;
+  border: 1px solid #e6e9ef;
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 8px 24px rgba(17, 24, 39, 0.06);
+}
+
+.title {
+  margin: 0;
+  font-size: 1.75rem;
+  line-height: 1.2;
+}
+
+.description {
+  margin: 12px 0 0;
+  color: #495467;
+  line-height: 1.5;
+}
+
+.list {
+  margin: 16px 0 0;
+  padding-left: 18px;
+  color: #2d3748;
+}
