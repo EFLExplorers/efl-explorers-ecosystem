@@ -33,6 +33,7 @@ export default async function handler(
 
   const session = await getServerSession(req, res, authOptions);
   if (!session?.user?.id || !session.user.role) {
+    console.warn("[sso-token] 401: no session or missing user.id/role");
     return res.status(401).json({ error: "Unauthorized" });
   }
 
@@ -47,6 +48,7 @@ export default async function handler(
 
   const baseUrl = getPlatformBaseUrl(platform);
   if (!baseUrl) {
+    console.error("[sso-token] 500: NEXT_PUBLIC_TEACHER_URL or NEXT_PUBLIC_STUDENT_URL not set");
     return res
       .status(500)
       .json({ error: "Platform URL is not configured" });

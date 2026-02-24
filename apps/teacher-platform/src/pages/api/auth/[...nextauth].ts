@@ -19,38 +19,49 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         const token = credentials?.token;
-        if (!token || typeof token !== "string") return null;
+        if (!token || typeof token !== "string") {
+          console.warn("[SSO] authorize: missing or invalid token");
+          return null;
+        }
 
-        const tokenHash = hashToken(token);
-        const now = new Date();
+        try {
+          const tokenHash = hashToken(token);
+          const now = new Date();
 
-        const ssoRecord = await prisma.ssoToken.findFirst({
-          where: {
-            tokenHash,
-            platform: "teacher",
-            expiresAt: { gt: now },
-            usedAt: null,
-          },
-          include: { user: true },
-        });
+          const ssoRecord = await prisma.ssoToken.findFirst({
+            where: {
+              tokenHash,
+              platform: "teacher",
+              expiresAt: { gt: now },
+              usedAt: null,
+            },
+            include: { user: true },
+          });
 
-        if (!ssoRecord?.user) return null;
+          if (!ssoRecord?.user) {
+            console.warn("[SSO] authorize: token not found, expired, or already used");
+            return null;
+          }
 
-        await prisma.ssoToken.update({
-          where: { id: ssoRecord.id },
-          data: { usedAt: now },
-        });
+          await prisma.ssoToken.update({
+            where: { id: ssoRecord.id },
+            data: { usedAt: now },
+          });
 
-        const u = ssoRecord.user;
-        return {
-          id: u.id,
-          email: u.email ?? undefined,
-          name: u.name ?? undefined,
-          role: u.role,
-          approved: u.approved,
-          firstName: u.firstName ?? undefined,
-          lastName: u.lastName ?? undefined,
-        };
+          const u = ssoRecord.user;
+          return {
+            id: u.id,
+            email: u.email ?? undefined,
+            name: u.name ?? undefined,
+            role: u.role,
+            approved: u.approved,
+            firstName: u.firstName ?? undefined,
+            lastName: u.lastName ?? undefined,
+          };
+        } catch (err) {
+          console.error("[SSO] authorize error:", err);
+          return null;
+        }
       },
     }),
   ],
