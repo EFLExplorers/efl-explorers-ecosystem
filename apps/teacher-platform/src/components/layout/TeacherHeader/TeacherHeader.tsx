@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from "react";
+import Link from "next/link";
+import { signOut, useSession } from "next-auth/react";
 import { Bell, MessageSquare, Search, Menu, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -21,8 +23,74 @@ export interface TeacherHeaderProps {
   setCollapsed: (value: boolean) => void;
 }
 
+function buildDisplayName(params: {
+  firstName?: string | null;
+  lastName?: string | null;
+  name?: string | null;
+  email?: string | null;
+}) {
+  const fullName = [params.firstName, params.lastName]
+    .filter(Boolean)
+    .join(" ")
+    .trim();
+
+  if (fullName) return fullName;
+  if (params.name?.trim()) return params.name.trim();
+  if (params.email?.trim()) return params.email.trim().split("@")[0];
+  return "Teacher";
+}
+
+function buildInitials(params: {
+  firstName?: string | null;
+  lastName?: string | null;
+  name?: string | null;
+  email?: string | null;
+}) {
+  const first = params.firstName?.trim();
+  const last = params.lastName?.trim();
+
+  if (first || last) {
+    return `${first?.[0] ?? ""}${last?.[0] ?? ""}`.toUpperCase() || "T";
+  }
+
+  if (params.name?.trim()) {
+    const parts = params.name.trim().split(/\s+/);
+    return `${parts[0]?.[0] ?? ""}${parts[1]?.[0] ?? ""}`.toUpperCase() || "T";
+  }
+
+  if (params.email?.trim()) {
+    return params.email.trim().slice(0, 2).toUpperCase();
+  }
+
+  return "T";
+}
+
 export function TeacherHeader({ collapsed, setCollapsed }: TeacherHeaderProps) {
   const [searchValue, setSearchValue] = useState("");
+  const { data: session } = useSession();
+
+  const user = session?.user;
+  const displayName = buildDisplayName({
+    firstName: user?.firstName,
+    lastName: user?.lastName,
+    name: user?.name,
+    email: user?.email,
+  });
+  const initials = buildInitials({
+    firstName: user?.firstName,
+    lastName: user?.lastName,
+    name: user?.name,
+    email: user?.email,
+  });
+
+  const handleLogout = async () => {
+    const baseLandingUrl = process.env.NEXT_PUBLIC_LANDING_PAGE_URL?.replace(/\/$/, "");
+    const callbackUrl = baseLandingUrl
+      ? `${baseLandingUrl}/Auth/login/teacher`
+      : "/Auth/login/teacher";
+
+    await signOut({ callbackUrl });
+  };
 
   return (
     <header className={styles.header}>
@@ -135,19 +203,30 @@ export function TeacherHeader({ collapsed, setCollapsed }: TeacherHeaderProps) {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className={styles.profileButton}>
               <Avatar className={styles.profileAvatar}>
-                <AvatarFallback className={styles.profileAvatarFallback}>JD</AvatarFallback>
+                <AvatarFallback className={styles.profileAvatarFallback}>{initials}</AvatarFallback>
               </Avatar>
-              <span className={styles.profileName}>John Doe</span>
+              <span className={styles.profileName}>{displayName}</span>
               <ChevronDown className={styles.profileChevron} />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuLabel>{displayName}</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Settings</DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/dashboard/settings?tab=profile">Profile</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/dashboard/settings">Settings</Link>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Logout</DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={(event) => {
+                event.preventDefault();
+                void handleLogout();
+              }}
+            >
+              Logout
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

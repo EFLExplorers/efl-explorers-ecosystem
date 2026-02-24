@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import { Card, CardHeader, CardContent } from "@/components/ui/Card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Input } from "@/components/ui/Input";
@@ -33,10 +34,29 @@ import {
 import { classNames } from "@/utils/classNames";
 import styles from './settings.module.css';
 
+const SETTINGS_TABS = ["profile", "security", "notifications", "appearance"] as const;
+
+function isSettingsTab(value: string): value is (typeof SETTINGS_TABS)[number] {
+  return SETTINGS_TABS.includes(value as (typeof SETTINGS_TABS)[number]);
+}
+
 export default function SettingsPage() {
+  const router = useRouter();
   const [tab, setTab] = useState("profile");
   const [theme, setTheme] = useState("light");
   const [colorScheme, setColorScheme] = useState("purple");
+
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    const tabQuery = Array.isArray(router.query.tab)
+      ? router.query.tab[0]
+      : router.query.tab;
+
+    if (typeof tabQuery === "string" && isSettingsTab(tabQuery)) {
+      setTab(tabQuery);
+    }
+  }, [router.isReady, router.query.tab]);
   
   return (
     <div className={styles.container}>

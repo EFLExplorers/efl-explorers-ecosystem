@@ -29,6 +29,8 @@ const prisma = new PrismaClient({ adapter: new PrismaPg(pool) });
 
 const DEFAULT_EMAIL = "dev@example.com";
 const DEFAULT_PASSWORD = "Password1!";
+const DEFAULT_FIRST_NAME = "Dev";
+const DEFAULT_LAST_NAME = "Teacher";
 const saltRounds = Number(process.env.BCRYPT_SALT_ROUNDS ?? "10");
 
 async function run() {
@@ -40,9 +42,10 @@ async function run() {
   }
 
   const passwordHash = await hash(password, saltRounds);
-  const firstName = "Dev";
-  const lastName = "Teacher";
-  const name = "Dev Teacher";
+  const firstName = (process.env.DEV_USER_FIRST_NAME ?? DEFAULT_FIRST_NAME).trim();
+  const lastName = (process.env.DEV_USER_LAST_NAME ?? DEFAULT_LAST_NAME).trim();
+  const computedName = `${firstName} ${lastName}`.trim();
+  const name = (process.env.DEV_USER_NAME ?? computedName).trim() || "Teacher";
 
   await prisma.user.upsert({
     where: { email },
@@ -65,6 +68,7 @@ async function run() {
   });
 
   console.log("Dev teacher user seeded successfully.");
+  console.log("  Name:", name);
   console.log("Log in on the landing page at /Auth/login/teacher with:");
   console.log("  Email:", email);
   console.log("  Password:", password);
