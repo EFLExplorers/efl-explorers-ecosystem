@@ -44,6 +44,8 @@ import styles from './settings.module.css';
 
 const SETTINGS_TABS = ["profile", "security", "notifications", "appearance"] as const;
 
+const COLOR_SCHEME_OPTIONS: ColorScheme[] = ["purple", "blue", "green", "orange"];
+
 function isSettingsTab(value: string): value is (typeof SETTINGS_TABS)[number] {
   return SETTINGS_TABS.includes(value as (typeof SETTINGS_TABS)[number]);
 }
@@ -601,7 +603,7 @@ export default function SettingsPage() {
             
             <CardContent className={styles.cardContent}>
               <div className={styles.colorOptions}>
-                {["purple", "blue", "green", "orange"].map((color) => (
+                {COLOR_SCHEME_OPTIONS.map((color) => (
                   <button
                     key={color}
                     className={classNames(
