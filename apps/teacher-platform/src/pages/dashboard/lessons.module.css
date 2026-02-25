@@ -26,11 +26,11 @@
 .title {
   font-size: var(--font-2xl);
   font-weight: var(--font-bold);
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .subtitle {
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .headerAction {
@@ -62,9 +62,9 @@
 }
 
 .card {
-  border: 1px solid #93c5fd;
-  background-color: #dbeafe;
-  color: #1f2937;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--card-foreground);
 }
 
 .cardHeader {
@@ -97,7 +97,7 @@
   top: 0.625rem;
   height: 1rem;
   width: 1rem;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .searchInput {
@@ -108,7 +108,7 @@
 .tabs {
   display: flex;
   border-radius: var(--radius-md);
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   overflow: hidden;
   width: 100%;
 }
@@ -124,20 +124,20 @@
   padding: var(--spacing-sm) var(--spacing-md);
   font-size: var(--font-sm);
   font-weight: var(--font-medium);
-  background-color: #ffffff;
-  color: #6b7280;
+  background-color: var(--card);
+  color: var(--text-muted);
   border: none;
   cursor: pointer;
   transition: var(--transition-colors);
 }
 
 .tab:hover {
-  background-color: #f9fafb;
+  background-color: var(--theme-muted);
 }
 
 .tabActive {
-  background-color: #dbeafe;
-  color: #111827;
+  background-color: var(--primary);
+  color: var(--primary-foreground);
 }
 
 .cardContent {
@@ -147,7 +147,7 @@
 .emptyState {
   text-align: center;
   padding: 2rem 0;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .emptyStateContent {
@@ -158,7 +158,7 @@
 
 .emptyStateIcon {
   margin: 0 auto;
-  background-color: #f3f4f6;
+  background-color: var(--theme-muted);
   border-radius: var(--radius-full);
   padding: var(--spacing-md);
   display: inline-flex;
@@ -168,18 +168,18 @@
 .emptyIcon {
   height: 2.5rem;
   width: 2.5rem;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .emptyStateTitle {
   font-size: var(--font-lg);
   font-weight: var(--font-medium);
   margin-bottom: var(--spacing-sm);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .emptyStateText {
-  color: #6b7280;
+  color: var(--text-muted);
   margin-bottom: var(--spacing-lg);
   max-width: 28rem;
   margin-left: auto;
@@ -206,8 +206,8 @@
 
 .lessonCard {
   transition: box-shadow 0.2s;
-  background-color: #ffffff;
-  border: 1px solid #e5e7eb;
+  background-color: var(--card);
+  border: 1px solid var(--border);
 }
 
 .lessonCard:hover {
@@ -238,11 +238,11 @@
 .lessonTitle {
   font-weight: var(--font-semibold);
   margin-bottom: var(--spacing-sm);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .lessonDescription {
-  color: #6b7280;
+  color: var(--text-muted);
   font-size: var(--font-sm);
   margin-bottom: var(--spacing-md);
   display: -webkit-box;
@@ -255,7 +255,7 @@
   display: flex;
   align-items: center;
   font-size: var(--font-sm);
-  color: #6b7280;
+  color: var(--text-muted);
   margin-bottom: var(--spacing-sm);
 }
 
@@ -273,30 +273,30 @@
 }
 
 .detailLabel {
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .detailValue {
   font-weight: var(--font-medium);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .badgePurple {
-  background-color: #dbeafe;
-  color: #6b21a8;
+  background-color: var(--primary-light);
+  color: var(--primary);
 }
 
 .badgePurple:hover {
-  background-color: #dbeafe;
+  background-color: var(--primary-light);
 }
 
 .badgeBlue {
-  background-color: #dbeafe;
-  color: #1e40af;
+  background-color: var(--primary-light);
+  color: var(--primary);
 }
 
 .badgeBlue:hover {
-  background-color: #dbeafe;
+  background-color: var(--primary-light);
 }
 
 .badgeGreen {
@@ -309,10 +309,10 @@
 }
 
 .badgeGray {
-  background-color: #f3f4f6;
-  color: #4b5563;
+  background-color: var(--theme-muted);
+  color: var(--text-muted);
 }
 
 .badgeGray:hover {
-  background-color: #f3f4f6;
+  background-color: var(--theme-muted);
 }

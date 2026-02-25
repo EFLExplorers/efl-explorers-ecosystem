@@ -5,9 +5,9 @@
   align-items: center;
   justify-content: space-between;
   border-radius: var(--radius-md);
-  border: 1px solid #d1d5db;
-  background-color: #ffffff;
-  color: #111827;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--card-foreground);
   padding: var(--spacing-sm) var(--spacing-md);
   font-size: var(--font-sm);
   transition: var(--transition-colors);
@@ -16,7 +16,7 @@
 }
 
 .trigger::placeholder {
-  color: #9ca3af;
+  color: var(--text-muted);
 }
 
 .trigger:focus {
@@ -63,9 +63,9 @@
   min-width: 8rem;
   overflow: hidden;
   border-radius: var(--radius-md);
-  border: 1px solid #e5e7eb;
-  background-color: #ffffff;
-  color: #111827;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--card-foreground);
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
@@ -124,8 +124,8 @@
 }
 
 .item:focus {
-  background-color: #f3e8ff;
-  color: #111827;
+  background-color: var(--theme-muted);
+  color: var(--card-foreground);
 }
 
 .item[data-disabled] {
@@ -151,7 +151,7 @@
 .separator {
   margin: var(--spacing-xs) -0.25rem;
   height: 1px;
-  background-color: #e5e7eb;
+  background-color: var(--border);
 }
 
 @keyframes fadeIn {

@@ -1,7 +1,7 @@
 .card {
-  border: 1px solid #93c5fd;
-  background-color: #dbeafe;
-  color: #1f2937;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--card-foreground);
 }
 
 .header {
@@ -15,14 +15,14 @@
 .title {
   font-size: var(--font-lg);
   font-weight: var(--font-semibold);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .selectTrigger {
   width: 9rem;
   height: 2rem;
   font-size: var(--font-sm);
-  border-color: #d1d5db;
+  border-color: var(--border);
 }
 
 .content {
@@ -31,10 +31,10 @@
 
 .chartContainer {
   height: 16rem;
-  background-color: #ffffff;
+  background-color: var(--card);
   border-radius: var(--radius-lg);
   margin-bottom: var(--spacing-md);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
 }
 
 .stats {
@@ -50,12 +50,12 @@
 
 .statLabel {
   font-size: var(--font-sm);
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .statValue {
   font-weight: var(--font-bold);
-  color: #111827;
+  color: var(--text-primary);
   font-size: var(--font-xl);
 }
 

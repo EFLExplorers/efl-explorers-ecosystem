@@ -1,7 +1,7 @@
 .card {
-  border: 1px solid #93c5fd;
-  background-color: #dbeafe;
-  color: #1f2937;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--card-foreground);
 }
 
 .header {
@@ -10,17 +10,17 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--spacing-md) var(--spacing-lg);
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .title {
   font-size: var(--font-lg);
   font-weight: var(--font-semibold);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .viewAll {
-  color: #111827;
+  color: var(--text-primary);
   transition: var(--transition-colors);
   font-size: var(--font-sm);
   font-weight: var(--font-medium);
@@ -28,7 +28,7 @@
 }
 
 .viewAll:hover {
-  color: #9333ea;
+  color: var(--primary);
   text-decoration: underline;
 }
 
@@ -45,7 +45,7 @@
 .emptyState {
   padding: var(--spacing-lg);
   text-align: center;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .lessonItem {
@@ -77,11 +77,11 @@
 }
 
 .iconBlue {
-  background-color: #dbeafe;
+  background-color: var(--primary-light);
 }
 
 .textBlue {
-  color: #1e40af;
+  color: var(--primary);
 }
 
 .iconGreen {
@@ -93,11 +93,11 @@
 }
 
 .iconPurple {
-  background-color: #dbeafe;
+  background-color: var(--primary-light);
 }
 
 .textPurple {
-  color: #6b21a8;
+  color: var(--primary);
 }
 
 .iconAmber {
@@ -117,11 +117,11 @@
 }
 
 .iconDefault {
-  background-color: #f3f4f6;
+  background-color: var(--theme-muted);
 }
 
 .textDefault {
-  color: #4b5563;
+  color: var(--text-muted);
 }
 
 .lessonInfo {
@@ -130,11 +130,11 @@
 
 .lessonTitle {
   font-weight: var(--font-medium);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .lessonMeta {
-  color: #6b7280;
+  color: var(--text-muted);
   font-size: var(--font-sm);
 }
 
@@ -143,11 +143,11 @@
 }
 
 .time {
-  color: #111827;
+  color: var(--text-primary);
   font-weight: var(--font-medium);
 }
 
 .date {
-  color: #6b7280;
+  color: var(--text-muted);
   font-size: var(--font-sm);
 }

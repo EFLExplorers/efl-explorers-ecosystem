@@ -3,9 +3,9 @@
   min-height: 5rem;
   width: 100%;
   border-radius: var(--radius-md);
-  border: 1px solid #d1d5db;
-  background-color: #ffffff;
-  color: #111827;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--card-foreground);
   padding: var(--spacing-sm) var(--spacing-md);
   font-size: var(--font-sm);
   transition: var(--transition-colors);
@@ -13,7 +13,7 @@
 }
 
 .textarea::placeholder {
-  color: #9ca3af;
+  color: var(--text-muted);
 }
 
 .textarea:focus-visible {

@@ -1,13 +1,13 @@
 .sidebar {
-  background-color: #1e3a8a;
-  color: #ffffff;
+  background-color: var(--sidebar-background);
+  color: var(--sidebar-foreground);
   display: flex;
   flex-direction: column;
   height: 100vh;
   position: fixed;
   z-index: 20;
   transition: var(--transition-all);
-  border-right: 1px solid #1e40af;
+  border-right: 1px solid var(--sidebar-border);
 }
 
 .expanded {
@@ -24,7 +24,7 @@
 
 .logoSection {
   padding: var(--spacing-md);
-  border-bottom: 1px solid #1e40af;
+  border-bottom: 1px solid var(--sidebar-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -54,7 +54,7 @@
 .logoIcon {
   height: 1.5rem;
   width: 1.5rem;
-  color: #dbeafe;
+  color: var(--sidebar-primary);
 }
 
 .logoText {
@@ -66,17 +66,17 @@
   font-weight: var(--font-bold);
   font-size: var(--font-lg);
   line-height: 1.25;
-  color: #ffffff;
+  color: var(--sidebar-foreground);
 }
 
 .logoSubtitle {
   font-size: var(--font-xs);
   line-height: 1.25;
-  color: #bfdbfe;
+  color: var(--sidebar-primary);
 }
 
 .mobileToggle {
-  color: #ffffff;
+  color: var(--sidebar-foreground);
   margin-left: var(--spacing-md);
 }
 
@@ -87,7 +87,7 @@
 }
 
 .collapseToggle {
-  color: #ffffff;
+  color: var(--sidebar-foreground);
   display: none;
   flex-shrink: 0;
 }
@@ -108,11 +108,11 @@
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
-  background-color: #1e3a8a;
+  background-color: var(--sidebar-background);
 }
 
 .collapsed .logoSection .collapseToggle:hover {
-  background-color: #1e40af;
+  background-color: var(--sidebar-accent);
 }
 
 .collapseIcon {
@@ -121,8 +121,8 @@
 }
 
 .collapseToggle:hover {
-  background-color: #1e40af;
-  color: #ffffff;
+  background-color: var(--sidebar-accent);
+  color: var(--sidebar-accent-foreground);
 }
 
 .menuIcon {
@@ -159,27 +159,27 @@
   align-items: center;
   border-radius: var(--radius-lg);
   padding: var(--spacing-md) var(--spacing-md);
-  color: #bfdbfe;
+  color: var(--sidebar-foreground);
   transition: var(--transition-colors);
   cursor: pointer;
   position: relative;
 }
 
 .navItem:hover {
-  background-color: #1e40af;
-  color: #ffffff;
+  background-color: var(--sidebar-accent);
+  color: var(--sidebar-accent-foreground);
 }
 
 .navItem.active {
-  background-color: #1e40af;
-  color: #ffffff;
+  background-color: var(--sidebar-accent);
+  color: var(--sidebar-accent-foreground);
 }
 
 .navIcon {
   height: 1.25rem;
   width: 1.25rem;
   margin-right: var(--spacing-md);
-  color: #dbeafe;
+  color: var(--sidebar-primary);
 }
 
 .navIconCentered {
@@ -192,8 +192,8 @@
 }
 
 .badge {
-  background-color: #dbeafe;
-  color: #1e3a8a;
+  background-color: var(--sidebar-primary);
+  color: var(--sidebar-primary-foreground);
   border-radius: var(--radius-full);
   padding: 0.125rem var(--spacing-sm);
   font-size: var(--font-xs);
@@ -203,8 +203,8 @@
   position: absolute;
   top: 0;
   right: 0;
-  background-color: #dbeafe;
-  color: #1e3a8a;
+  background-color: var(--sidebar-primary);
+  color: var(--sidebar-primary-foreground);
   border-radius: var(--radius-full);
   width: 1rem;
   height: 1rem;
@@ -215,7 +215,7 @@
 }
 
 .bottomSection {
-  border-top: 1px solid #1e40af;
+  border-top: 1px solid var(--sidebar-border);
   padding: var(--spacing-xs);
   margin-top: auto;
 }

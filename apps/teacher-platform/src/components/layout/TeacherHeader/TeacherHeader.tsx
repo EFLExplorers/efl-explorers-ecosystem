@@ -213,10 +213,12 @@ export function TeacherHeader({ collapsed, setCollapsed }: TeacherHeaderProps) {
             <DropdownMenuLabel>{displayName}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href="/dashboard/settings?tab=profile">Profile</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/dashboard/settings">Settings</Link>
+              <Link
+                href="/dashboard/settings?tab=profile"
+                className={styles.dropdownLink}
+              >
+                Profile
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem

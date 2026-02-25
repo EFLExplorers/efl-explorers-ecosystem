@@ -86,3 +86,83 @@
   --transition-opacity: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-transform: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --theme-background: #f8fafc;
+  --theme-foreground: #ffffff;
+  --theme-muted: #e2e8f0;
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-muted: #6b7280;
+  --card: #ffffff;
+  --card-foreground: #111827;
+  --border: #e5e7eb;
+  --input: #e5e7eb;
+  --ring: var(--primary);
+  --sidebar: #ffffff;
+  --sidebar-background: #ffffff;
+  --sidebar-foreground: #111827;
+  --sidebar-accent: #f3f4f6;
+  --sidebar-accent-foreground: #111827;
+  --sidebar-border: #e5e7eb;
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-ring: var(--ring);
+}
+
+:root[data-color="purple"] {
+  --primary: #6d28d9;
+  --primary-foreground: #ffffff;
+  --primary-light: #c4b5fd;
+  --secondary: #7c3aed;
+  --accent: #8b5cf6;
+  --ring: #7c3aed;
+  --sidebar-primary: #c4b5fd;
+  --sidebar-ring: #a78bfa;
+  --text-secondary: #c4b5fd;
+  --text-muted: #ddd6fe;
+}
+
+:root[data-color="blue"] {
+  --primary: #1d4ed8;
+  --primary-foreground: #ffffff;
+  --primary-light: #93c5fd;
+  --secondary: #0ea5e9;
+  --accent: #38bdf8;
+  --ring: #2563eb;
+  --sidebar-primary: #93c5fd;
+  --sidebar-ring: #60a5fa;
+  --text-secondary: #93c5fd;
+  --text-muted: #bfdbfe;
+}
+
+:root[data-color="green"] {
+  --primary: #15803d;
+  --primary-foreground: #ffffff;
+  --primary-light: #86efac;
+  --secondary: #16a34a;
+  --accent: #22c55e;
+  --ring: #22c55e;
+  --sidebar-primary: #86efac;
+  --sidebar-ring: #4ade80;
+  --text-secondary: #86efac;
+  --text-muted: #bbf7d0;
+}
+
+:root[data-color="orange"] {
+  --primary: #ea580c;
+  --primary-foreground: #ffffff;
+  --primary-light: #fdba74;
+  --secondary: #f97316;
+  --accent: #f97316;
+  --ring: #ea580c;
+  --sidebar-primary: #fdba74;
+  --sidebar-ring: #fb923c;
+  --text-secondary: #fdba74;
+  --text-muted: #fed7aa;
+}

@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 import { Card, CardHeader, CardContent } from "@/components/ui/Card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Input } from "@/components/ui/Input";
@@ -32,6 +33,13 @@ import {
   Monitor
 } from "lucide-react";
 import { classNames } from "@/utils/classNames";
+import {
+  applyAppearance,
+  getStoredAppearance,
+  saveAppearance,
+  type ColorScheme,
+  type ThemePreference,
+} from "@/utils/appearance";
 import styles from './settings.module.css';
 
 const SETTINGS_TABS = ["profile", "security", "notifications", "appearance"] as const;
@@ -40,11 +48,56 @@ function isSettingsTab(value: string): value is (typeof SETTINGS_TABS)[number] {
   return SETTINGS_TABS.includes(value as (typeof SETTINGS_TABS)[number]);
 }
 
+function getInitials(params: {
+  firstName?: string | null;
+  lastName?: string | null;
+  name?: string | null;
+  email?: string | null;
+}) {
+  const first = params.firstName?.trim();
+  const last = params.lastName?.trim();
+
+  if (first || last) {
+    return `${first?.[0] ?? ""}${last?.[0] ?? ""}`.toUpperCase() || "T";
+  }
+
+  if (params.name?.trim()) {
+    const parts = params.name.trim().split(/\s+/);
+    return `${parts[0]?.[0] ?? ""}${parts[1]?.[0] ?? ""}`.toUpperCase() || "T";
+  }
+
+  if (params.email?.trim()) {
+    return params.email.trim().slice(0, 2).toUpperCase();
+  }
+
+  return "T";
+}
+
 export default function SettingsPage() {
   const router = useRouter();
+  const { data: session } = useSession();
   const [tab, setTab] = useState("profile");
-  const [theme, setTheme] = useState("light");
-  const [colorScheme, setColorScheme] = useState("purple");
+  const [theme, setTheme] = useState<ThemePreference>(
+    () => getStoredAppearance().theme
+  );
+  const [colorScheme, setColorScheme] = useState<ColorScheme>(
+    () => getStoredAppearance().colorScheme
+  );
+  const user = session?.user;
+  const initials = useMemo(
+    () =>
+      getInitials({
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+        name: user?.name,
+        email: user?.email,
+      }),
+    [user?.email, user?.firstName, user?.lastName, user?.name]
+  );
+  const roleLabel = useMemo(() => {
+    if (!user?.role) return "Teacher";
+    return user.role === "teacher" ? "Teacher" : "User";
+  }, [user?.role]);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -57,6 +110,11 @@ export default function SettingsPage() {
       setTab(tabQuery);
     }
   }, [router.isReady, router.query.tab]);
+
+  useEffect(() => {
+    saveAppearance({ theme, colorScheme });
+    applyAppearance({ theme, colorScheme });
+  }, [colorScheme, theme]);
   
   return (
     <div className={styles.container}>
@@ -96,7 +154,9 @@ export default function SettingsPage() {
               <div className={styles.profileSection}>
                 <div className={styles.avatarSection}>
                   <Avatar className={styles.avatar}>
-                    <AvatarFallback className={styles.avatarFallback}>JD</AvatarFallback>
+                    <AvatarFallback className={styles.avatarFallback}>
+                      {initials}
+                    </AvatarFallback>
                   </Avatar>
                   <Button variant="outline" size="sm" className={styles.avatarButton}>
                     <Upload className={styles.avatarButtonIcon} />
@@ -107,19 +167,24 @@ export default function SettingsPage() {
                 <div className={styles.formGrid}>
                   <div className={styles.formField}>
                     <Label htmlFor="firstName">First Name</Label>
-                    <Input id="firstName" defaultValue="John" />
+                    <Input id="firstName" defaultValue={user?.firstName ?? ""} />
                   </div>
                   <div className={styles.formField}>
                     <Label htmlFor="lastName">Last Name</Label>
-                    <Input id="lastName" defaultValue="Doe" />
+                    <Input id="lastName" defaultValue={user?.lastName ?? ""} />
                   </div>
                   <div className={styles.formField}>
                     <Label htmlFor="email">Email Address</Label>
-                    <Input id="email" type="email" defaultValue="john.doe@teachpro.edu" />
+                    <Input id="email" type="email" defaultValue={user?.email ?? ""} />
                   </div>
                   <div className={styles.formField}>
                     <Label htmlFor="role">Role</Label>
-                    <Input id="role" defaultValue="Science Teacher" readOnly className={styles.readOnlyInput} />
+                    <Input
+                      id="role"
+                      defaultValue={roleLabel}
+                      readOnly
+                      className={styles.readOnlyInput}
+                    />
                   </div>
                 </div>
               </div>
@@ -129,15 +194,19 @@ export default function SettingsPage() {
               <div className={styles.formGrid}>
                 <div className={styles.formField}>
                   <Label htmlFor="contactEmail">Contact Email</Label>
-                  <Input id="contactEmail" type="email" defaultValue="john.personal@example.com" />
+                  <Input
+                    id="contactEmail"
+                    type="email"
+                    defaultValue={user?.email ?? ""}
+                  />
                 </div>
                 <div className={styles.formField}>
                   <Label htmlFor="phone">Phone Number</Label>
-                  <Input id="phone" type="tel" defaultValue="(555) 123-4567" />
+                  <Input id="phone" type="tel" defaultValue="" />
                 </div>
                 <div className={classNames(styles.formField, styles.formFieldFull)}>
                   <Label htmlFor="address">Address</Label>
-                  <Textarea id="address" rows={3} defaultValue="123 Education Street, Teaching City, TC 12345" />
+                  <Textarea id="address" rows={3} defaultValue="" />
                 </div>
               </div>
               
@@ -149,7 +218,7 @@ export default function SettingsPage() {
                   id="bio" 
                   rows={4} 
                   placeholder="Tell us about your teaching experience, specializations, and interests..."
-                  defaultValue="Science teacher with 10+ years of experience specializing in chemistry and biology. Passionate about hands-on learning and incorporating technology into science education."
+                  defaultValue=""
                 />
               </div>
               

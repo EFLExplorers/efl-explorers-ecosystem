@@ -21,6 +21,6 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-full);
-  background-color: #e9d5ff;
-  color: #6b21a8;
+  background-color: var(--primary-light);
+  color: var(--primary);
 }

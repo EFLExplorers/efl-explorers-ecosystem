@@ -11,7 +11,7 @@
 }
 
 .header tr {
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .body tr:last-child {
@@ -19,8 +19,8 @@
 }
 
 .footer {
-  border-top: 1px solid #e5e7eb;
-  background-color: #f9fafb;
+  border-top: 1px solid var(--border);
+  background-color: var(--theme-muted);
   font-weight: var(--font-medium);
 }
 
@@ -29,16 +29,16 @@
 }
 
 .row {
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
   transition: var(--transition-colors);
 }
 
 .row:hover {
-  background-color: #f9fafb;
+  background-color: var(--theme-muted);
 }
 
 .row[data-state="selected"] {
-  background-color: #f3e8ff;
+  background-color: color-mix(in srgb, var(--primary) 15%, var(--theme-foreground));
 }
 
 .head {
@@ -47,7 +47,7 @@
   text-align: left;
   vertical-align: middle;
   font-weight: var(--font-medium);
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .head:has([role="checkbox"]) {
@@ -57,7 +57,7 @@
 .cell {
   padding: var(--spacing-md);
   vertical-align: middle;
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .cell:has([role="checkbox"]) {
@@ -67,5 +67,5 @@
 .caption {
   margin-top: var(--spacing-md);
   font-size: var(--font-sm);
-  color: #6b7280;
+  color: var(--text-muted);
 }

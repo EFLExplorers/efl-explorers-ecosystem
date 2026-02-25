@@ -26,11 +26,11 @@
 .title {
   font-size: var(--font-2xl);
   font-weight: var(--font-bold);
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .subtitle {
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .headerAction {
@@ -118,7 +118,7 @@
 }
 
 .iconPurple {
-  color: #9333ea;
+  color: var(--primary);
 }
 
 .iconGreen {
@@ -134,7 +134,7 @@
 }
 
 .iconBgPurple {
-  background-color: color-mix(in srgb, #9333ea 20%, transparent);
+  background-color: color-mix(in srgb, var(--primary) 20%, transparent);
 }
 
 .iconBgGreen {

@@ -12,11 +12,11 @@
 .title {
   font-size: var(--font-2xl);
   font-weight: var(--font-bold);
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .subtitle {
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .tabs {
@@ -42,7 +42,7 @@
 .tabIcon {
   height: 1rem;
   width: 1rem;
-  color: #9333ea;
+  color: var(--primary);
 }
 
 .tabLabel {
@@ -62,9 +62,9 @@
 }
 
 .card {
-  border: 1px solid #93c5fd;
-  background-color: #dbeafe;
-  color: #1f2937;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--card-foreground);
 }
 
 .cardHeader {
@@ -74,7 +74,7 @@
 .cardTitle {
   font-size: var(--font-lg);
   font-weight: var(--font-semibold);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .cardContent {
@@ -109,8 +109,8 @@
 }
 
 .avatarFallback {
-  background-color: #dbeafe;
-  color: #6b21a8;
+  background-color: var(--primary-light);
+  color: var(--primary);
   font-size: var(--font-2xl);
 }
 
@@ -118,14 +118,14 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
-  color: #1f2937;
-  border-color: #d1d5db;
+  color: var(--text-primary);
+  border-color: var(--border);
   font-weight: var(--font-medium);
 }
 
 .avatarButton:hover {
-  background-color: #f9fafb;
-  color: #9333ea;
+  background-color: var(--theme-muted);
+  color: var(--primary);
 }
 
 .avatarButtonIcon {
@@ -163,19 +163,19 @@
 }
 
 .readOnlyInput {
-  background-color: #f9fafb;
-  color: #6b7280;
+  background-color: var(--theme-muted);
+  color: var(--text-muted);
 }
 
 .helpText {
   font-size: var(--font-xs);
-  color: #6b7280;
+  color: var(--text-muted);
   margin-top: var(--spacing-xs);
 }
 
 .separator {
   margin: var(--spacing-md) 0;
-  background-color: #e5e7eb;
+  background-color: var(--border);
 }
 
 .formActions {
@@ -213,7 +213,7 @@
 
 .switchTitle {
   font-weight: var(--font-medium);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .switchTitleWithIcon {
@@ -226,12 +226,12 @@
 .switchIcon {
   height: 1.25rem;
   width: 1.25rem;
-  color: #9333ea;
+  color: var(--primary);
 }
 
 .switchDescription {
   font-size: var(--font-sm);
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .sessionsList {
@@ -241,8 +241,8 @@
 }
 
 .sessionItem {
-  border: 1px solid #e5e7eb;
-  background-color: #ffffff;
+  border: 1px solid var(--border);
+  background-color: var(--card);
   border-radius: var(--radius-lg);
   padding: var(--spacing-md);
   display: flex;
@@ -252,7 +252,7 @@
 }
 
 .sessionItem:hover {
-  border-color: #93c5fd;
+  border-color: var(--primary-light);
 }
 
 @media (min-width: 640px) {
@@ -271,12 +271,12 @@
 
 .sessionTitle {
   font-weight: var(--font-medium);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .sessionDescription {
   font-size: var(--font-sm);
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .sessionBadge {
@@ -314,28 +314,28 @@
   align-items: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-md);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  background-color: #ffffff;
+  background-color: var(--card);
   cursor: pointer;
   transition: var(--transition-colors);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .themeOption:hover {
-  background-color: #f9fafb;
-  border-color: #93c5fd;
+  background-color: var(--theme-muted);
+  border-color: var(--primary-light);
 }
 
 .themeOptionActive {
-  border-color: #9333ea;
-  background-color: #dbeafe;
+  border-color: var(--primary);
+  background-color: color-mix(in srgb, var(--primary) 12%, var(--card));
 }
 
 .themeIcon {
   height: 1.5rem;
   width: 1.5rem;
-  color: #9333ea;
+  color: var(--primary);
 }
 
 .colorOptions {
@@ -356,22 +356,22 @@
   align-items: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-md);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  background-color: #ffffff;
+  background-color: var(--card);
   cursor: pointer;
   transition: var(--transition-colors);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .colorOption:hover {
-  background-color: #f9fafb;
-  border-color: #93c5fd;
+  background-color: var(--theme-muted);
+  border-color: var(--primary-light);
 }
 
 .colorOptionActive {
-  border-color: #9333ea;
-  background-color: #dbeafe;
+  border-color: var(--primary);
+  background-color: color-mix(in srgb, var(--primary) 12%, var(--card));
 }
 
 .colorSwatch {

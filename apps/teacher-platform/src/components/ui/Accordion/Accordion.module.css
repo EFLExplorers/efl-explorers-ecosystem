@@ -1,5 +1,5 @@
 .item {
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .header {
@@ -13,7 +13,7 @@
   justify-content: space-between;
   padding: var(--spacing-md) 0;
   font-weight: var(--font-medium);
-  color: #111827;
+  color: var(--text-primary);
   transition: var(--transition-all);
   cursor: pointer;
   border: none;
@@ -22,7 +22,7 @@
 }
 
 .trigger:hover {
-  color: #9333ea;
+  color: var(--primary);
 }
 
 .trigger[data-state="open"] .icon {

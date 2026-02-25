@@ -26,11 +26,11 @@
 .title {
   font-size: var(--font-2xl);
   font-weight: var(--font-bold);
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .subtitle {
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .headerActions {
@@ -55,14 +55,14 @@
 .exportButton {
   display: flex;
   align-items: center;
-  background-color: #f3f4f6;
-  color: #111827;
-  border-color: #d1d5db;
+  background-color: var(--theme-muted);
+  color: var(--text-primary);
+  border-color: var(--border);
 }
 
 .exportButton:hover {
-  background-color: #e5e7eb;
-  color: #111827;
+  background-color: color-mix(in srgb, var(--theme-muted) 85%, black);
+  color: var(--text-primary);
 }
 
 .addButton {
@@ -84,9 +84,9 @@
 }
 
 .card {
-  border: 1px solid #93c5fd;
-  background-color: #dbeafe;
-  color: #1f2937;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--card-foreground);
 }
 
 .cardHeader {
@@ -122,7 +122,7 @@
   top: 0.625rem;
   height: 1rem;
   width: 1rem;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .searchInput {
@@ -152,22 +152,22 @@
 .emptyCell {
   text-align: center;
   padding: 2rem 0;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .nameCell {
   font-weight: var(--font-medium);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .email {
   font-size: var(--font-sm);
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .guardianContact {
   font-size: var(--font-sm);
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .badgeGreen {
@@ -180,12 +180,12 @@
 }
 
 .badgeBlue {
-  background-color: #dbeafe;
-  color: #1e40af;
+  background-color: var(--primary-light);
+  color: var(--primary);
 }
 
 .badgeBlue:hover {
-  background-color: #dbeafe;
+  background-color: var(--primary-light);
 }
 
 .badgeYellow {
@@ -211,12 +211,12 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--spacing-md) var(--spacing-lg);
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--border);
 }
 
 .paginationInfo {
   font-size: var(--font-sm);
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .paginationButtons {

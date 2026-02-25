@@ -11,13 +11,13 @@
 }
 
 .subTrigger:focus {
-  background-color: #f3e8ff;
-  color: #111827;
+  background-color: var(--theme-muted);
+  color: var(--card-foreground);
 }
 
 .subTrigger[data-state="open"] {
-  background-color: #f3e8ff;
-  color: #111827;
+  background-color: var(--theme-muted);
+  color: var(--card-foreground);
 }
 
 .subTrigger.inset {
@@ -35,9 +35,9 @@
   min-width: 8rem;
   overflow: hidden;
   border-radius: var(--radius-md);
-  border: 1px solid #e5e7eb;
-  background-color: #ffffff;
-  color: #111827;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--card-foreground);
   padding: var(--spacing-xs);
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
@@ -55,9 +55,9 @@
   min-width: 8rem;
   overflow: hidden;
   border-radius: var(--radius-md);
-  border: 1px solid #e5e7eb;
-  background-color: #ffffff;
-  color: #111827;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--card-foreground);
   padding: var(--spacing-xs);
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
@@ -85,8 +85,8 @@
 }
 
 .item:focus {
-  background-color: #f3e8ff;
-  color: #111827;
+  background-color: var(--theme-muted);
+  color: var(--card-foreground);
 }
 
 .item[data-disabled] {
@@ -121,8 +121,8 @@
 
 .checkboxItem:focus,
 .radioItem:focus {
-  background-color: #f3e8ff;
-  color: #111827;
+  background-color: var(--theme-muted);
+  color: var(--card-foreground);
 }
 
 .checkboxItem[data-disabled],
@@ -165,7 +165,7 @@
 .separator {
   margin: var(--spacing-xs) -0.25rem;
   height: 1px;
-  background-color: #e5e7eb;
+  background-color: var(--border);
 }
 
 .shortcut {
