@@ -78,7 +78,7 @@ export const authOptions: NextAuthOptions = {
         };
         token.role = u.role;
         token.approved = u.approved;
-        token.subscriptionTier = u.subscriptionTier ?? "free";
+        token.subscriptionTier = (u.subscriptionTier ?? "free") as "free" | "premium";
         token.firstName = u.firstName ?? null;
         token.lastName = u.lastName ?? null;
       }
