@@ -26,11 +26,11 @@
 .title {
   font-size: var(--font-2xl);
   font-weight: var(--font-bold);
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .subtitle {
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .headerAction {
@@ -85,20 +85,20 @@
 }
 
 .categoriesCard {
-  border: 1px solid #93c5fd;
-  background-color: #dbeafe;
-  color: #1f2937;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--card-foreground);
 }
 
 .categoriesHeader {
   padding: var(--spacing-md) var(--spacing-lg);
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .categoriesTitle {
   font-size: var(--font-lg);
   font-weight: var(--font-semibold);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .categoriesContent {
@@ -114,24 +114,24 @@
 .categoryButton {
   width: 100%;
   justify-content: flex-start;
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .categoryButton:hover {
-  background-color: #dbeafe;
-  color: #111827;
+  background-color: var(--theme-muted);
+  color: var(--text-primary);
 }
 
 .categoryButtonActive {
-  background-color: #dbeafe;
-  color: #111827;
+  background-color: color-mix(in srgb, var(--primary) 15%, var(--card));
+  color: var(--text-primary);
 }
 
 .categoryButtonIcon {
   height: 1rem;
   width: 1rem;
   margin-right: var(--spacing-sm);
-  color: #9333ea;
+  color: var(--primary);
 }
 
 .categoryButtonLabel {
@@ -141,26 +141,26 @@
 
 .categoryButtonCount {
   font-size: var(--font-xs);
-  color: #6b7280;
+  color: var(--text-muted);
   margin-left: auto;
 }
 
 .storageCard {
-  border: 1px solid #93c5fd;
-  background-color: #dbeafe;
-  color: #1f2937;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--card-foreground);
   margin-top: var(--spacing-lg);
 }
 
 .storageHeader {
   padding: var(--spacing-md) var(--spacing-lg);
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .storageTitle {
   font-size: var(--font-lg);
   font-weight: var(--font-semibold);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .storageContent {
@@ -183,23 +183,23 @@
   display: flex;
   justify-content: space-between;
   font-size: var(--font-sm);
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .storageValue {
-  color: #111827;
+  color: var(--text-primary);
   font-weight: var(--font-medium);
 }
 
 .storageBar {
   width: 100%;
-  background-color: #e5e7eb;
+  background-color: var(--border);
   border-radius: 9999px;
   height: 0.625rem;
 }
 
 .storageBarFill {
-  background-color: #9333ea;
+  background-color: var(--primary);
   height: 0.625rem;
   border-radius: 9999px;
   transition: width 0.3s ease;
@@ -207,7 +207,7 @@
 
 .storageSeparator {
   margin: var(--spacing-md) 0;
-  background-color: #e5e7eb;
+  background-color: var(--border);
 }
 
 .storageBreakdown {
@@ -225,7 +225,7 @@
 .storageItemLabel {
   display: flex;
   align-items: center;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .storageDot {
@@ -240,7 +240,7 @@
 }
 
 .storageDotPurple {
-  background-color: #9333ea;
+  background-color: var(--primary);
 }
 
 .storageDotGreen {
@@ -253,7 +253,7 @@
 
 .storageItemValue {
   font-weight: var(--font-medium);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .mainContent {
@@ -268,14 +268,14 @@
 }
 
 .materialsCard {
-  border: 1px solid #93c5fd;
-  background-color: #dbeafe;
-  color: #1f2937;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--card-foreground);
 }
 
 .materialsHeader {
   padding: var(--spacing-md) var(--spacing-lg);
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .materialsHeaderContent {
@@ -304,7 +304,7 @@
   top: 0.625rem;
   height: 1rem;
   width: 1rem;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .materialsSearchInput {
@@ -320,12 +320,12 @@
   height: 1.75rem;
   width: 1.75rem;
   padding: 0;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .clearSearchButton:hover {
-  background-color: #f3f4f6;
-  color: #111827;
+  background-color: var(--theme-muted);
+  color: var(--text-primary);
 }
 
 .clearSearchIcon {
@@ -349,7 +349,7 @@
 .sortIcon {
   height: 1rem;
   width: 1rem;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .sortSelect {
@@ -358,14 +358,14 @@
 
 .sortOrderButton {
   min-width: 2rem;
-  color: #1f2937;
-  border-color: #d1d5db;
+  color: var(--text-primary);
+  border-color: var(--border);
   font-weight: var(--font-semibold);
 }
 
 .sortOrderButton:hover {
-  background-color: #f9fafb;
-  color: #9333ea;
+  background-color: var(--theme-muted);
+  color: var(--primary);
 }
 
 .mobileFilter {
@@ -381,13 +381,13 @@
 .filterButton {
   display: flex;
   align-items: center;
-  color: #111827;
-  border-color: #d1d5db;
+  color: var(--text-primary);
+  border-color: var(--border);
 }
 
 .filterButton:hover {
-  background-color: #f9fafb;
-  color: #9333ea;
+  background-color: var(--theme-muted);
+  color: var(--primary);
 }
 
 .filterIcon {
@@ -399,25 +399,25 @@
 .viewToggle {
   display: flex;
   border-radius: var(--radius-md);
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   overflow: hidden;
-  background-color: #ffffff;
+  background-color: var(--card);
 }
 
 .viewButton {
   border-radius: 0;
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .viewButton:hover {
-  background-color: #f9fafb;
-  color: #9333ea;
+  background-color: var(--theme-muted);
+  color: var(--primary);
 }
 
 .viewButtonLeft {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
-  border-right: 1px solid #d1d5db;
+  border-right: 1px solid var(--border);
 }
 
 .viewButtonRight {
@@ -444,7 +444,7 @@
 }
 
 .emptyStateIcon {
-  background-color: #dbeafe;
+  background-color: var(--primary-light);
   border-radius: var(--radius-full);
   padding: var(--spacing-md);
   margin-bottom: var(--spacing-md);
@@ -453,18 +453,18 @@
 .emptyIcon {
   height: 2rem;
   width: 2rem;
-  color: #9333ea;
+  color: var(--primary);
 }
 
 .emptyStateTitle {
   font-size: var(--font-lg);
   font-weight: var(--font-semibold);
-  color: #111827;
+  color: var(--text-primary);
   margin-bottom: var(--spacing-sm);
 }
 
 .emptyStateDescription {
-  color: #6b7280;
+  color: var(--text-muted);
   margin-bottom: var(--spacing-lg);
   max-width: 24rem;
 }
@@ -499,8 +499,8 @@
 }
 
 .materialCard {
-  border: 1px solid #e5e7eb;
-  background-color: #ffffff;
+  border: 1px solid var(--border);
+  background-color: var(--card);
   border-radius: var(--radius-lg);
   overflow: hidden;
   transition: all 0.2s;
@@ -509,7 +509,7 @@
 
 .materialCard:hover {
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  border-color: #93c5fd;
+  border-color: var(--primary);
 }
 
 .materialCardHeader {
@@ -553,8 +553,8 @@
 }
 
 .categoryPurple {
-  color: #9333ea;
-  background-color: #dbeafe;
+  color: var(--primary);
+  background-color: var(--primary-light);
 }
 
 .categoryGreen {
@@ -563,21 +563,21 @@
 }
 
 .categoryOrange {
-  color: #9333ea;
-  background-color: #dbeafe;
+  color: var(--primary);
+  background-color: var(--primary-light);
 }
 
 .categoryGray {
-  color: #4b5563;
-  background-color: #f3f4f6;
+  color: var(--text-muted);
+  background-color: var(--theme-muted);
 }
 
 .recentBadge {
   position: absolute;
   top: var(--spacing-xs);
   right: var(--spacing-xs);
-  background-color: #9333ea;
-  color: #ffffff;
+  background-color: var(--primary);
+  color: var(--primary-foreground);
   font-size: var(--font-xs);
   font-weight: var(--font-medium);
   padding: 0.25rem 0.5rem;
@@ -585,8 +585,8 @@
 }
 
 .recentListBadge {
-  background-color: #dbeafe;
-  color: #6b21a8;
+  background-color: var(--primary-light);
+  color: var(--primary);
   font-size: var(--font-xs);
   margin-left: var(--spacing-xs);
 }
@@ -595,9 +595,9 @@
   position: absolute;
   bottom: var(--spacing-xs);
   right: var(--spacing-xs);
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: color-mix(in srgb, var(--card) 90%, transparent);
   backdrop-filter: blur(4px);
-  color: #111827;
+  color: var(--text-primary);
   height: 2rem;
   width: 2rem;
   padding: 0;
@@ -610,8 +610,8 @@
 }
 
 .previewButton:hover {
-  background-color: #ffffff;
-  color: #9333ea;
+  background-color: var(--card);
+  color: var(--primary);
 }
 
 .previewButtonIcon {
@@ -633,7 +633,7 @@
 
 .materialTitle {
   font-weight: var(--font-medium);
-  color: #111827;
+  color: var(--text-primary);
   font-size: var(--font-base);
   flex: 1;
   line-height: 1.4;
@@ -644,12 +644,12 @@
   width: 2rem;
   padding: 0;
   flex-shrink: 0;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .materialMenuButton:hover {
-  background-color: #f9fafb;
-  color: #111827;
+  background-color: var(--theme-muted);
+  color: var(--text-primary);
 }
 
 .materialMenuIcon {
@@ -659,7 +659,7 @@
 
 .materialDescription {
   font-size: var(--font-sm);
-  color: #6b7280;
+  color: var(--text-muted);
   margin-bottom: var(--spacing-sm);
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -680,7 +680,7 @@
   align-items: center;
   gap: var(--spacing-xs);
   font-size: var(--font-xs);
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .materialCardMetaIcon {
@@ -712,12 +712,12 @@
   height: 2rem;
   width: 2rem;
   padding: 0;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .materialLinkButton:hover {
-  background-color: #f9fafb;
-  color: #9333ea;
+  background-color: var(--theme-muted);
+  color: var(--primary);
 }
 
 .materialLinkIcon {
@@ -732,8 +732,8 @@
 }
 
 .materialListItem {
-  border: 1px solid #e5e7eb;
-  background-color: #ffffff;
+  border: 1px solid var(--border);
+  background-color: var(--card);
   border-radius: var(--radius-lg);
   padding: var(--spacing-md);
   transition: all 0.2s;
@@ -744,7 +744,7 @@
 
 .materialListItem:hover {
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  border-color: #93c5fd;
+  border-color: var(--primary);
 }
 
 .materialListIcon {
@@ -771,13 +771,13 @@
 
 .materialListTitle {
   font-weight: var(--font-medium);
-  color: #111827;
+  color: var(--text-primary);
   font-size: var(--font-base);
 }
 
 .materialListDescription {
   font-size: var(--font-sm);
-  color: #6b7280;
+  color: var(--text-muted);
   margin-bottom: var(--spacing-xs);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -795,7 +795,7 @@
   align-items: center;
   gap: var(--spacing-xs);
   font-size: var(--font-xs);
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .materialListMetaIcon {
@@ -818,12 +818,12 @@
   height: 2rem;
   width: 2rem;
   padding: 0;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .materialListButton:hover {
-  background-color: #f9fafb;
-  color: #9333ea;
+  background-color: var(--theme-muted);
+  color: var(--primary);
 }
 
 .materialListButtonIcon {
@@ -854,7 +854,7 @@
 }
 
 .previewTitle {
-  color: #111827;
+  color: var(--text-primary);
   font-size: var(--font-xl);
   font-weight: var(--font-semibold);
 }
@@ -873,7 +873,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f9fafb;
+  background-color: var(--theme-muted);
   border-radius: var(--radius-md);
   padding: var(--spacing-md);
   min-height: 20rem;
@@ -905,7 +905,7 @@
   width: 100%;
   height: 50vh;
   position: relative;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: var(--radius-md);
   overflow: hidden;
 }
@@ -927,23 +927,23 @@
   align-items: center;
   justify-content: center;
   gap: var(--spacing-md);
-  background-color: #f9fafb;
+  background-color: var(--theme-muted);
 }
 
 .previewPDFIcon {
   height: 3rem;
   width: 3rem;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .previewPDFButton {
-  color: #111827;
-  border-color: #d1d5db;
+  color: var(--text-primary);
+  border-color: var(--border);
 }
 
 .previewPDFButton:hover {
-  background-color: #f9fafb;
-  color: #9333ea;
+  background-color: var(--theme-muted);
+  color: var(--primary);
 }
 
 .previewLinkContainer {
@@ -953,31 +953,31 @@
   justify-content: center;
   gap: var(--spacing-md);
   padding: var(--spacing-lg);
-  background-color: #f9fafb;
+  background-color: var(--theme-muted);
   border-radius: var(--radius-md);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
 }
 
 .previewLinkIcon {
   height: 3rem;
   width: 3rem;
-  color: #9333ea;
+  color: var(--primary);
 }
 
 .previewLinkText {
-  color: #6b7280;
+  color: var(--text-muted);
   word-break: break-all;
   text-align: center;
 }
 
 .previewLinkButton {
-  color: #111827;
-  border-color: #d1d5db;
+  color: var(--text-primary);
+  border-color: var(--border);
 }
 
 .previewLinkButton:hover {
-  background-color: #f9fafb;
-  color: #9333ea;
+  background-color: var(--theme-muted);
+  color: var(--primary);
 }
 
 .previewDocumentContainer {
@@ -987,40 +987,40 @@
   justify-content: center;
   gap: var(--spacing-md);
   padding: var(--spacing-lg);
-  background-color: #f9fafb;
+  background-color: var(--theme-muted);
   border-radius: var(--radius-md);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   min-height: 20rem;
 }
 
 .previewDocumentIcon {
   height: 3rem;
   width: 3rem;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .previewDocumentText {
-  color: #6b7280;
+  color: var(--text-muted);
   text-align: center;
 }
 
 .previewDescription {
   padding: var(--spacing-md);
-  background-color: #f9fafb;
+  background-color: var(--theme-muted);
   border-radius: var(--radius-md);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
 }
 
 .previewDescriptionLabel {
   font-size: var(--font-sm);
   font-weight: var(--font-medium);
-  color: #111827;
+  color: var(--text-primary);
   margin-bottom: var(--spacing-xs);
 }
 
 .previewDescriptionText {
   font-size: var(--font-sm);
-  color: #6b7280;
+  color: var(--text-muted);
   line-height: 1.6;
 }
 
@@ -1029,9 +1029,9 @@
   flex-direction: column;
   gap: var(--spacing-sm);
   padding: var(--spacing-md);
-  background-color: #f9fafb;
+  background-color: var(--theme-muted);
   border-radius: var(--radius-md);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
 }
 
 .previewMetadataItem {
@@ -1042,12 +1042,12 @@
 }
 
 .previewMetadataLabel {
-  color: #6b7280;
+  color: var(--text-muted);
   font-weight: var(--font-medium);
 }
 
 .previewMetadataValue {
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .previewBadge {
@@ -1059,7 +1059,7 @@
   gap: var(--spacing-sm);
   flex-wrap: wrap;
   padding-top: var(--spacing-md);
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--border);
 }
 
 .previewActionIcon {

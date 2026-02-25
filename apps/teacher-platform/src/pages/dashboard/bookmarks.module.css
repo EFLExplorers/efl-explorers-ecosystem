@@ -26,11 +26,11 @@
 .title {
   font-size: var(--font-2xl);
   font-weight: var(--font-bold);
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .subtitle {
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .headerActions {
@@ -48,13 +48,13 @@
 .newFolderButton {
   display: flex;
   align-items: center;
-  color: #111827;
-  border-color: #d1d5db;
+  color: var(--text-primary);
+  border-color: var(--border);
 }
 
 .newFolderButton:hover {
-  background-color: #f9fafb;
-  color: #9333ea;
+  background-color: var(--theme-muted);
+  color: var(--primary);
 }
 
 .addButton {
@@ -99,20 +99,20 @@
 }
 
 .foldersCard {
-  border: 1px solid #93c5fd;
-  background-color: #dbeafe;
-  color: #1f2937;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--card-foreground);
 }
 
 .foldersHeader {
   padding: var(--spacing-md) var(--spacing-lg);
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .foldersTitle {
   font-size: var(--font-lg);
   font-weight: var(--font-semibold);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .foldersContent {
@@ -129,24 +129,24 @@
   justify-content: flex-start;
   border-radius: 0;
   padding: var(--spacing-md) var(--spacing-lg);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .folderButton:hover {
-  background-color: #dbeafe;
-  color: #111827;
+  background-color: var(--theme-muted);
+  color: var(--text-primary);
 }
 
 .folderButtonActive {
-  background-color: #dbeafe;
-  color: #111827;
+  background-color: color-mix(in srgb, var(--primary) 15%, var(--card));
+  color: var(--text-primary);
 }
 
 .folderIcon {
   height: 1rem;
   width: 1rem;
   margin-right: var(--spacing-md);
-  color: #9333ea;
+  color: var(--primary);
 }
 
 .folderName {
@@ -166,13 +166,13 @@
   width: 100%;
   display: flex;
   align-items: center;
-  color: #111827;
-  border-color: #d1d5db;
+  color: var(--text-primary);
+  border-color: var(--border);
 }
 
 .starredButton:hover {
-  background-color: #f9fafb;
-  color: #9333ea;
+  background-color: var(--theme-muted);
+  color: var(--primary);
 }
 
 .starredIcon {
@@ -197,14 +197,14 @@
 }
 
 .bookmarksCard {
-  border: 1px solid #93c5fd;
-  background-color: #dbeafe;
-  color: #1f2937;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--card-foreground);
 }
 
 .bookmarksHeader {
   padding: var(--spacing-md) var(--spacing-lg);
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .bookmarksHeaderContent {
@@ -233,7 +233,7 @@
   top: 0.625rem;
   height: 1rem;
   width: 1rem;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .bookmarksSearchInput {
@@ -249,12 +249,12 @@
   height: 1.75rem;
   width: 1.75rem;
   padding: 0;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .clearSearchButton:hover {
-  background-color: #f3f4f6;
-  color: #111827;
+  background-color: var(--theme-muted);
+  color: var(--text-primary);
 }
 
 .clearSearchIcon {
@@ -265,25 +265,25 @@
 .viewToggle {
   display: flex;
   border-radius: var(--radius-md);
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   overflow: hidden;
-  background-color: #ffffff;
+  background-color: var(--card);
 }
 
 .viewButton {
   border-radius: 0;
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .viewButton:hover {
-  background-color: #f9fafb;
-  color: #9333ea;
+  background-color: var(--theme-muted);
+  color: var(--primary);
 }
 
 .viewButtonLeft {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
-  border-right: 1px solid #d1d5db;
+  border-right: 1px solid var(--border);
 }
 
 .viewButtonRight {
@@ -310,7 +310,7 @@
 }
 
 .emptyStateIcon {
-  background-color: #dbeafe;
+  background-color: var(--primary-light);
   border-radius: var(--radius-full);
   padding: var(--spacing-md);
   margin-bottom: var(--spacing-md);
@@ -319,18 +319,18 @@
 .emptyIcon {
   height: 2rem;
   width: 2rem;
-  color: #9333ea;
+  color: var(--primary);
 }
 
 .emptyStateTitle {
   font-size: var(--font-lg);
   font-weight: var(--font-semibold);
-  color: #111827;
+  color: var(--text-primary);
   margin-bottom: var(--spacing-sm);
 }
 
 .emptyStateDescription {
-  color: #6b7280;
+  color: var(--text-muted);
   margin-bottom: var(--spacing-lg);
   max-width: 24rem;
 }
@@ -365,8 +365,8 @@
 }
 
 .bookmarkCard {
-  border: 1px solid #e5e7eb;
-  background-color: #ffffff;
+  border: 1px solid var(--border);
+  background-color: var(--card);
   border-radius: var(--radius-lg);
   overflow: hidden;
   transition: box-shadow 0.2s;
@@ -374,7 +374,7 @@
 
 .bookmarkCard:hover {
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  border-color: #93c5fd;
+  border-color: var(--primary);
 }
 
 .bookmarkCardHeader {
@@ -382,7 +382,7 @@
 }
 
 .folderPrimary {
-  background-color: #9333ea;
+  background-color: var(--primary);
 }
 
 .folderBlue {
@@ -390,7 +390,7 @@
 }
 
 .folderPurple {
-  background-color: #9333ea;
+  background-color: var(--primary);
 }
 
 .folderGreen {
@@ -398,7 +398,7 @@
 }
 
 .folderGray {
-  background-color: #6b7280;
+  background-color: var(--text-muted);
 }
 
 .bookmarkCardContent {
@@ -414,7 +414,7 @@
 
 .bookmarkTitle {
   font-weight: var(--font-medium);
-  color: #111827;
+  color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -425,11 +425,11 @@
   height: 2rem;
   width: 2rem;
   padding: 0;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .starButton:hover {
-  background-color: #f9fafb;
+  background-color: var(--theme-muted);
   color: #eab308;
 }
 
@@ -446,7 +446,7 @@
 
 .bookmarkUrl {
   font-size: var(--font-sm);
-  color: #6b7280;
+  color: var(--text-muted);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -457,7 +457,7 @@
 }
 
 .bookmarkUrl:hover {
-  color: #9333ea;
+  color: var(--primary);
 }
 
 .bookmarkUrlIcon {
@@ -482,12 +482,12 @@
   height: 2rem;
   width: 2rem;
   padding: 0;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .bookmarkMenuButton:hover {
-  background-color: #f9fafb;
-  color: #111827;
+  background-color: var(--theme-muted);
+  color: var(--text-primary);
 }
 
 .bookmarkMenuIcon {
@@ -502,8 +502,8 @@
 }
 
 .bookmarkListItem {
-  border: 1px solid #e5e7eb;
-  background-color: #ffffff;
+  border: 1px solid var(--border);
+  background-color: var(--card);
   border-radius: var(--radius-lg);
   padding: var(--spacing-md);
   transition: box-shadow 0.2s;
@@ -513,19 +513,19 @@
 
 .bookmarkListItem:hover {
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  border-color: #93c5fd;
+  border-color: var(--primary);
 }
 
 .listStarButton {
   height: 2rem;
   width: 2rem;
   padding: 0;
-  color: #6b7280;
+  color: var(--text-muted);
   margin-right: var(--spacing-md);
 }
 
 .listStarButton:hover {
-  background-color: #f9fafb;
+  background-color: var(--theme-muted);
   color: #eab308;
 }
 
@@ -536,7 +536,7 @@
 
 .bookmarkListTitle {
   font-weight: var(--font-medium);
-  color: #111827;
+  color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -544,7 +544,7 @@
 
 .bookmarkListUrl {
   font-size: var(--font-sm);
-  color: #6b7280;
+  color: var(--text-muted);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -554,7 +554,7 @@
 }
 
 .bookmarkListUrl:hover {
-  color: #9333ea;
+  color: var(--primary);
 }
 
 .bookmarkListUrlIcon {
@@ -580,12 +580,12 @@
   height: 2rem;
   width: 2rem;
   padding: 0;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .bookmarkListMenuButton:hover {
-  background-color: #f9fafb;
-  color: #111827;
+  background-color: var(--theme-muted);
+  color: var(--text-primary);
 }
 
 .bookmarkListMenuIcon {

@@ -26,11 +26,11 @@
 .title {
   font-size: var(--font-2xl);
   font-weight: var(--font-bold);
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .subtitle {
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .tabs {
@@ -68,14 +68,14 @@
 }
 
 .conversationsCard {
-  border: 1px solid #93c5fd;
-  background-color: #dbeafe;
-  color: #1f2937;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--card-foreground);
 }
 
 .conversationsHeader {
   padding: var(--spacing-md) var(--spacing-lg);
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .searchWrapper {
@@ -88,7 +88,7 @@
   top: 0.625rem;
   height: 1rem;
   width: 1rem;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .searchInput {
@@ -105,7 +105,7 @@
 .emptyState {
   padding: 2.5rem 0;
   text-align: center;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .conversationsList {
@@ -114,7 +114,7 @@
 }
 
 .conversationsList > *:not(:last-child) {
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .conversationItem {
@@ -124,11 +124,11 @@
 }
 
 .conversationItem:hover {
-  background-color: #f9fafb;
+  background-color: var(--theme-muted);
 }
 
 .conversationItemActive {
-  background-color: #dbeafe;
+  background-color: color-mix(in srgb, var(--primary) 15%, var(--card));
 }
 
 .conversationContent {
@@ -143,8 +143,8 @@
 }
 
 .avatarFallback {
-  background-color: #dbeafe;
-  color: #6b21a8;
+  background-color: var(--primary-light);
+  color: var(--primary);
 }
 
 .conversationInfo {
@@ -160,7 +160,7 @@
 
 .conversationName {
   font-weight: var(--font-medium);
-  color: #111827;
+  color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -168,12 +168,12 @@
 
 .conversationTime {
   font-size: var(--font-xs);
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .conversationPreview {
   font-size: var(--font-sm);
-  color: #6b7280;
+  color: var(--text-muted);
   margin-top: var(--spacing-xs);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -191,9 +191,9 @@
 }
 
 .chatCard {
-  border: 1px solid #93c5fd;
-  background-color: #dbeafe;
-  color: #1f2937;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--card-foreground);
 }
 
 @media (min-width: 1024px) {
@@ -204,7 +204,7 @@
 
 .chatHeader {
   padding: var(--spacing-md) var(--spacing-lg);
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .chatHeaderContent {
@@ -220,12 +220,12 @@
 
 .chatName {
   font-weight: var(--font-medium);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .chatRole {
   font-size: var(--font-xs);
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .chatContent {
@@ -259,14 +259,14 @@
 }
 
 .messageBubbleSent {
-  background-color: #ffffff;
-  color: #111827;
-  border: 1px solid #e5e7eb;
+  background-color: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
 }
 
 .messageBubbleReceived {
-  background-color: #dbeafe;
-  color: #111827;
+  background-color: color-mix(in srgb, var(--primary) 15%, var(--card));
+  color: var(--text-primary);
 }
 
 .messageTime {
@@ -275,16 +275,16 @@
 }
 
 .messageTimeSent {
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .messageTimeReceived {
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .chatFooter {
   padding: var(--spacing-md);
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--border);
 }
 
 .messageInputWrapper {
@@ -322,7 +322,7 @@
 }
 
 .emptyChatIcon {
-  background-color: #f3f4f6;
+  background-color: var(--theme-muted);
   border-radius: var(--radius-full);
   padding: var(--spacing-md);
   margin-bottom: var(--spacing-md);
@@ -331,18 +331,18 @@
 .emptyIcon {
   height: 2rem;
   width: 2rem;
-  color: #9ca3af;
+  color: var(--text-muted);
 }
 
 .emptyChatTitle {
   font-size: var(--font-lg);
   font-weight: var(--font-medium);
-  color: #111827;
+  color: var(--text-primary);
   margin-bottom: var(--spacing-sm);
 }
 
 .emptyChatText {
-  color: #6b7280;
+  color: var(--text-muted);
   text-align: center;
   max-width: 28rem;
 }
@@ -371,20 +371,20 @@
 }
 
 .announcementsCard {
-  border: 1px solid #93c5fd;
-  background-color: #dbeafe;
-  color: #1f2937;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--card-foreground);
 }
 
 .announcementsHeader {
   padding: var(--spacing-md) var(--spacing-lg);
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .announcementsTitle {
   font-size: var(--font-lg);
   font-weight: var(--font-semibold);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .announcementsContent {
@@ -397,7 +397,7 @@
 }
 
 .announcementsListItems > *:not(:last-child) {
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .announcementItem {
@@ -413,18 +413,18 @@
 .announcementTime {
   margin-left: auto;
   font-size: var(--font-xs);
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .announcementItemTitle {
   font-size: var(--font-lg);
   font-weight: var(--font-medium);
-  color: #111827;
+  color: var(--text-primary);
   margin-bottom: var(--spacing-sm);
 }
 
 .announcementItemContent {
-  color: #4b5563;
+  color: var(--text-muted);
 }
 
 .announcementActions {
@@ -436,7 +436,7 @@
 
 .announcementAuthor {
   font-size: var(--font-sm);
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .announcementButtons {
@@ -471,12 +471,12 @@
 }
 
 .badgeGeneral {
-  background-color: #dbeafe;
-  color: #1e40af;
+  background-color: var(--primary-light);
+  color: var(--primary);
 }
 
 .badgeGeneral:hover {
-  background-color: #dbeafe;
+  background-color: var(--primary-light);
 }
 
 .createAnnouncement {
@@ -485,14 +485,14 @@
 }
 
 .createCard {
-  border: 1px solid #93c5fd;
-  background-color: #dbeafe;
-  color: #1f2937;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--card-foreground);
 }
 
 .createHeader {
   padding: var(--spacing-md) var(--spacing-lg);
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .createHeaderContent {
@@ -504,13 +504,13 @@
   height: 1.25rem;
   width: 1.25rem;
   margin-right: var(--spacing-sm);
-  color: #9333ea;
+  color: var(--primary);
 }
 
 .createTitle {
   font-size: var(--font-lg);
   font-weight: var(--font-semibold);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .createContent {
@@ -533,11 +533,11 @@
   display: block;
   font-size: var(--font-sm);
   font-weight: var(--font-medium);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .formLabel + * {
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .formSubmit {
@@ -556,14 +556,14 @@
 }
 
 .settingsCard {
-  border: 1px solid #93c5fd;
-  background-color: #dbeafe;
-  color: #1f2937;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--card-foreground);
 }
 
 .settingsHeader {
   padding: var(--spacing-md) var(--spacing-lg);
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .settingsHeaderContent {
@@ -575,13 +575,13 @@
   height: 1.25rem;
   width: 1.25rem;
   margin-right: var(--spacing-sm);
-  color: #9333ea;
+  color: var(--primary);
 }
 
 .settingsTitle {
   font-size: var(--font-lg);
   font-weight: var(--font-semibold);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .settingsContent {
@@ -601,7 +601,7 @@
 .settingsSectionTitle {
   font-size: var(--font-base);
   font-weight: var(--font-medium);
-  color: #111827;
+  color: var(--text-primary);
   margin-bottom: var(--spacing-md);
 }
 
@@ -618,7 +618,7 @@
 }
 
 .settingLabel {
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .switch {
@@ -645,7 +645,7 @@
   display: inline-block;
   width: 2.75rem;
   height: 1.5rem;
-  background-color: #e5e7eb;
+  background-color: var(--border);
   border-radius: 9999px;
   transition: var(--transition-colors);
 }
@@ -657,8 +657,8 @@
   left: 0.125rem;
   width: 1.25rem;
   height: 1.25rem;
-  background-color: #ffffff;
-  border: 1px solid #d1d5db;
+  background-color: var(--card);
+  border: 1px solid var(--border);
   border-radius: 9999px;
   transition: transform 0.2s;
 }
@@ -691,7 +691,7 @@
 .settingsFooter {
   margin-top: 2rem;
   padding-top: var(--spacing-md);
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--border);
 }
 
 .saveButton {

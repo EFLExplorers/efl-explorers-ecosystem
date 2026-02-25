@@ -26,11 +26,11 @@
 .title {
   font-size: var(--font-2xl);
   font-weight: var(--font-bold);
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .subtitle {
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .headerActions {
@@ -47,14 +47,14 @@
 }
 
 .todayButton {
-  background-color: #f3f4f6;
-  color: #111827;
-  border-color: #d1d5db;
+  background-color: var(--theme-muted);
+  color: var(--text-primary);
+  border-color: var(--border);
 }
 
 .todayButton:hover {
-  background-color: #e5e7eb;
-  color: #111827;
+  background-color: var(--border);
+  color: var(--text-primary);
 }
 
 .navigationButtons {
@@ -65,14 +65,14 @@
 
 .navButton {
   border-radius: 0;
-  background-color: #f3f4f6;
-  color: #111827;
-  border-color: #d1d5db;
+  background-color: var(--theme-muted);
+  color: var(--text-primary);
+  border-color: var(--border);
 }
 
 .navButton:hover {
-  background-color: #e5e7eb;
-  color: #111827;
+  background-color: var(--border);
+  color: var(--text-primary);
 }
 
 .navButton:first-child {
@@ -114,9 +114,9 @@
 }
 
 .calendarCard {
-  border: 1px solid #93c5fd;
-  background-color: #dbeafe;
-  color: #1f2937;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--card-foreground);
 }
 
 .calendarHeader {
@@ -125,13 +125,13 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--spacing-md) var(--spacing-lg);
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .calendarTitle {
   font-size: var(--font-lg);
   font-weight: var(--font-semibold);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .viewButtons {
@@ -143,19 +143,19 @@
 .viewButton {
   display: flex;
   align-items: center;
-  color: #111827;
-  background-color: #ffffff;
-  border-color: #d1d5db;
+  color: var(--text-primary);
+  background-color: var(--card);
+  border-color: var(--border);
 }
 
 .viewButton:hover {
-  background-color: #f9fafb;
-  color: #111827;
+  background-color: var(--theme-muted);
+  color: var(--text-primary);
 }
 
 .viewButtonActive {
-  background-color: #dbeafe;
-  color: #111827;
+  background-color: color-mix(in srgb, var(--primary) 15%, var(--card));
+  color: var(--text-primary);
 }
 
 .viewIcon {
@@ -171,7 +171,7 @@
 .weekDaysHeader {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .weekDay {
@@ -179,7 +179,7 @@
   text-align: center;
   font-size: var(--font-sm);
   font-weight: var(--font-medium);
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .calendarGrid {
@@ -196,17 +196,17 @@
 .calendarCell {
   min-height: 7.5rem;
   padding: var(--spacing-sm);
-  border: 1px solid #e5e7eb;
-  background-color: #ffffff;
+  border: 1px solid var(--border);
+  background-color: var(--card);
 }
 
 .calendarCellOtherMonth {
-  background-color: #f9fafb;
-  color: #9ca3af;
+  background-color: var(--theme-muted);
+  color: var(--text-muted);
 }
 
 .calendarCellToday {
-  background-color: #dbeafe;
+  background-color: color-mix(in srgb, var(--primary) 15%, var(--card));
   font-weight: var(--font-semibold);
 }
 
@@ -221,7 +221,7 @@
 }
 
 .cellDateToday {
-  color: #9333ea;
+  color: var(--primary);
 }
 
 .cellBadge {
@@ -248,8 +248,8 @@
 }
 
 .badgePrimary {
-  background-color: #dbeafe;
-  color: #6b21a8;
+  background-color: var(--primary-light);
+  color: var(--primary);
 }
 
 .badgeOrange {
@@ -263,13 +263,13 @@
 }
 
 .badgeBlue {
-  background-color: #dbeafe;
-  color: #1e40af;
+  background-color: var(--primary-light);
+  color: var(--primary);
 }
 
 .moreEvents {
   font-size: var(--font-xs);
-  color: #6b7280;
+  color: var(--text-muted);
   text-align: center;
 }
 
@@ -279,25 +279,25 @@
 }
 
 .scheduleCard {
-  border: 1px solid #93c5fd;
-  background-color: #dbeafe;
-  color: #1f2937;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--card-foreground);
 }
 
 .scheduleHeader {
   padding: var(--spacing-md) var(--spacing-lg);
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .scheduleTitle {
   font-size: var(--font-lg);
   font-weight: var(--font-semibold);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .scheduleDate {
   font-size: var(--font-sm);
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .scheduleContent {
@@ -307,13 +307,13 @@
 .loadingState {
   padding: 5rem 0;
   text-align: center;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .emptyState {
   padding: 2.5rem 0;
   text-align: center;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .eventsList {
@@ -322,7 +322,7 @@
 }
 
 .eventsList > *:not(:last-child) {
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .eventItem {
@@ -343,7 +343,7 @@
 }
 
 .dotPrimary {
-  background-color: #9333ea;
+  background-color: var(--primary);
 }
 
 .dotOrange {
@@ -360,11 +360,11 @@
 
 .eventTitle {
   font-weight: var(--font-medium);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .eventDescription {
-  color: #6b7280;
+  color: var(--text-muted);
   font-size: var(--font-sm);
   margin-top: var(--spacing-xs);
 }
@@ -375,7 +375,7 @@
   margin-top: var(--spacing-sm);
   gap: var(--spacing-sm);
   font-size: var(--font-sm);
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 @media (min-width: 640px) {

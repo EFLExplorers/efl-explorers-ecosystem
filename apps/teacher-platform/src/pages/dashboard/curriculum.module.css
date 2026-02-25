@@ -26,12 +26,12 @@
 .title {
   font-size: var(--font-2xl);
   font-weight: var(--font-bold);
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: var(--spacing-xs);
 }
 
 .subtitle {
-  color: #6b7280;
+  color: var(--text-muted);
   font-size: var(--font-base);
 }
 
@@ -81,7 +81,7 @@
   top: 0.625rem;
   height: 1rem;
   width: 1rem;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .searchInput {
@@ -94,7 +94,7 @@
 }
 
 .levelsBorder {
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .levelsList {
@@ -113,16 +113,16 @@
 .levelButton {
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: 0;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .levelButton:hover {
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .levelButtonActive {
-  border-bottom: 2px solid #9333ea;
-  color: #9333ea;
+  border-bottom: 2px solid var(--primary);
+  color: var(--primary);
   font-weight: var(--font-medium);
 }
 
@@ -140,22 +140,22 @@
 .levelTitle {
   font-size: var(--font-xl);
   font-weight: var(--font-bold);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 
 .levelDescription {
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .unitsContainer {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-lg);
-  background-color: #dbeafe;
+  background-color: var(--card);
   border-radius: var(--radius-lg);
-  border: 1px solid #93c5fd;
-  color: #1f2937;
+  border: 1px solid var(--border);
+  color: var(--card-foreground);
 }
 
 .accordion {
@@ -173,11 +173,11 @@
   width: 100%;
   padding: var(--spacing-md);
   transition: var(--transition-colors);
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .unitHeader:hover {
-  background-color: #dbeafe;
+  background-color: var(--theme-muted);
 }
 
 .accordionTrigger {
@@ -188,7 +188,7 @@
 
 .unitTitle {
   font-weight: var(--font-medium);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 
@@ -197,7 +197,7 @@
 }
 
 .unitDescription {
-  color: #6b7280;
+  color: var(--text-muted);
   margin-bottom: var(--spacing-lg);
 }
 
@@ -208,8 +208,8 @@
 }
 
 .lessonCard {
-  border: 1px solid #e5e7eb;
-  background-color: #ffffff;
+  border: 1px solid var(--border);
+  background-color: var(--card);
   border-radius: var(--radius-lg);
   padding: var(--spacing-md);
   transition: var(--transition-all);
@@ -217,13 +217,13 @@
 }
 
 .lessonCard:hover {
-  border-color: #9333ea;
+  border-color: var(--primary);
   box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
 }
 
 .lessonCardSelected {
-  border-color: #9333ea;
-  background-color: #dbeafe;
+  border-color: var(--primary);
+  background-color: color-mix(in srgb, var(--primary) 15%, var(--card));
 }
 
 .lessonCardContent {
@@ -251,18 +251,18 @@
 .checkbox {
   width: 1.25rem;
   height: 1.25rem;
-  border: 2px solid #d1d5db;
+  border: 2px solid var(--border);
   border-radius: var(--radius-sm);
-  background-color: #ffffff;
+  background-color: var(--card);
   transition: var(--transition-colors);
 }
 
 .checkboxSelected {
   width: 1.25rem;
   height: 1.25rem;
-  border: 2px solid #9333ea;
+  border: 2px solid var(--primary);
   border-radius: var(--radius-sm);
-  background-color: #9333ea;
+  background-color: var(--primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -272,25 +272,25 @@
 .checkIcon {
   height: 0.875rem;
   width: 0.875rem;
-  color: #ffffff;
+  color: var(--primary-foreground);
 }
 
 .lessonIcon {
   height: 1.25rem;
   width: 1.25rem;
-  color: #9333ea;
+  color: var(--primary);
   margin-top: 0.125rem;
   flex-shrink: 0;
 }
 
 .lessonTitle {
   font-weight: var(--font-medium);
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .lessonFocus {
   font-size: var(--font-xs);
-  color: #6b7280;
+  color: var(--text-muted);
   margin-top: var(--spacing-xs);
 }
 
@@ -298,7 +298,7 @@
   display: flex;
   align-items: center;
   font-size: var(--font-xs);
-  color: #6b7280;
+  color: var(--text-muted);
   margin-top: var(--spacing-sm);
   gap: var(--spacing-md);
 }
@@ -338,13 +338,13 @@
 }
 
 .badgeBlue {
-  background-color: #dbeafe;
-  color: #1e40af;
+  background-color: var(--primary-light);
+  color: var(--primary);
   font-size: var(--font-xs);
 }
 
 .badgeBlue:hover {
-  background-color: #dbeafe;
+  background-color: var(--primary-light);
 }
 
 .assignIcon {
