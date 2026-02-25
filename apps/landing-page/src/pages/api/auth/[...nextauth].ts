@@ -63,6 +63,7 @@ export const authOptions: NextAuthOptions = {
           name: user.name ?? undefined,
           role: user.role,
           approved: user.approved,
+          subscriptionTier: user.subscriptionTier ?? "free",
           firstName: user.firstName ?? undefined,
           lastName: user.lastName ?? undefined,
         };
@@ -74,6 +75,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.role = user.role;
         token.approved = user.approved;
+        token.subscriptionTier = user.subscriptionTier ?? "free";
         token.firstName = user.firstName ?? null;
         token.lastName = user.lastName ?? null;
       }
@@ -84,6 +86,8 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.sub ?? "";
         session.user.role = token.role ?? "student";
         session.user.approved = Boolean(token.approved);
+        session.user.subscriptionTier =
+          (token.subscriptionTier as "free" | "premium" | undefined) ?? "free";
         session.user.firstName = token.firstName ?? null;
         session.user.lastName = token.lastName ?? null;
       }

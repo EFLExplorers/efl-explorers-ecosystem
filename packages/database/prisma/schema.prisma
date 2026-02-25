@@ -15,6 +15,13 @@ enum UserRole {
   @@schema("auth")
 }
 
+enum SubscriptionTier {
+  free
+  premium
+
+  @@schema("auth")
+}
+
 model User {
   id            String    @id @default(uuid()) @db.Uuid
   name          String?
@@ -24,6 +31,7 @@ model User {
   passwordHash  String?   @map("password_hash")
   role          UserRole  @default(student)
   approved      Boolean   @default(false)
+  subscriptionTier SubscriptionTier @default(free) @map("subscription_tier")
   firstName     String?   @map("first_name")
   lastName      String?   @map("last_name")
   createdAt     DateTime  @default(now()) @map("created_at")

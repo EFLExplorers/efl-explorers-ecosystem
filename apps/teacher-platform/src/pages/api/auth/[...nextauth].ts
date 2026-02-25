@@ -55,6 +55,7 @@ export const authOptions: NextAuthOptions = {
             name: u.name ?? undefined,
             role: u.role,
             approved: u.approved,
+            subscriptionTier: u.subscriptionTier ?? "free",
             firstName: u.firstName ?? undefined,
             lastName: u.lastName ?? undefined,
           };
@@ -68,9 +69,16 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        const u = user as { role?: string; approved?: boolean; firstName?: string; lastName?: string };
+        const u = user as {
+          role?: string;
+          approved?: boolean;
+          subscriptionTier?: string;
+          firstName?: string;
+          lastName?: string;
+        };
         token.role = u.role;
         token.approved = u.approved;
+        token.subscriptionTier = u.subscriptionTier ?? "free";
         token.firstName = u.firstName ?? null;
         token.lastName = u.lastName ?? null;
       }
@@ -81,6 +89,8 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.sub ?? "";
         session.user.role = (token.role as string) ?? "teacher";
         session.user.approved = Boolean(token.approved);
+        session.user.subscriptionTier =
+          (token.subscriptionTier as "free" | "premium" | undefined) ?? "free";
         session.user.firstName = token.firstName as string | null;
         session.user.lastName = token.lastName as string | null;
       }

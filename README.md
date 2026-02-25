@@ -5,6 +5,13 @@ Monorepo for the EFL Explorers apps:
 - `apps/landing-page` (Next.js)
 - `apps/teacher-platform` (Next.js)
 - `packages/database` (Prisma schema + client)
+- `apps/students-platform` (Next.js)
+
+## Documentation
+
+Start with the ecosystem docs index:
+
+- `docs/README.md`
 
 ## Prerequisites
 

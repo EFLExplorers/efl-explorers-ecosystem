@@ -7,6 +7,7 @@ declare module "next-auth" {
       id: string;
       role: UserRole;
       approved: boolean;
+      subscriptionTier?: "free" | "premium";
       firstName?: string | null;
       lastName?: string | null;
     } & DefaultSession["user"];
@@ -15,6 +16,7 @@ declare module "next-auth" {
   interface User {
     role: UserRole;
     approved: boolean;
+    subscriptionTier?: "free" | "premium";
     firstName?: string | null;
     lastName?: string | null;
   }
@@ -24,6 +26,7 @@ declare module "next-auth/jwt" {
   interface JWT {
     role?: UserRole;
     approved?: boolean;
+    subscriptionTier?: "free" | "premium";
     firstName?: string | null;
     lastName?: string | null;
   }

@@ -77,6 +77,7 @@ const getAccountConfig = () => {
           teacherComputedName) ||
         "Teacher",
       approved: true,
+      subscriptionTier: "free",
       loginPath: "/Auth/login/teacher",
       label: "Dev teacher user",
     },
@@ -88,6 +89,7 @@ const getAccountConfig = () => {
       lastName: studentLastName,
       name: (process.env.DEV_STUDENT_NAME ?? studentComputedName) || "Student",
       approved: true,
+      subscriptionTier: "free",
       loginPath: "/Auth/login/student",
       label: "Dev student user",
     },
@@ -113,6 +115,7 @@ async function run() {
         passwordHash,
         role: account.role,
         approved: account.approved,
+        subscriptionTier: account.subscriptionTier,
         firstName: account.firstName,
         lastName: account.lastName,
         name: account.name,
@@ -120,6 +123,7 @@ async function run() {
       update: {
         passwordHash,
         approved: account.approved,
+        subscriptionTier: account.subscriptionTier,
         firstName: account.firstName,
         lastName: account.lastName,
         name: account.name,

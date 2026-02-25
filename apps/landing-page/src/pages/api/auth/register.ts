@@ -49,6 +49,7 @@ export default async function handler(
         passwordHash,
         role: platform,
         approved: platform === "student",
+        subscriptionTier: "free",
         firstName,
         lastName,
         name,
