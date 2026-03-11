@@ -182,12 +182,12 @@
 
 .unreadBadge {
   margin-left: var(--spacing-sm);
-  background-color: #ef4444;
-  color: #ffffff;
+  background-color: var(--destructive);
+  color: var(--destructive-foreground);
 }
 
 .unreadBadge:hover {
-  background-color: #ef4444;
+  background-color: color-mix(in srgb, var(--destructive) 90%, black);
 }
 
 .chatCard {
