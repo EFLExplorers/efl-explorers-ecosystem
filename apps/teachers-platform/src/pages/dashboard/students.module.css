@@ -171,39 +171,39 @@
 }
 
 .badgeGreen {
-  background-color: #dcfce7;
-  color: #166534;
+  background-color: var(--success-soft);
+  color: var(--success-foreground);
 }
 
 .badgeGreen:hover {
-  background-color: #dcfce7;
+  background-color: var(--success-soft);
 }
 
 .badgeBlue {
-  background-color: var(--primary-light);
-  color: var(--primary);
+  background-color: var(--info-soft);
+  color: var(--info-foreground);
 }
 
 .badgeBlue:hover {
-  background-color: var(--primary-light);
+  background-color: var(--info-soft);
 }
 
 .badgeYellow {
-  background-color: #fef3c7;
-  color: #92400e;
+  background-color: var(--warning-soft);
+  color: var(--warning-foreground);
 }
 
 .badgeYellow:hover {
-  background-color: #fef3c7;
+  background-color: var(--warning-soft);
 }
 
 .badgeRed {
-  background-color: #fee2e2;
-  color: #991b1b;
+  background-color: color-mix(in srgb, var(--destructive) 15%, var(--card));
+  color: var(--destructive);
 }
 
 .badgeRed:hover {
-  background-color: #fee2e2;
+  background-color: color-mix(in srgb, var(--destructive) 15%, var(--card));
 }
 
 .pagination {

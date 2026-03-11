@@ -236,7 +236,7 @@
 }
 
 .storageDotBlue {
-  background-color: #3b82f6;
+  background-color: var(--info);
 }
 
 .storageDotPurple {
@@ -244,11 +244,11 @@
 }
 
 .storageDotGreen {
-  background-color: #10b981;
+  background-color: var(--success);
 }
 
 .storageDotGray {
-  background-color: #6b7280;
+  background-color: var(--text-muted);
 }
 
 .storageItemValue {
