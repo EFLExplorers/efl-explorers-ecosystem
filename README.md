@@ -5,7 +5,7 @@ Monorepo for the EFL Explorers apps:
 - `apps/landing-page` (Next.js)
 - `apps/teacher-platform` (Next.js)
 - `packages/database` (Prisma schema + client)
-- `apps/students-platform` (Next.js)
+- `apps/student-platform` (Next.js)
 
 ## Documentation
 
@@ -84,5 +84,5 @@ Or run a single app:
 
 ```bash
 pnpm --filter landing-page dev
-pnpm --filter teachers-platform dev
+pnpm --filter teacher-platform dev
 ```

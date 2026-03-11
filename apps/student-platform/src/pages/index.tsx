@@ -22,7 +22,7 @@ export const StudentsHomePage = () => {
           <ul className={styles.list}>
             <li>Edit this page at `src/pages/index.tsx`</li>
             <li>Add reusable UI in `src/components`</li>
-            <li>Run `pnpm --filter students-platform dev` to start</li>
+            <li>Run `pnpm --filter student-platform dev` to start</li>
           </ul>
         </section>
       </main>

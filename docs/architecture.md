@@ -10,7 +10,7 @@
 
 - `landing-page` — Marketing site + authentication hub (Next.js, port 3000).
 - `teacher-platform` — Teacher dashboard (Next.js, port 3001).
-- `students-platform` — Student platform (Next.js, port 3002).
+- `student-platform` — Student platform (Next.js, port 3002).
 
 ## Shared Packages
 

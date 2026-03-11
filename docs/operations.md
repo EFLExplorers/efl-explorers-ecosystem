@@ -13,8 +13,8 @@
 4. Run apps:
    - `pnpm dev` (all apps)
    - `pnpm --filter landing-page dev`
-   - `pnpm --filter teachers-platform dev`
-   - `pnpm --filter students-platform dev`
+   - `pnpm --filter teacher-platform dev`
+   - `pnpm --filter student-platform dev`
 
 ## Environment Variables
 

@@ -10,7 +10,7 @@ Use it as the navigation map when you are making changes or onboarding.
 | --- | --- | --- | --- | --- | --- |
 | `apps/landing-page` | Marketing site + authentication hub. | `http://localhost:3000`, `/Auth/*`, `/platforms/*` | Auth users + shared content (pages/sections/content items). | Next.js pages, `/api/*` endpoints. | `@repo/database`, `@repo/ui`, NextAuth, Prisma. |
 | `apps/teacher-platform` | Teacher dashboard and workflows. | `http://localhost:3001`, `/dashboard/*`, `/sso` | Teacher domain data (students, lessons, curriculum, materials, tasks, messages). | Next.js pages, `/api/*` endpoints, SSO. | `@repo/database`, `@shared/schema`, NextAuth. |
-| `apps/students-platform` | Student experience (currently boilerplate). | `http://localhost:3002` | None yet (placeholder). | Next.js pages. | Base Next.js stack. |
+| `apps/student-platform` | Student experience (currently boilerplate). | `http://localhost:3002` | None yet (placeholder). | Next.js pages. | Base Next.js stack. |
 | `packages/database` | Prisma schema + shared DB client. | `@repo/database` import. | Auth, shared content, teacher domain schemas. | Prisma client + typed exports. | PostgreSQL, Prisma. |
 | `packages/ui` | Shared UI primitives. | `@repo/ui/*` imports. | None (UI only). | `Button`, `Card`, `Code`. | React. |
 | `packages/eslint-config` | Shared lint rules. | ESLint config extends. | None. | N/A | ESLint. |
