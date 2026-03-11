@@ -2,5 +2,5 @@
 
 ## Docs Index
 
-- `overview.md` — UI overview (boilerplate).
+- `overview.md` — UI shell overview.
 - `pages.md` — Current route list.

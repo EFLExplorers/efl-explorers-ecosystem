@@ -1,0 +1,62 @@
+.grid {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.card {
+  border: 1px solid #e6e9ef;
+  border-radius: 14px;
+  background: #ffffff;
+  padding: 14px;
+}
+
+.label {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #5b6475;
+}
+
+.value {
+  margin: 8px 0 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1d2433;
+}
+
+.panel {
+  margin-top: 14px;
+  border: 1px solid #e6e9ef;
+  border-radius: 14px;
+  background: #ffffff;
+  padding: 16px;
+}
+
+.panelTitle {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.panelText {
+  margin: 8px 0 0;
+  color: #495467;
+  line-height: 1.5;
+}
+
+.statusRow {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.badge {
+  border-radius: 999px;
+  border: 1px solid #d6dbe6;
+  background: #f8f9fc;
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  color: #334155;
+}

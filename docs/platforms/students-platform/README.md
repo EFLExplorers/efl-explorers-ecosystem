@@ -12,3 +12,4 @@ Student experience platform (currently a boilerplate app).
 - `api/README.md`
 - `backend/README.md`
 - `database/README.md`
+- `docs/StudentImplementationLog/README.md` (execution log)

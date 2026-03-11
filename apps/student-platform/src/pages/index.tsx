@@ -1,31 +1,27 @@
 import Head from "next/head";
-import styles from "./home.module.css";
+import { StudentDashboardFlow } from "@/components/student/StudentDashboardFlow";
+import { StudentLayout } from "@/components/student/shell/StudentLayout";
+import { MOCK_STUDENT_PORTAL_DATA } from "@/lib/mock/student-portal-data";
 
 export const StudentsHomePage = () => {
   return (
     <>
       <Head>
-        <title>Students Platform</title>
+        <title>Student Dashboard</title>
         <meta
           name="description"
-          content="Starter boilerplate for the EFL Explorers Students Platform."
+          content="Student dashboard shell aligned with interaction contracts."
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <main className={styles.page}>
-        <section className={styles.card}>
-          <h1 className={styles.title}>Students Platform Boilerplate</h1>
-          <p className={styles.description}>
-            The app is set up with Next.js, TypeScript, ESLint, and CSS
-            modules.
-          </p>
-          <ul className={styles.list}>
-            <li>Edit this page at `src/pages/index.tsx`</li>
-            <li>Add reusable UI in `src/components`</li>
-            <li>Run `pnpm --filter student-platform dev` to start</li>
-          </ul>
-        </section>
-      </main>
+      <StudentLayout
+        title="Dashboard"
+        description="Start your next activity quickly, track progress, and finish delegated tasks."
+        learnerName={MOCK_STUDENT_PORTAL_DATA.student.name}
+        learningMode={MOCK_STUDENT_PORTAL_DATA.student.mode}
+      >
+        <StudentDashboardFlow portalData={MOCK_STUDENT_PORTAL_DATA} />
+      </StudentLayout>
     </>
   );
 };

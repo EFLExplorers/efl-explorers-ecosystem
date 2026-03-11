@@ -1,0 +1,33 @@
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid #e6e9ef;
+  border-radius: 14px;
+  background: #ffffff;
+  padding: 10px;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: #ffffff;
+  color: #293246;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 10px 12px;
+  text-decoration: none;
+}
+
+.link:hover {
+  border-color: #d9e1ef;
+  background: #f4f6fb;
+}
+
+.linkActive {
+  border-color: #1d4ed8;
+  background: #e9efff;
+  color: #12307f;
+}
