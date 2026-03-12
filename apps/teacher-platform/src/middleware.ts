@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { getToken } from "next-auth/jwt";
+import NextAuth from "next-auth";
+import { authConfig } from "@/auth.config";
 import { isPremiumRoute } from "@/lib/entitlements";
 
 const landingBaseUrl = process.env.NEXT_PUBLIC_LANDING_PAGE_URL ?? "";
@@ -14,29 +15,33 @@ const resolveLandingUrl = (path: string, request: NextRequest) => {
   return new URL(path, request.url);
 };
 
-export default async function middleware(request: NextRequest) {
-  const token = await getToken({
-    req: request,
-    secret: process.env.NEXTAUTH_SECRET,
-  });
+const { auth } = NextAuth(authConfig);
 
-  if (!token) {
-    return NextResponse.redirect(resolveLandingUrl(signInPath, request));
+export default auth((req) => {
+  const session = req.auth;
+
+  if (!session?.user) {
+    return NextResponse.redirect(resolveLandingUrl(signInPath, req));
   }
 
-  if (token.role && token.role !== "teacher") {
-    return NextResponse.redirect(resolveLandingUrl(signInPath, request));
+  const role = session.user.role;
+  if (role && role !== "teacher") {
+    return NextResponse.redirect(resolveLandingUrl(signInPath, req));
   }
 
-  const subscriptionTier = (token.subscriptionTier as string | undefined) ?? "free";
-  if (subscriptionTier !== "premium" && isPremiumRoute(request.nextUrl.pathname)) {
+  const subscriptionTier =
+    (session.user.subscriptionTier as string | undefined) ?? "free";
+  if (
+    subscriptionTier !== "premium" &&
+    isPremiumRoute(req.nextUrl.pathname)
+  ) {
     return NextResponse.redirect(
-      resolveLandingUrl(`${pricingPath}?from=teacher`, request)
+      resolveLandingUrl(`${pricingPath}?from=teacher`, req)
     );
   }
 
   return NextResponse.next();
-}
+});
 
 export const config = {
   matcher: [
