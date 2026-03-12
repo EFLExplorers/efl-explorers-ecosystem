@@ -6,6 +6,7 @@ import type { HeaderContent } from "../components/layout/Header-Footer/Header";
 import type { FooterContent } from "../components/layout/Header-Footer/Footer";
 import { SessionProvider } from "next-auth/react";
 import type { Session } from "next-auth";
+import { Analytics } from "@vercel/analytics/react";
 
 type AppPageProps = {
   headerContent?: HeaderContent | null;
@@ -29,6 +30,7 @@ function App({ Component, pageProps }: AppProps<AppPageProps>) {
         >
           <Component {...pageProps} />
         </Layout>
+        <Analytics />
       </SessionProvider>
     </>
   );
