@@ -1,4 +1,4 @@
-# Students Platform
+# Student Platform
 
 Student experience platform (currently a boilerplate app).
 

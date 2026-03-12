@@ -1,4 +1,4 @@
-# Students Platform Routes
+# Student Platform Routes
 
 - `/` — Dashboard shell (`src/pages/index.tsx`)
 - `/lessons` — Lessons shell (`src/pages/lessons.tsx`)

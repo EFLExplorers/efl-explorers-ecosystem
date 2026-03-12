@@ -1,4 +1,4 @@
-# Students Platform UI Overview
+# Student Platform UI Overview
 
 This app now includes a Milestone 2 UI shell using Next.js pages router and CSS
 Modules.

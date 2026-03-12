@@ -1,10 +1,47 @@
 import Head from "next/head";
+import { useMemo } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import pageStyles from "@/components/student/portal-page.module.css";
+import {
+  fetchStudentAssignments,
+  markStudentAssignmentCompleted,
+} from "@/lib/api/student-client";
 import { StudentLayout } from "@/components/student/shell/StudentLayout";
 import { MOCK_STUDENT_PORTAL_DATA } from "@/lib/mock/student-portal-data";
 
 export const AssignmentsPage = () => {
+  const queryClient = useQueryClient();
+  const { data: assignmentsResponse } = useQuery({
+    queryKey: ["/api/student/assignments", "assignments-page"],
+    queryFn: fetchStudentAssignments,
+  });
+
+  const assignments = assignmentsResponse?.data ?? MOCK_STUDENT_PORTAL_DATA.assignments;
+
+  const firstOpenAssignment = useMemo(
+    () => assignments.find((assignment) => assignment.status !== "completed"),
+    [assignments],
+  );
+
+  const completeAssignmentMutation = useMutation({
+    mutationFn: markStudentAssignmentCompleted,
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["/api/student/assignments"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/student/dashboard"] }),
+      ]);
+    },
+  });
+
+  const handleCompleteTopPriority = async () => {
+    if (!firstOpenAssignment) {
+      return;
+    }
+
+    await completeAssignmentMutation.mutateAsync(firstOpenAssignment.id);
+  };
+
   return (
     <>
       <Head>
@@ -27,8 +64,15 @@ export const AssignmentsPage = () => {
               <button type="button" className={pageStyles.buttonPrimary}>
                 Open top priority task
               </button>
-              <button type="button" className={pageStyles.buttonGhost}>
-                Mark homework complete
+              <button
+                type="button"
+                className={pageStyles.buttonGhost}
+                onClick={handleCompleteTopPriority}
+                disabled={!firstOpenAssignment || completeAssignmentMutation.isPending}
+              >
+                {completeAssignmentMutation.isPending
+                  ? "Updating..."
+                  : "Mark homework complete"}
               </button>
             </div>
           </article>
@@ -40,7 +84,7 @@ export const AssignmentsPage = () => {
             </p>
             <p className={pageStyles.meta}>
               {
-                MOCK_STUDENT_PORTAL_DATA.assignments.filter(
+                assignments.filter(
                   (item) => item.status === "due-soon",
                 ).length
               }{" "}
@@ -63,7 +107,7 @@ export const AssignmentsPage = () => {
               <div className={pageStyles.column}>
                 <h3 className={pageStyles.columnTitle}>Due soon</h3>
                 <ul className={pageStyles.list}>
-                  {MOCK_STUDENT_PORTAL_DATA.assignments
+                  {assignments
                     .filter((assignment) => assignment.status === "due-soon")
                     .map((assignment) => (
                       <li key={assignment.id} className={pageStyles.listItem}>
@@ -76,7 +120,7 @@ export const AssignmentsPage = () => {
               <div className={pageStyles.column}>
                 <h3 className={pageStyles.columnTitle}>In progress</h3>
                 <ul className={pageStyles.list}>
-                  {MOCK_STUDENT_PORTAL_DATA.assignments
+                  {assignments
                     .filter((assignment) => assignment.status === "in-progress")
                     .map((assignment) => (
                       <li key={assignment.id} className={pageStyles.listItem}>
@@ -89,7 +133,7 @@ export const AssignmentsPage = () => {
               <div className={pageStyles.column}>
                 <h3 className={pageStyles.columnTitle}>Completed</h3>
                 <ul className={pageStyles.list}>
-                  {MOCK_STUDENT_PORTAL_DATA.assignments
+                  {assignments
                     .filter((assignment) => assignment.status === "completed")
                     .map((assignment) => (
                       <li key={assignment.id} className={pageStyles.listItem}>
@@ -105,13 +149,27 @@ export const AssignmentsPage = () => {
           <article className={`${pageStyles.card} ${pageStyles.full}`}>
             <h2 className={pageStyles.title}>Assignment list</h2>
             <ul className={pageStyles.list}>
-              {MOCK_STUDENT_PORTAL_DATA.assignments.map((assignment) => (
+              {assignments.map((assignment) => (
                 <li key={assignment.id} className={pageStyles.listItem}>
                   <div className={pageStyles.row}>
                     <strong>
                       {assignment.unitLabel}: {assignment.title}
                     </strong>
-                    <span className={pageStyles.badge}>{assignment.status}</span>
+                    <div className={pageStyles.row}>
+                      <span className={pageStyles.badge}>{assignment.status}</span>
+                      {assignment.status !== "completed" ? (
+                        <button
+                          type="button"
+                          className={pageStyles.buttonGhost}
+                          onClick={() =>
+                            completeAssignmentMutation.mutate(assignment.id)
+                          }
+                          disabled={completeAssignmentMutation.isPending}
+                        >
+                          Complete
+                        </button>
+                      ) : null}
+                    </div>
                   </div>
                   <p className={pageStyles.subtle}>
                     {assignment.dueLabel} - Source: {assignment.source}

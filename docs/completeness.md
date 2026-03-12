@@ -18,7 +18,7 @@ platform without assumptions. Each item points to the exact docs that answer it.
 - Routes, UI surface areas, and user-facing screens  
   → `docs/platforms/landing-page/ui/README.md`  
   → `docs/platforms/teacher-platform/ui/README.md`  
-  → `docs/platforms/students-platform/ui/README.md`
+  → `docs/platforms/student-platform/ui/README.md`
 
 ## API Contracts (Requests + Responses)
 
@@ -80,7 +80,7 @@ platform without assumptions. Each item points to the exact docs that answer it.
 ## Current Scope Note
 
 - Student platform is a boilerplate app.  
-  → `docs/platforms/students-platform/README.md`
+  → `docs/platforms/student-platform/README.md`
 
 ## Known Unknowns (Explicitly Not Defined Yet)
 

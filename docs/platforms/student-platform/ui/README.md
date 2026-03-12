@@ -1,4 +1,4 @@
-# Students Platform UI
+# Student Platform UI
 
 ## Docs Index
 

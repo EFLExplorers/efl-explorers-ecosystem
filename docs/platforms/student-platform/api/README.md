@@ -1,4 +1,4 @@
-# Students Platform API
+# Student Platform API
 
 No API routes are implemented yet.
 

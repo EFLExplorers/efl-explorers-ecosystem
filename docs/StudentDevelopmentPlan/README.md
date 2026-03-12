@@ -23,6 +23,7 @@ with landing auth, teacher data boundaries, and the shared database package.
 
 - `ui/README.md`
 - `ui/interaction-contracts.md`
+- `ui/student-page-context.md`
 - `api/README.md`
 - `api/integration-map.md`
 - `backend/README.md`
@@ -32,6 +33,7 @@ with landing auth, teacher data boundaries, and the shared database package.
 - `pipeline/runtime-flow.md`
 - `pipeline/delivery-flow.md`
 - `pipeline/implementation-roadmap.md`
+- `pipeline/student-page-v3-execution-plan.md`
 
 ## Architecture Anchors
 

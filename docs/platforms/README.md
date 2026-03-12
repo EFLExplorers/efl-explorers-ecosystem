@@ -11,7 +11,7 @@ Each platform has its own folder with four focused areas:
 
 - `landing-page/README.md`
 - `teacher-platform/README.md`
-- `students-platform/README.md`
+- `student-platform/README.md`
 
 ## Cross-Platform Indexes
 

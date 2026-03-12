@@ -45,3 +45,9 @@ components consume student-facing APIs safely and consistently.
 - Auth and SSO: `docs/platforms/teacher-platform/backend/sso.md`
 - API index baseline: `docs/platforms/api-index.md`
 - Shared UI package: `packages/ui`
+
+## Additional Planning Docs
+
+- `student-page-context.md` - Consolidated student flow context and v2 UI
+  blueprint, including screen contracts, states, analytics baseline, and
+  delivery framework.

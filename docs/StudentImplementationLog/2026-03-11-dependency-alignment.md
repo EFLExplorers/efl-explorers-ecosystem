@@ -2,7 +2,7 @@
 
 ## Goal
 
-Align `apps/student-platform` dependencies with `apps/teachers-platform` while
+Align `apps/student-platform` dependencies with `apps/teacher-platform` while
 preserving the student platform requirement to use CSS Modules (not Tailwind).
 
 ## Actions Completed

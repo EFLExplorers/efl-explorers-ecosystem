@@ -1,4 +1,4 @@
-# Students Platform Database
+# Student Platform Database
 
 No student domain data is modeled yet.
 

@@ -8,6 +8,8 @@ local development to deployed environments.
 - `runtime-flow.md` - Runtime interactions across UI, API, auth, and database.
 - `delivery-flow.md` - Build/test/release pipeline and environment handling.
 - `implementation-roadmap.md` - Milestone sequencing for delivery.
+- `student-page-v3-execution-plan.md` - Sprint-ready epics, stories, tasks,
+  acceptance criteria, and test cases for student page development.
 
 ## Intended Use
 

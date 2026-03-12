@@ -1,4 +1,4 @@
-# Students Platform Backend
+# Student Platform Backend
 
 No backend logic is implemented yet.
 

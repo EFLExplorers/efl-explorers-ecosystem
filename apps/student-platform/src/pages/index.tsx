@@ -1,9 +1,42 @@
 import Head from "next/head";
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+
 import { StudentDashboardFlow } from "@/components/student/StudentDashboardFlow";
 import { StudentLayout } from "@/components/student/shell/StudentLayout";
+import {
+  fetchStudentAssignments,
+  fetchStudentDashboard,
+} from "@/lib/api/student-client";
 import { MOCK_STUDENT_PORTAL_DATA } from "@/lib/mock/student-portal-data";
 
 export const StudentsHomePage = () => {
+  const { data: assignmentsResponse } = useQuery({
+    queryKey: ["/api/student/assignments", "dashboard-flow"],
+    queryFn: fetchStudentAssignments,
+  });
+  const { data: dashboardResponse } = useQuery({
+    queryKey: ["/api/student/dashboard"],
+    queryFn: fetchStudentDashboard,
+  });
+
+  const portalData = useMemo(() => {
+    if (!assignmentsResponse?.data) {
+      return MOCK_STUDENT_PORTAL_DATA;
+    }
+
+    return {
+      ...MOCK_STUDENT_PORTAL_DATA,
+      assignments: assignmentsResponse.data,
+    };
+  }, [assignmentsResponse?.data]);
+
+  const dueSoonCount = dashboardResponse?.data.assignmentCounts.dueSoon ?? 0;
+  const dashboardDescription =
+    dueSoonCount > 0
+      ? `Start your next activity quickly, then complete ${dueSoonCount} due-soon task(s).`
+      : "Start your next activity quickly, track progress, and finish delegated tasks.";
+
   return (
     <>
       <Head>
@@ -16,11 +49,11 @@ export const StudentsHomePage = () => {
       </Head>
       <StudentLayout
         title="Dashboard"
-        description="Start your next activity quickly, track progress, and finish delegated tasks."
-        learnerName={MOCK_STUDENT_PORTAL_DATA.student.name}
-        learningMode={MOCK_STUDENT_PORTAL_DATA.student.mode}
+        description={dashboardDescription}
+        learnerName={portalData.student.name}
+        learningMode={portalData.student.mode}
       >
-        <StudentDashboardFlow portalData={MOCK_STUDENT_PORTAL_DATA} />
+        <StudentDashboardFlow portalData={portalData} />
       </StudentLayout>
     </>
   );
