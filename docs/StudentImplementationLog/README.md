@@ -17,6 +17,11 @@ from planning docs in `docs/StudentDevelopmentPlan`.
 - `2026-03-11-iterative-dashboard-flow.md`
 - `2026-03-11-student-mock-portal-flow.md`
 - `2026-03-11-ui-max-pass-and-settings.md`
+- `2026-03-12-non-ai-validation-direction.md`
+- `2026-03-12-checkpoint-model-ui-application.md`
+- `2026-03-12-child-friendly-ui-polish.md`
+- `2026-03-12-child-friendly-micro-interactions.md`
+- `2026-03-12-space-palette-alignment.md`
 
 ## Relationship to Existing Docs
 

@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import pageStyles from "@/components/student/portal-page.module.css";
@@ -11,6 +11,7 @@ import { StudentLayout } from "@/components/student/shell/StudentLayout";
 import { MOCK_STUDENT_PORTAL_DATA } from "@/lib/mock/student-portal-data";
 
 export const AssignmentsPage = () => {
+  const [celebrationMessage, setCelebrationMessage] = useState<string | null>(null);
   const queryClient = useQueryClient();
   const { data: assignmentsResponse } = useQuery({
     queryKey: ["/api/student/assignments", "assignments-page"],
@@ -26,13 +27,22 @@ export const AssignmentsPage = () => {
 
   const completeAssignmentMutation = useMutation({
     mutationFn: markStudentAssignmentCompleted,
-    onSuccess: async () => {
+    onSuccess: async (result) => {
+      setCelebrationMessage(`Great job! "${result.data.title}" is now complete.`);
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["/api/student/assignments"] }),
         queryClient.invalidateQueries({ queryKey: ["/api/student/dashboard"] }),
       ]);
     },
   });
+
+  useEffect(() => {
+    if (!celebrationMessage) {
+      return;
+    }
+    const timeoutId = window.setTimeout(() => setCelebrationMessage(null), 3200);
+    return () => window.clearTimeout(timeoutId);
+  }, [celebrationMessage]);
 
   const handleCompleteTopPriority = async () => {
     if (!firstOpenAssignment) {
@@ -45,24 +55,29 @@ export const AssignmentsPage = () => {
   return (
     <>
       <Head>
-        <title>Student Assignments</title>
+        <title>Missions</title>
       </Head>
       <StudentLayout
-        title="Assignments"
-        description="Track delegated tasks from your teacher and home practice from parents."
+        title="Missions"
+        description="Finish your priority missions and earn stars before class."
         learnerName={MOCK_STUDENT_PORTAL_DATA.student.name}
         learningMode={MOCK_STUDENT_PORTAL_DATA.student.mode}
       >
         <section className={pageStyles.grid}>
+          {celebrationMessage ? (
+            <article className={`${pageStyles.celebration} ${pageStyles.full}`} role="status">
+              <p className={pageStyles.celebrationText}>{celebrationMessage}</p>
+            </article>
+          ) : null}
           <article className={`${pageStyles.hero} ${pageStyles.full}`}>
-            <h2 className={pageStyles.heroTitle}>Assigned work center</h2>
+            <h2 className={pageStyles.heroTitle}>Mission center</h2>
             <p className={pageStyles.heroSubtitle}>
-              Complete due tasks before class so your teacher can focus on speaking
-              and feedback time.
+              Finish missions before class so live time can focus on speaking and
+              confidence.
             </p>
             <div className={pageStyles.actions}>
               <button type="button" className={pageStyles.buttonPrimary}>
-                Open top priority task
+                Open priority mission
               </button>
               <button
                 type="button"
@@ -71,8 +86,8 @@ export const AssignmentsPage = () => {
                 disabled={!firstOpenAssignment || completeAssignmentMutation.isPending}
               >
                 {completeAssignmentMutation.isPending
-                  ? "Updating..."
-                  : "Mark homework complete"}
+                  ? "Saving..."
+                  : "Mark mission done"}
               </button>
             </div>
           </article>
@@ -80,7 +95,7 @@ export const AssignmentsPage = () => {
           <article className={pageStyles.card}>
             <h2 className={pageStyles.title}>Due soon</h2>
             <p className={pageStyles.text}>
-              Complete due-soon assignments before your next class.
+              Try to finish these before your next class starts.
             </p>
             <p className={pageStyles.meta}>
               {
@@ -88,12 +103,12 @@ export const AssignmentsPage = () => {
                   (item) => item.status === "due-soon",
                 ).length
               }{" "}
-              assignment(s) due soon
+              mission(s) due soon
             </p>
           </article>
 
           <article className={pageStyles.card}>
-            <h2 className={pageStyles.title}>Teacher support</h2>
+            <h2 className={pageStyles.title}>Coach support</h2>
             <p className={pageStyles.text}>
               {MOCK_STUDENT_PORTAL_DATA.teacher.name} reviews your progress each
               session.
@@ -102,7 +117,7 @@ export const AssignmentsPage = () => {
           </article>
 
           <article className={`${pageStyles.card} ${pageStyles.full}`}>
-            <h2 className={pageStyles.title}>Task board</h2>
+            <h2 className={pageStyles.title}>Mission board</h2>
             <div className={pageStyles.board}>
               <div className={pageStyles.column}>
                 <h3 className={pageStyles.columnTitle}>Due soon</h3>
@@ -147,7 +162,7 @@ export const AssignmentsPage = () => {
           </article>
 
           <article className={`${pageStyles.card} ${pageStyles.full}`}>
-            <h2 className={pageStyles.title}>Assignment list</h2>
+            <h2 className={pageStyles.title}>Mission list</h2>
             <ul className={pageStyles.list}>
               {assignments.map((assignment) => (
                 <li key={assignment.id} className={pageStyles.listItem}>
@@ -166,7 +181,7 @@ export const AssignmentsPage = () => {
                           }
                           disabled={completeAssignmentMutation.isPending}
                         >
-                          Complete
+                          Done
                         </button>
                       ) : null}
                     </div>

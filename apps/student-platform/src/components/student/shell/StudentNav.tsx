@@ -18,7 +18,8 @@ export const StudentNav = () => {
 
         return (
           <Link key={route.href} href={route.href} className={className}>
-            {route.label}
+            <span className={styles.linkLabel}>{route.label}</span>
+            <span className={styles.linkHint}>{route.hint}</span>
           </Link>
         );
       })}

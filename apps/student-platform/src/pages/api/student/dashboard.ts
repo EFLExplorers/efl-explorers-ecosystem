@@ -23,18 +23,77 @@ export const studentDashboardHandler = async (
 
   try {
     const userId = parseUserId(request.query.userId);
-    const tasks = await prisma.task.findMany({
-      where: { userId },
-      orderBy: [{ completed: "asc" }, { dueDate: "asc" }, { createdAt: "desc" }],
-    });
+    const [tasks, nextLesson] = await Promise.all([
+      prisma.task.findMany({
+        where: { userId },
+        orderBy: [{ completed: "asc" }, { dueDate: "asc" }, { createdAt: "desc" }],
+      }),
+      prisma.lesson.findFirst({
+        where: {
+          OR: [{ status: null }, { status: { not: "completed" } }],
+        },
+        orderBy: [{ date: "asc" }, { startTime: "asc" }],
+      }),
+    ]);
 
     const assignments = tasks.map(mapTaskToStudentAssignment);
+    const priorityMission = assignments.find(
+      (item) => item.status === "due-soon" || item.status === "in-progress",
+    );
 
     const dueSoon = assignments.filter((item) => item.status === "due-soon").length;
     const completed = assignments.filter((item) => item.status === "completed").length;
     const inProgress = assignments.filter(
       (item) => item.status === "in-progress",
     ).length;
+    const isLiveLessonWindow = (() => {
+      if (!nextLesson) {
+        return false;
+      }
+      const today = new Date();
+      const lessonDate = nextLesson.date;
+      const isSameDay =
+        today.getFullYear() === lessonDate.getFullYear() &&
+        today.getMonth() === lessonDate.getMonth() &&
+        today.getDate() === lessonDate.getDate();
+      return isSameDay;
+    })();
+
+    const missionControl = (() => {
+      if (isLiveLessonWindow && nextLesson) {
+        return {
+          mode: "live-lesson" as const,
+          title: "Join live lesson",
+          detail: `Teacher-led session for ${nextLesson.subject} is available now.`,
+          ctaLabel: "Join live lesson",
+        };
+      }
+
+      if (priorityMission) {
+        return {
+          mode: "priority-mission" as const,
+          title: "Priority mission",
+          detail: `${priorityMission.unitLabel}: ${priorityMission.title}`,
+          ctaLabel: "Open priority mission",
+        };
+      }
+
+      if (nextLesson) {
+        return {
+          mode: "next-discovery" as const,
+          title: "Next discovery",
+          detail: `${nextLesson.title} - ${nextLesson.subject}`,
+          ctaLabel: "Resume next discovery",
+        };
+      }
+
+      return {
+        mode: "next-discovery" as const,
+        title: "Next discovery",
+        detail: "Continue your active checkpoint journey.",
+        ctaLabel: "Resume journey",
+      };
+    })();
 
     return response.status(200).json({
       data: {
@@ -44,6 +103,7 @@ export const studentDashboardHandler = async (
           completed,
           total: assignments.length,
         },
+        missionControl,
         lastUpdatedAt: new Date().toISOString(),
       },
       error: null,

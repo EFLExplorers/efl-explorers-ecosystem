@@ -19,6 +19,7 @@ shared capabilities from landing and teacher platforms.
 - `GET /api/student/lessons`
 - `GET /api/student/profile`
 - `PATCH /api/student/profile`
+- `POST /api/student/checkpoints/[id]/submit`
 
 ## Contract Standards
 
@@ -41,3 +42,4 @@ shared capabilities from landing and teacher platforms.
 - Platform endpoint baseline: `docs/platforms/api-index.md`
 - Architecture rules: `docs/architecture.md`
 - Backend rules: `docs/StudentDevelopmentPlan/backend/README.md`
+- Deterministic progression rules: `non-ai-validation.md`

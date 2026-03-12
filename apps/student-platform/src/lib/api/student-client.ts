@@ -2,6 +2,8 @@ import type {
   StudentAssignmentMutationResponseDto,
   StudentAssignmentsResponseDto,
   StudentDashboardResponseDto,
+  StudentLessonsResponseDto,
+  StudentProgressResponseDto,
 } from "@/lib/api/student-contracts";
 
 const DEFAULT_STUDENT_USER_ID = 1;
@@ -57,3 +59,31 @@ export const markStudentAssignmentCompleted = async (
 
   return response.json();
 };
+
+export const fetchStudentLessons = async (): Promise<StudentLessonsResponseDto> => {
+  const response = await fetch("/api/student/lessons", {
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error("Unable to fetch lessons");
+  }
+
+  return response.json();
+};
+
+export const fetchStudentProgress =
+  async (): Promise<StudentProgressResponseDto> => {
+    const response = await fetch(
+      `/api/student/progress?userId=${DEFAULT_STUDENT_USER_ID}`,
+      {
+        credentials: "include",
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error("Unable to fetch progress");
+    }
+
+    return response.json();
+  };

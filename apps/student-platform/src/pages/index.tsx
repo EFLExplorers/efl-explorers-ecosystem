@@ -34,8 +34,8 @@ export const StudentsHomePage = () => {
   const dueSoonCount = dashboardResponse?.data.assignmentCounts.dueSoon ?? 0;
   const dashboardDescription =
     dueSoonCount > 0
-      ? `Start your next activity quickly, then complete ${dueSoonCount} due-soon task(s).`
-      : "Start your next activity quickly, track progress, and finish delegated tasks.";
+      ? `You have ${dueSoonCount} mission(s) to complete soon. Pick one and keep your star streak going.`
+      : "Your next discovery is ready. Jump in and collect more stars.";
 
   return (
     <>
@@ -43,17 +43,20 @@ export const StudentsHomePage = () => {
         <title>Student Dashboard</title>
         <meta
           name="description"
-          content="Student dashboard shell aligned with interaction contracts."
+          content="Kid-friendly student mission dashboard."
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <StudentLayout
-        title="Dashboard"
+        title="Home Base"
         description={dashboardDescription}
         learnerName={portalData.student.name}
         learningMode={portalData.student.mode}
       >
-        <StudentDashboardFlow portalData={portalData} />
+        <StudentDashboardFlow
+          portalData={portalData}
+          missionControl={dashboardResponse?.data.missionControl}
+        />
       </StudentLayout>
     </>
   );

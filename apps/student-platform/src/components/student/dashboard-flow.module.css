@@ -5,10 +5,18 @@
 }
 
 .card {
-  border: 1px solid #e6e9ef;
+  border: 1px solid var(--space-border);
   border-radius: 14px;
-  background: #ffffff;
+  background: var(--space-surface-soft);
   padding: 16px;
+  transition: transform 140ms ease, box-shadow 140ms ease;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(64, 54, 147, 0.35);
 }
 
 .cardTitle {
@@ -16,32 +24,65 @@
   font-size: 1rem;
 }
 
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
 .cardText {
   margin: 8px 0 0;
-  color: #4d5870;
+  color: var(--space-text-secondary);
   line-height: 1.5;
 }
 
 .meta {
   margin: 10px 0 0;
-  color: #2d3a52;
+  color: #e6ebff;
   font-weight: 600;
 }
 
 .button {
   margin-top: 12px;
-  border: 1px solid #1d4ed8;
+  border: 1px solid rgba(176, 154, 255, 0.65);
   border-radius: 10px;
-  background: #1d4ed8;
+  background: linear-gradient(135deg, var(--space-accent) 0%, var(--space-accent-strong) 100%);
   color: #ffffff;
   font-weight: 700;
   padding: 10px 12px;
+  transition: transform 120ms ease, filter 120ms ease;
+}
+
+.button:hover {
+  filter: brightness(1.06);
+}
+
+.button:active {
+  transform: translateY(1px) scale(0.99);
+}
+
+.stateBadge {
+  border-radius: 999px;
+  border: 1px solid rgba(173, 150, 255, 0.55);
+  background: var(--space-chip);
+  color: #efe9ff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  text-transform: capitalize;
+}
+
+.helper {
+  margin: 8px 0 0;
+  color: var(--space-text-secondary);
+  font-size: 0.85rem;
 }
 
 .list {
   margin: 10px 0 0;
   padding-left: 18px;
-  color: #2d3a52;
+  color: #e3e9ff;
 }
 
 .full {

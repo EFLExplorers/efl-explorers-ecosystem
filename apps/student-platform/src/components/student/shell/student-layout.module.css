@@ -1,7 +1,7 @@
 .page {
   min-height: 100vh;
-  background: #f4f7ff;
-  color: #1d2433;
+  background: transparent;
+  color: var(--space-text-primary);
 }
 
 .brand {
@@ -17,8 +17,10 @@
   bottom: 0;
   width: 240px;
   z-index: 20;
-  border-right: 1px solid #dce3f3;
-  background: #ffffff;
+  border-right: 1px solid var(--space-border);
+  background: var(--space-surface);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   padding: 14px 12px;
   display: flex;
   flex-direction: column;
@@ -26,15 +28,15 @@
 }
 
 .sidebarBrand {
-  border: 1px solid #e2e8f5;
+  border: 1px solid var(--space-border);
   border-radius: 12px;
-  background: linear-gradient(180deg, #f6f9ff 0%, #eef3ff 100%);
+  background: linear-gradient(180deg, rgba(139, 92, 246, 0.22) 0%, rgba(79, 70, 229, 0.16) 100%);
   padding: 12px;
 }
 
 .sidebarSubtitle {
   margin: 4px 0 0;
-  color: #51607f;
+  color: var(--space-text-secondary);
   font-size: 0.85rem;
 }
 
@@ -49,8 +51,10 @@
   position: sticky;
   top: 0;
   z-index: 10;
-  border-bottom: 1px solid #dfe6f4;
-  background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+  border-bottom: 1px solid var(--space-border);
+  background: rgba(12, 17, 44, 0.86);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   padding: 14px 20px;
 }
 
@@ -63,7 +67,7 @@
 
 .headerKicker {
   margin: 0;
-  color: #51607f;
+  color: #cfd7ff;
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.03em;
@@ -77,14 +81,14 @@
 
 .meta {
   font-size: 0.85rem;
-  color: #445371;
+  color: var(--space-text-secondary);
 }
 
 .metaPill {
-  border: 1px solid #cddcff;
+  border: 1px solid rgba(168, 180, 255, 0.5);
   border-radius: 999px;
-  background: #e9efff;
-  color: #12307f;
+  background: var(--space-chip);
+  color: #ecebff;
   font-size: 0.75rem;
   font-weight: 700;
   padding: 4px 10px;
@@ -98,7 +102,7 @@
 
 .description {
   margin: 8px 0 0;
-  color: #495467;
+  color: var(--space-text-secondary);
   line-height: 1.5;
 }
 

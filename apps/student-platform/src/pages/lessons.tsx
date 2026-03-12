@@ -1,66 +1,95 @@
 import Head from "next/head";
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import pageStyles from "@/components/student/portal-page.module.css";
+import { fetchStudentLessons } from "@/lib/api/student-client";
 import { StudentLayout } from "@/components/student/shell/StudentLayout";
 import { MOCK_STUDENT_PORTAL_DATA } from "@/lib/mock/student-portal-data";
 
 export const LessonsPage = () => {
+  const { data: lessonsResponse } = useQuery({
+    queryKey: ["/api/student/lessons"],
+    queryFn: fetchStudentLessons,
+  });
+
+  const portalData = useMemo(() => {
+    if (!lessonsResponse?.data) {
+      return MOCK_STUDENT_PORTAL_DATA;
+    }
+
+    return {
+      ...MOCK_STUDENT_PORTAL_DATA,
+      lessons: lessonsResponse.data.lessons,
+      classes: lessonsResponse.data.classes,
+    };
+  }, [lessonsResponse?.data]);
+
+  const getLessonPercent = (status: string) => {
+    if (status === "next") {
+      return 65;
+    }
+    if (status === "upcoming") {
+      return 20;
+    }
+    return 90;
+  };
+
   return (
     <>
       <Head>
-        <title>Student Lessons</title>
+        <title>Lesson Path</title>
       </Head>
       <StudentLayout
-        title="Lessons"
-        description="Follow your next lesson path and stay ready for teacher-led sessions."
-        learnerName={MOCK_STUDENT_PORTAL_DATA.student.name}
-        learningMode={MOCK_STUDENT_PORTAL_DATA.student.mode}
+        title="Lesson Path"
+        description="Pick your next discovery and get ready for your live class adventure."
+        learnerName={portalData.student.name}
+        learningMode={portalData.student.mode}
       >
         <section className={pageStyles.grid}>
           <article className={`${pageStyles.hero} ${pageStyles.full}`}>
-            <h2 className={pageStyles.heroTitle}>Garden Planet lesson path</h2>
+            <h2 className={pageStyles.heroTitle}>Your discovery trail</h2>
             <p className={pageStyles.heroSubtitle}>
-              Continue your guided unit sequence with teacher support and visual
-              vocabulary activities.
+              Keep moving through your lessons with fun speaking and vocabulary
+              missions.
             </p>
             <div className={pageStyles.actions}>
               <button type="button" className={pageStyles.buttonPrimary}>
-                Resume next lesson
+                Start next discovery
               </button>
               <button type="button" className={pageStyles.buttonGhost}>
-                Preview weekly plan
+                See this week
               </button>
             </div>
             <div className={pageStyles.stats}>
               <div className={pageStyles.stat}>
                 <p className={pageStyles.statLabel}>Current</p>
                 <p className={pageStyles.statValue}>
-                  {MOCK_STUDENT_PORTAL_DATA.lessons[0]?.unitLabel}
+                  {portalData.lessons[0]?.unitLabel}
                 </p>
               </div>
               <div className={pageStyles.stat}>
                 <p className={pageStyles.statLabel}>Queue</p>
                 <p className={pageStyles.statValue}>
-                  {MOCK_STUDENT_PORTAL_DATA.lessons.length} lessons
+                  {portalData.lessons.length} lessons
                 </p>
               </div>
               <div className={pageStyles.stat}>
                 <p className={pageStyles.statLabel}>Next Class</p>
                 <p className={pageStyles.statValue}>
-                  {MOCK_STUDENT_PORTAL_DATA.classes[0]?.startLabel}
+                  {portalData.classes[0]?.startLabel}
                 </p>
               </div>
             </div>
           </article>
 
           <article className={pageStyles.card}>
-            <h2 className={pageStyles.title}>Class prep</h2>
+            <h2 className={pageStyles.title}>Live class prep</h2>
             <p className={pageStyles.text}>
-              Your next live class is {MOCK_STUDENT_PORTAL_DATA.classes[0]?.startLabel}
-              .
+              Your next class begins at {portalData.classes[0]?.startLabel}.
             </p>
             <p className={pageStyles.meta}>
-              Teacher: {MOCK_STUDENT_PORTAL_DATA.classes[0]?.teacherName}
+              Teacher: {portalData.classes[0]?.teacherName}
             </p>
             <div className={pageStyles.chipRow}>
               <span className={pageStyles.chip}>Live speaking</span>
@@ -70,9 +99,9 @@ export const LessonsPage = () => {
           </article>
 
           <article className={`${pageStyles.card} ${pageStyles.full}`}>
-            <h2 className={pageStyles.title}>Lesson queue</h2>
+            <h2 className={pageStyles.title}>Mission queue</h2>
             <ul className={pageStyles.list}>
-              {MOCK_STUDENT_PORTAL_DATA.lessons.map((lesson) => (
+              {portalData.lessons.map((lesson) => (
                 <li key={lesson.id} className={pageStyles.listItem}>
                   <div className={pageStyles.row}>
                     <strong>
@@ -81,12 +110,12 @@ export const LessonsPage = () => {
                     <span className={pageStyles.badge}>{lesson.status}</span>
                   </div>
                   <p className={pageStyles.subtle}>{lesson.focus}</p>
-                  <div className={pageStyles.track}>
-                    <div
-                      className={pageStyles.fill}
-                      style={{ width: lesson.status === "next" ? "65%" : lesson.status === "upcoming" ? "20%" : "90%" }}
-                    />
-                  </div>
+                  <progress
+                    className={pageStyles.progressBar}
+                    value={getLessonPercent(lesson.status)}
+                    max={100}
+                    aria-label={`${lesson.title} completion`}
+                  />
                 </li>
               ))}
             </ul>
