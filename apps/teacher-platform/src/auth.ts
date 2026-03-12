@@ -1,17 +1,16 @@
-import NextAuth, { type NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
+import NextAuth from "next-auth";
+import Credentials from "next-auth/providers/credentials";
 import { createHash } from "crypto";
 import { prisma } from "@repo/database";
+import { authConfig } from "./auth.config";
 
 const hashToken = (token: string) =>
   createHash("sha256").update(token).digest("hex");
 
-export const authOptions: NextAuthOptions = {
-  session: {
-    strategy: "jwt",
-  },
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  ...authConfig,
   providers: [
-    CredentialsProvider({
+    Credentials({
       id: "sso",
       name: "SSO",
       credentials: {
@@ -39,7 +38,9 @@ export const authOptions: NextAuthOptions = {
           });
 
           if (!ssoRecord?.user) {
-            console.warn("[SSO] authorize: token not found, expired, or already used");
+            console.warn(
+              "[SSO] authorize: token not found, expired, or already used"
+            );
             return null;
           }
 
@@ -66,41 +67,4 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        const u = user as {
-          role?: string;
-          approved?: boolean;
-          subscriptionTier?: string;
-          firstName?: string;
-          lastName?: string;
-        };
-        token.role = u.role;
-        token.approved = u.approved;
-        token.subscriptionTier = (u.subscriptionTier ?? "free") as "free" | "premium";
-        token.firstName = u.firstName ?? null;
-        token.lastName = u.lastName ?? null;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.sub ?? "";
-        session.user.role = (token.role as string) ?? "teacher";
-        session.user.approved = Boolean(token.approved);
-        session.user.subscriptionTier =
-          (token.subscriptionTier as "free" | "premium" | undefined) ?? "free";
-        session.user.firstName = token.firstName as string | null;
-        session.user.lastName = token.lastName as string | null;
-      }
-      return session;
-    },
-  },
-  pages: {
-    signIn: process.env.NEXT_PUBLIC_LANDING_PAGE_URL + "/Auth/login/teacher",
-  },
-  secret: process.env.NEXTAUTH_SECRET,
-};
-
-export default NextAuth(authOptions);
+});
