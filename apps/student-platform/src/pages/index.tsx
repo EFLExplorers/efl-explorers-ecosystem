@@ -31,7 +31,7 @@ export const StudentsHomePage = () => {
     };
   }, [assignmentsResponse?.data]);
 
-  const dueSoonCount = dashboardResponse?.data.assignmentCounts.dueSoon ?? 0;
+  const dueSoonCount = dashboardResponse?.data?.assignmentCounts?.dueSoon ?? 0;
   const dashboardDescription =
     dueSoonCount > 0
       ? `You have ${dueSoonCount} mission(s) to complete soon. Pick one and keep your star streak going.`
@@ -55,7 +55,7 @@ export const StudentsHomePage = () => {
       >
         <StudentDashboardFlow
           portalData={portalData}
-          missionControl={dashboardResponse?.data.missionControl}
+          missionControl={dashboardResponse?.data?.missionControl}
         />
       </StudentLayout>
     </>

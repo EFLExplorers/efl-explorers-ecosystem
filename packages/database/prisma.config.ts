@@ -1,11 +1,12 @@
 import "dotenv/config";
 import { defineConfig } from "prisma/config";
 
-const databaseUrl = process.env.DIRECT_URL || process.env.DATABASE_URL;
-
-if (!databaseUrl) {
-  throw new Error("Missing DIRECT_URL or DATABASE_URL in environment.");
-}
+// Use placeholder for prisma generate (build/CI) when env vars are not set.
+// prisma generate does not connect to the DB; runtime requires real DATABASE_URL.
+const databaseUrl =
+  process.env.DIRECT_URL ||
+  process.env.DATABASE_URL ||
+  "postgresql://placeholder:placeholder@localhost:5432/placeholder";
 
 export const prismaConfig = defineConfig({
   schema: "prisma/schema.prisma",
