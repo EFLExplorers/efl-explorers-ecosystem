@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { storage } from "@/lib/storage";
+import { requireTeacherApiSession } from "@/lib/requireTeacherApiSession";
 import { insertCurriculumSchema } from "@shared/schema";
 import { z } from "zod";
 
@@ -7,14 +8,22 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { id } = req.query;
+  const session = await requireTeacherApiSession(req, res);
+  if (!session) {
+    return;
+  }
+
+  const { id: rawId } = req.query;
+  if (typeof rawId !== "string") {
+    return res.status(400).json({ message: "Invalid curriculum ID" });
+  }
+
+  const curriculumId = Number.parseInt(rawId, 10);
+  if (Number.isNaN(curriculumId) || curriculumId <= 0) {
+    return res.status(400).json({ message: "Invalid curriculum ID" });
+  }
 
   if (req.method === 'GET') {
-    const curriculumId = parseInt(id as string);
-    if (isNaN(curriculumId)) {
-      return res.status(400).json({ message: "Invalid curriculum ID" });
-    }
-
     try {
       const curriculumItem = await storage.getCurriculumItem(curriculumId);
       if (!curriculumItem) {
@@ -27,11 +36,6 @@ export default async function handler(
   }
 
   if (req.method === 'PUT' || req.method === 'PATCH') {
-    const curriculumId = parseInt(id as string);
-    if (isNaN(curriculumId)) {
-      return res.status(400).json({ message: "Invalid curriculum ID" });
-    }
-
     try {
       const validatedData = insertCurriculumSchema.partial().parse(req.body);
       const updatedItem = await storage.updateCurriculumItem(curriculumId, validatedData);
@@ -53,11 +57,6 @@ export default async function handler(
   }
 
   if (req.method === 'DELETE') {
-    const curriculumId = parseInt(id as string);
-    if (isNaN(curriculumId)) {
-      return res.status(400).json({ message: "Invalid curriculum ID" });
-    }
-
     try {
       const deleted = await storage.deleteCurriculumItem(curriculumId);
       if (!deleted) {

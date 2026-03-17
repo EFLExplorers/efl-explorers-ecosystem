@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { storage } from "@/lib/storage";
+import { requireTeacherApiSession } from "@/lib/requireTeacherApiSession";
 import { insertTaskSchema } from "@shared/schema";
 import { z } from "zod";
 
@@ -7,15 +8,32 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { id } = req.query;
+  const session = await requireTeacherApiSession(req, res);
+  if (!session) {
+    return;
+  }
+
+  const { teacherRecordUserId } = session;
+  const { id: rawId } = req.query;
+  if (typeof rawId !== "string") {
+    return res.status(400).json({ message: "Invalid task ID" });
+  }
+
+  const taskId = Number.parseInt(rawId, 10);
+  if (Number.isNaN(taskId) || taskId <= 0) {
+    return res.status(400).json({ message: "Invalid task ID" });
+  }
 
   if (req.method === 'PATCH') {
-    const taskId = parseInt(id as string);
-    if (isNaN(taskId)) {
-      return res.status(400).json({ message: "Invalid task ID" });
-    }
-
     try {
+      const existingTask = await storage.getTask(taskId);
+      if (!existingTask) {
+        return res.status(404).json({ message: "Task not found" });
+      }
+      if (existingTask.userId !== teacherRecordUserId) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+
       const validatedData = insertTaskSchema.partial().parse(req.body);
       const updatedTask = await storage.updateTask(taskId, validatedData);
 
@@ -36,12 +54,15 @@ export default async function handler(
   }
 
   if (req.method === 'DELETE') {
-    const taskId = parseInt(id as string);
-    if (isNaN(taskId)) {
-      return res.status(400).json({ message: "Invalid task ID" });
-    }
-
     try {
+      const existingTask = await storage.getTask(taskId);
+      if (!existingTask) {
+        return res.status(404).json({ message: "Task not found" });
+      }
+      if (existingTask.userId !== teacherRecordUserId) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+
       const deleted = await storage.deleteTask(taskId);
       if (!deleted) {
         return res.status(404).json({ message: "Task not found" });

@@ -29,7 +29,7 @@ export default function DashboardPage() {
   });
   
   const { data: tasks } = useQuery<Task[]>({
-    queryKey: ["/api/tasks/user/1"] // Assuming current user ID is 1
+    queryKey: ["/api/tasks"]
   });
   
   const activeCourses = Array.from(new Set(lessons?.map(lesson => lesson.subject) || [])).length;

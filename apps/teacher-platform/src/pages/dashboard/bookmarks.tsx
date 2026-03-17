@@ -43,7 +43,7 @@ export default function BookmarksPage() {
   const [starredFilter, setStarredFilter] = useState(false);
   
   const { data: bookmarks, isLoading } = useQuery<Bookmark[]>({
-    queryKey: ["/api/bookmarks/1"] // Assuming current user ID is 1
+    queryKey: ["/api/bookmarks"]
   });
   
   // Filter bookmarks based on search, folder, and starred status

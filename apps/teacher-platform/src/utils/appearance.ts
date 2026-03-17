@@ -4,6 +4,10 @@ export type ColorScheme = "purple" | "blue" | "green" | "orange";
 export const THEME_STORAGE_KEY = "efl.teacher.appearance.theme";
 export const COLOR_STORAGE_KEY = "efl.teacher.appearance.color";
 
+/** Single source of truth for theme and color options; sync with variables.css data-theme/data-color */
+export const THEME_OPTIONS: readonly ThemePreference[] = ["light", "dark", "system"];
+export const COLOR_SCHEME_OPTIONS: readonly ColorScheme[] = ["purple", "blue", "green", "orange"];
+
 const isThemePreference = (value: string | null): value is ThemePreference =>
   value === "light" || value === "dark" || value === "system";
 

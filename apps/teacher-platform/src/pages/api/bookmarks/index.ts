@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { storage } from "@/lib/storage";
+import { requireTeacherApiSession } from "@/lib/requireTeacherApiSession";
 import { insertBookmarkSchema } from "@shared/schema";
 import { z } from "zod";
 
@@ -7,11 +8,16 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const session = await requireTeacherApiSession(req, res);
+  if (!session) {
+    return;
+  }
+
+  const { teacherRecordUserId } = session;
+
   if (req.method === 'GET') {
     try {
-      // For GET without userId, return empty array or require userId query param
-      const userId = req.query.userId ? Number(req.query.userId) : 1; // Default to 1 if not provided
-      const bookmarks = await storage.getBookmarks(userId);
+      const bookmarks = await storage.getBookmarks(teacherRecordUserId);
       return res.status(200).json(bookmarks);
     } catch (error) {
       return res.status(500).json({ message: "Failed to fetch bookmarks" });
@@ -20,8 +26,13 @@ export default async function handler(
 
   if (req.method === 'POST') {
     try {
-      const validatedData = insertBookmarkSchema.parse(req.body);
-      const bookmark = await storage.createBookmark(validatedData);
+      const validatedData = insertBookmarkSchema
+        .omit({ userId: true })
+        .parse(req.body);
+      const bookmark = await storage.createBookmark({
+        ...validatedData,
+        userId: teacherRecordUserId,
+      });
       return res.status(201).json(bookmark);
     } catch (error) {
       if (error instanceof z.ZodError) {

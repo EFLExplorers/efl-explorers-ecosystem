@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { storage } from "@/lib/storage";
+import { requireTeacherApiSession } from "@/lib/requireTeacherApiSession";
 import { insertStudentSchema } from "@shared/schema";
 import { z } from "zod";
 
@@ -13,6 +14,11 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const session = await requireTeacherApiSession(req, res);
+  if (!session) {
+    return;
+  }
+
   if (req.method === 'GET') {
     try {
       const students = await storage.getStudents();

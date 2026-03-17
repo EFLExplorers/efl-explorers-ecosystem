@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { storage } from "@/lib/storage";
+import { requireTeacherApiSession } from "@/lib/requireTeacherApiSession";
 import { insertMaterialSchema } from "@shared/schema";
 import { z } from "zod";
 
@@ -7,6 +8,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const session = await requireTeacherApiSession(req, res);
+  if (!session) {
+    return;
+  }
+
+  const { teacherRecordUserId } = session;
+
   if (req.method === 'GET') {
     try {
       const materials = await storage.getMaterials();
@@ -18,8 +26,13 @@ export default async function handler(
 
   if (req.method === 'POST') {
     try {
-      const validatedData = insertMaterialSchema.parse(req.body);
-      const material = await storage.createMaterial(validatedData);
+      const validatedData = insertMaterialSchema
+        .omit({ createdBy: true })
+        .parse(req.body);
+      const material = await storage.createMaterial({
+        ...validatedData,
+        createdBy: teacherRecordUserId,
+      });
       return res.status(201).json(material);
     } catch (error) {
       if (error instanceof z.ZodError) {

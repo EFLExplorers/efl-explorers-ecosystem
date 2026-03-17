@@ -356,6 +356,15 @@ model Testimonial {
   @@schema("shared")
 }
 
+model TeacherUserMapping {
+  id         Int      @id @default(autoincrement())
+  authUserId String   @unique @map("auth_user_id") @db.Uuid
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@map("teacher_user_mappings")
+  @@schema("teachers")
+}
+
 model Student {
   id               Int      @id @default(autoincrement())
   fullName         String   @map("full_name")

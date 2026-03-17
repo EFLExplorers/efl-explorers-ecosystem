@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/Card";
 import { Checkbox } from "@/components/ui/Checkbox";
@@ -11,10 +10,8 @@ import { classNames } from "@/utils/classNames";
 import styles from './TasksCard.module.css';
 
 export function TasksCard() {
-  const [userId] = useState(1); // In a real app, this would come from auth context
-  
   const { data: tasks, isLoading } = useQuery<Task[]>({
-    queryKey: [`/api/tasks/user/${userId}`]
+    queryKey: ["/api/tasks"]
   });
   
   const updateTaskMutation = useMutation({
@@ -22,7 +19,7 @@ export function TasksCard() {
       await apiRequest('PATCH', `/api/tasks/${id}`, data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/tasks/user/${userId}`] });
+      queryClient.invalidateQueries({ queryKey: ["/api/tasks"] });
     }
   });
   

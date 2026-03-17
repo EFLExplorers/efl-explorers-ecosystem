@@ -22,19 +22,23 @@ The schema uses PostgreSQL with multiple schemas:
 ## Key Models
 
 ### Auth (`auth.*`)
+
 - `User`, `Account`, `Session`, `VerificationToken`
 - `PasswordResetToken` — Reset flow support
 - `SsoToken` — Short-lived SSO tokens for platform logins
 
 ### Shared Content (`shared.*`)
+
 - `Page`, `PageSection`, `ContentItem`, `RouteSection`
 - `MediaAsset`, `Faq`, `TeamMember`, `AboutStat`
 - `CoreValue`, `LessonModule`, `TeacherBenefit`, `Testimonial`
 
 ### Teacher Domain (`teachers.*`)
+
 - `Student`, `Lesson`, `Curriculum`, `Event`
 - `Message`, `Announcement`, `Task`
 - `Material`, `Bookmark`, `LessonMaterial`
+- `TeacherUserMapping` — maps authenticated UUID users to numeric teacher record IDs
 
 ## Runtime Behavior
 
@@ -47,6 +51,7 @@ The schema uses PostgreSQL with multiple schemas:
 ## Scripts
 
 - `pnpm --filter @repo/database build` — `prisma generate`
+- `pnpm --filter @repo/database db:apply-sql-migrations` — Apply tracked SQL migrations from `db/`
 - `pnpm --filter @repo/database db:seed` — Run Prisma seed.
 - `pnpm --filter @repo/database seed:dev-user` — Create dev user (script).
 
@@ -54,3 +59,5 @@ The schema uses PostgreSQL with multiple schemas:
 
 The `db/` folder contains helpers for bootstrapping or resetting data and
 importing content (schema + content seeds).
+For incremental manual rollout, `db/20260317_add_teacher_user_mappings.sql`
+adds the teacher identity mapping table without requiring a full database reset.
