@@ -1,15 +1,24 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { storage } from "@/lib/storage";
+import { requireTeacherApiSession } from "@/lib/requireTeacherApiSession";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { id } = req.query;
+  const session = await requireTeacherApiSession(req, res);
+  if (!session) {
+    return;
+  }
+
+  const { id: rawId } = req.query;
+  if (typeof rawId !== "string") {
+    return res.status(400).json({ message: "Invalid lesson material ID" });
+  }
 
   if (req.method === 'DELETE') {
-    const materialId = parseInt(id as string);
-    if (isNaN(materialId)) {
+    const materialId = Number.parseInt(rawId, 10);
+    if (Number.isNaN(materialId) || materialId <= 0) {
       return res.status(400).json({ message: "Invalid lesson material ID" });
     }
 

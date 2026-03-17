@@ -19,14 +19,25 @@ const { auth } = NextAuth(authConfig);
 
 export default auth((req) => {
   const session = req.auth;
+  const isApiRequest = req.nextUrl.pathname.startsWith("/api/");
 
   if (!session?.user) {
+    if (isApiRequest) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
     return NextResponse.redirect(resolveLandingUrl(signInPath, req));
   }
 
   const role = session.user.role;
   if (role && role !== "teacher") {
+    if (isApiRequest) {
+      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    }
     return NextResponse.redirect(resolveLandingUrl(signInPath, req));
+  }
+
+  if (isApiRequest) {
+    return NextResponse.next();
   }
 
   const subscriptionTier =
@@ -45,7 +56,7 @@ export default auth((req) => {
 
 export const config = {
   matcher: [
-    // Protect EVERYTHING in the app EXCEPT the /sso receiver page, API routes, and static files (images, css)
-    "/((?!sso|api|_next/static|_next/image|favicon.ico).*)",
+    // Protect EVERYTHING in the app EXCEPT the /sso receiver page and static files.
+    "/((?!sso|_next/static|_next/image|favicon.ico).*)",
   ],
 };

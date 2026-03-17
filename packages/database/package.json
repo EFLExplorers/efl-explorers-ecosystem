@@ -7,7 +7,9 @@
   "scripts": {
     "build": "prisma generate",
     "db:seed": "prisma db seed",
-    "seed:dev-user": "node ./scripts/seed-dev-user.js"
+    "db:apply-sql-migrations": "node ./scripts/apply-sql-migrations.js",
+    "seed:dev-user": "node ./scripts/seed-dev-user.js",
+    "approve-user": "node ./scripts/approve-user.js"
   },
   "prisma": {
     "seed": "node ./scripts/seed-planetscale.js"

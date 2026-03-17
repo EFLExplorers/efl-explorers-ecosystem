@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { storage } from "@/lib/storage";
+import { requireTeacherApiSession } from "@/lib/requireTeacherApiSession";
 import { insertLessonSchema } from "@shared/schema";
 import { z } from "zod";
 
@@ -7,11 +8,24 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { id } = req.query;
+  const session = await requireTeacherApiSession(req, res);
+  if (!session) {
+    return;
+  }
+
+  const { id: rawId } = req.query;
+  if (typeof rawId !== "string") {
+    return res.status(400).json({ message: "Invalid lesson ID" });
+  }
+
+  const lessonId = Number.parseInt(rawId, 10);
+  if (Number.isNaN(lessonId) || lessonId <= 0) {
+    return res.status(400).json({ message: "Invalid lesson ID" });
+  }
 
   if (req.method === 'GET') {
     try {
-      const lesson = await storage.getLesson(Number(id));
+      const lesson = await storage.getLesson(lessonId);
       if (!lesson) {
         return res.status(404).json({ message: "Lesson not found" });
       }
@@ -24,7 +38,10 @@ export default async function handler(
   if (req.method === 'PUT' || req.method === 'PATCH') {
     try {
       const validatedData = insertLessonSchema.partial().parse(req.body);
-      const lesson = await storage.updateLesson(Number(id), validatedData);
+      const lesson = await storage.updateLesson(lessonId, validatedData);
+      if (!lesson) {
+        return res.status(404).json({ message: "Lesson not found" });
+      }
       return res.status(200).json(lesson);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -39,7 +56,10 @@ export default async function handler(
 
   if (req.method === 'DELETE') {
     try {
-      await storage.deleteLesson(Number(id));
+      const deleted = await storage.deleteLesson(lessonId);
+      if (!deleted) {
+        return res.status(404).json({ message: "Lesson not found" });
+      }
       return res.status(204).end();
     } catch (error) {
       return res.status(500).json({ message: "Failed to delete lesson" });

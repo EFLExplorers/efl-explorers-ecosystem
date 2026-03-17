@@ -44,7 +44,7 @@ export default function MessagesPage() {
   const currentUserId = 1;
   
   const { data: messages, isLoading: messagesLoading } = useQuery<Message[]>({
-    queryKey: [`/api/messages/user/${currentUserId}`]
+    queryKey: ["/api/messages"]
   });
   
   const { data: announcements, isLoading: announcementsLoading } = useQuery<Announcement[]>({
@@ -52,17 +52,17 @@ export default function MessagesPage() {
   });
   
   const sendMessageMutation = useMutation({
-    mutationFn: async (newMessage: { senderId: number; receiverId: number; content: string; }) => {
+    mutationFn: async (newMessage: { receiverId: number; content: string; }) => {
       await apiRequest('POST', '/api/messages', newMessage);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/messages/user/${currentUserId}`] });
+      queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
       setMessageText("");
     }
   });
   
   const createAnnouncementMutation = useMutation({
-    mutationFn: async (newAnnouncement: { title: string; content: string; priority: string; createdBy: number; }) => {
+    mutationFn: async (newAnnouncement: { title: string; content: string; priority: string; }) => {
       await apiRequest('POST', '/api/announcements', newAnnouncement);
     },
     onSuccess: () => {
@@ -77,7 +77,6 @@ export default function MessagesPage() {
     if (!messageText.trim() || !selectedConversation) return;
     
     sendMessageMutation.mutate({
-      senderId: currentUserId,
       receiverId: selectedConversation,
       content: messageText
     });
@@ -89,8 +88,7 @@ export default function MessagesPage() {
     createAnnouncementMutation.mutate({
       title: announcementTitle,
       content: announcementContent,
-      priority: announcementPriority,
-      createdBy: currentUserId
+      priority: announcementPriority
     });
   };
   

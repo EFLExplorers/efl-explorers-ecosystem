@@ -1250,17 +1250,8 @@ export class DatabaseStorage implements IStorage {
 }
 
 export async function seedInitialData() {
-  if (!process.env.DATABASE_URL) {
-    console.warn("Skipping database seed: DATABASE_URL not set.");
-    return;
-  }
-
+  const prismaClient = getPrisma();
   try {
-    const prismaClient = getPrisma();
-    if (!prismaClient) {
-      console.warn("Cannot seed database - Prisma client not available");
-      return;
-    }
 
     // Note: User table is managed by landing page via NextAuth
     // We cannot create users here - they must be created through the landing page
@@ -1562,25 +1553,9 @@ export async function seedInitialData() {
   }
 }
 
-let storage: IStorage;
-
-// Try to use database storage, fall back to in-memory if it fails
-try {
-  const prismaClient = getPrisma();
-  if (prismaClient && process.env.DATABASE_URL) {
-    // Initialize the database with seed data
-    seedInitialData().catch(console.error);
-    storage = new DatabaseStorage();
-  } else {
-    throw new Error("Database not available");
-  }
-} catch (error) {
-  // Only log warnings in development, suppress during build/production
-  if (process.env.NODE_ENV === "development") {
-    console.warn("Database not configured or unavailable; using in-memory storage (non-persistent).");
-    console.warn("To enable database features, configure your DATABASE_URL environment variable.");
-  }
-  storage = new MemStorage();
-}
+const storage: IStorage = new DatabaseStorage();
+seedInitialData().catch((error) => {
+  console.error("Error seeding initial teacher-platform data:", error);
+});
 
 export { storage };

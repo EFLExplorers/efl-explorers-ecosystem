@@ -10,7 +10,9 @@
    - `apps/teacher-platform/.env.local.example` ➜ `apps/teacher-platform/.env.local`
 3. Generate Prisma client:
    - `pnpm --filter @repo/database build`
-4. Run apps:
+4. Apply SQL migrations (non-destructive, tracked by filename/checksum):
+   - `pnpm --filter @repo/database db:apply-sql-migrations`
+5. Run apps:
    - `pnpm dev` (all apps)
    - `pnpm --filter landing-page dev`
    - `pnpm --filter teacher-platform dev`
@@ -19,6 +21,7 @@
 ## Environment Variables
 
 ### Shared (Turborepo)
+
 These are referenced in `turbo.json` and flow to tasks:
 
 - `DATABASE_URL`
@@ -60,6 +63,5 @@ Landing page content endpoints require an API key:
 
 ## Storage Mode (Teacher Platform)
 
-- If `DATABASE_URL` is set and Prisma is available, the teacher platform uses
-  database-backed storage.
-- If not, it falls back to in-memory storage with seeded sample data.
+- Teacher platform is database-backed only and requires valid `DATABASE_URL`
+  (and `DIRECT_URL` for migrations/seeding flows).

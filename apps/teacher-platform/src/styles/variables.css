@@ -1,8 +1,21 @@
+/*
+ * Appearance system: theme (light/dark) + color scheme (purple/blue/green/orange)
+ * - data-theme on <html>: "light" | "dark" (resolved from "system" via prefers-color-scheme)
+ * - data-color on <html>: "purple" | "blue" | "green" | "orange"
+ * - Theme overrides: background, foreground, text, sidebar base
+ * - Color overrides: primary, secondary, accent, ring (cascade after theme)
+ * - Both apply together; color scheme wins for shared vars (primary, accent, etc.)
+ */
+
 :root {
-  /* Colors */
+  /* Theme base (dark default) */
   --theme-background: #211534;
   --theme-foreground: #32184a;
   --theme-muted: #3a1f56;
+  --background: #211534;
+  --foreground: #ffffff;
+
+  /* Brand colors (default purple-ish; overridden by data-color) */
   --primary: #211534;
   --primary-foreground: #ffffff;
   --primary-light: #fec854;
@@ -13,6 +26,7 @@
 
   /* Semantic colors */
   --muted: var(--theme-muted);
+  --muted-foreground: #32184a;
   --success: #16a34a;
   --success-soft: #dcfce7;
   --success-foreground: #166534;
@@ -23,9 +37,11 @@
   --info-soft: #dbeafe;
   --info-foreground: #1d4ed8;
 
-  /* Additional colors from current theme */
+  /* Surfaces */
   --card: #ffffff;
   --card-foreground: #32184a;
+  --popover: #ffffff;
+  --popover-foreground: #32184a;
   --border: #e5e7eb;
   --input: #e5e7eb;
   --ring: #211534;
@@ -33,10 +49,16 @@
   --destructive-foreground: #ffffff;
   --secondary: #f57d3f;
   --secondary-foreground: #ffffff;
-  --muted-foreground: #32184a;
-  --accent-foreground: #32184a;
+  --accent-foreground: #ffffff;
 
-  /* Sidebar colors */
+  /* Chart colors (derived from primary/accent; used by recharts) */
+  --chart-1: var(--primary);
+  --chart-2: var(--secondary);
+  --chart-3: var(--accent);
+  --chart-4: var(--primary-light);
+  --chart-5: var(--ring);
+
+  /* Sidebar */
   --sidebar: #211534;
   --sidebar-background: #211534;
   --sidebar-foreground: #ffffff;
@@ -108,11 +130,15 @@
   --theme-background: #f8fafc;
   --theme-foreground: #ffffff;
   --theme-muted: #e2e8f0;
+  --background: #f8fafc;
+  --foreground: #111827;
   --text-primary: #111827;
   --text-secondary: #4b5563;
   --text-muted: #6b7280;
   --card: #ffffff;
   --card-foreground: #111827;
+  --popover: #ffffff;
+  --popover-foreground: #111827;
   --border: #e5e7eb;
   --input: #e5e7eb;
   --ring: var(--primary);
@@ -132,7 +158,9 @@
   --primary-foreground: #ffffff;
   --primary-light: #c4b5fd;
   --secondary: #7c3aed;
+  --secondary-foreground: #ffffff;
   --accent: #8b5cf6;
+  --accent-foreground: #ffffff;
   --ring: #7c3aed;
   --sidebar-primary: #c4b5fd;
   --sidebar-ring: #a78bfa;
@@ -143,7 +171,9 @@
   --primary-foreground: #ffffff;
   --primary-light: #93c5fd;
   --secondary: #0ea5e9;
+  --secondary-foreground: #ffffff;
   --accent: #38bdf8;
+  --accent-foreground: #ffffff;
   --ring: #2563eb;
   --sidebar-primary: #93c5fd;
   --sidebar-ring: #60a5fa;
@@ -154,7 +184,9 @@
   --primary-foreground: #ffffff;
   --primary-light: #86efac;
   --secondary: #16a34a;
+  --secondary-foreground: #ffffff;
   --accent: #22c55e;
+  --accent-foreground: #ffffff;
   --ring: #22c55e;
   --sidebar-primary: #86efac;
   --sidebar-ring: #4ade80;
@@ -165,7 +197,9 @@
   --primary-foreground: #ffffff;
   --primary-light: #fdba74;
   --secondary: #f97316;
+  --secondary-foreground: #ffffff;
   --accent: #f97316;
+  --accent-foreground: #ffffff;
   --ring: #ea580c;
   --sidebar-primary: #fdba74;
   --sidebar-ring: #fb923c;
