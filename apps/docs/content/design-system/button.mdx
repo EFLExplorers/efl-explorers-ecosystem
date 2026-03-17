@@ -1,0 +1,51 @@
+import { Button } from "@repo/ui/button"
+
+# Button
+
+## Purpose
+
+`Button` triggers a primary user action in UI examples and docs demos.
+
+## Import
+
+```tsx
+import { Button } from "@repo/ui/button"
+```
+
+## Live Example
+
+<Button appName="docs" className="rounded-md border border-slate-300 px-4 py-2">
+  Launch Action
+</Button>
+
+## Props
+
+<PropsTable
+  rows={[
+    {
+      name: "children",
+      type: "ReactNode",
+      required: true,
+      defaultValue: "-",
+      description: "Button label or inner content."
+    },
+    {
+      name: "className",
+      type: "string",
+      required: false,
+      defaultValue: "-",
+      description: "Optional style classes."
+    },
+    {
+      name: "appName",
+      type: "string",
+      required: true,
+      defaultValue: "-",
+      description: "Application name used by demo click behavior."
+    }
+  ]}
+/>
+
+## Notes
+
+Current implementation includes an `alert` click handler for demo scaffolding. Replace with product behavior as the component evolves.
