@@ -429,7 +429,12 @@ export default function MessagesPage() {
                     <div key={index} className={styles.settingItem}>
                       <span className={styles.settingLabel}>{item}</span>
                       <label className={styles.switch}>
-                        <input type="checkbox" defaultChecked={index < 3} className={styles.switchInput} />
+                        <input
+                          type="checkbox"
+                          defaultChecked={index < 3}
+                          className={styles.switchInput}
+                          aria-label={item}
+                        />
                         <span className={styles.switchSlider}></span>
                       </label>
                     </div>
@@ -444,7 +449,12 @@ export default function MessagesPage() {
                     <div key={index} className={styles.settingItem}>
                       <span className={styles.settingLabel}>{item}</span>
                       <label className={styles.switch}>
-                        <input type="checkbox" defaultChecked className={styles.switchInput} />
+                        <input
+                          type="checkbox"
+                          defaultChecked
+                          className={styles.switchInput}
+                          aria-label={item}
+                        />
                         <span className={styles.switchSlider}></span>
                       </label>
                     </div>
