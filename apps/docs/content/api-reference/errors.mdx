@@ -1,0 +1,22 @@
+# Errors
+
+## Standard Error Shape
+
+```json
+{
+  "error": {
+    "code": "AUTH_INVALID_CREDENTIALS",
+    "message": "Email or password is incorrect.",
+    "requestId": "req_123"
+  }
+}
+```
+
+## Recommended Status Mapping
+
+- `400` validation issues
+- `401` auth required or invalid
+- `403` authenticated but unauthorized
+- `404` resource not found
+- `409` state conflict
+- `500` unexpected server error

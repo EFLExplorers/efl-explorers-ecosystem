@@ -1,0 +1,10 @@
+{
+  "index": {
+    "title": "Overview",
+    "display": "hidden"
+  },
+  "design-system": "Design System",
+  "getting-started": "Getting Started",
+  "teacher-guide": "Teacher Guide",
+  "api-reference": "API Reference"
+}

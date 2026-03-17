@@ -1,0 +1,26 @@
+# Local Development
+
+## Run Everything
+
+From the monorepo root:
+
+```bash
+pnpm dev
+```
+
+This runs all workspace `dev` tasks through Turborepo.
+
+## Run Docs Only
+
+```bash
+pnpm --filter @repo/docs dev
+```
+
+## Validate Before Commit
+
+```bash
+pnpm --filter @repo/docs check-types
+pnpm --filter @repo/docs build
+```
+
+The build step also generates a Pagefind index for docs search.
