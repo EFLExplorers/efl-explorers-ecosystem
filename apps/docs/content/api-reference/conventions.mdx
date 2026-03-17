@@ -1,0 +1,22 @@
+# Conventions
+
+## Base Principles
+
+- JSON request and response bodies
+- ISO timestamps in UTC
+- Stable, backwards-compatible contracts
+
+## Standard Response Shape
+
+```json
+{
+  "data": {},
+  "meta": {
+    "requestId": "req_123"
+  }
+}
+```
+
+## Versioning
+
+Use additive changes by default. Reserve breaking changes for explicit version bumps.

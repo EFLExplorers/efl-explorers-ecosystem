@@ -1,0 +1,44 @@
+import { Code } from "@repo/ui/code"
+
+# Code
+
+## Purpose
+
+`Code` renders inline code tokens with consistent styling.
+
+## Import
+
+```tsx
+import { Code } from "@repo/ui/code"
+```
+
+## Live Example
+
+<p>
+  Run <Code className="rounded bg-slate-100 px-2 py-1">pnpm dev</Code> from the repository root.
+</p>
+
+## Props
+
+<PropsTable
+  rows={[
+    {
+      name: "children",
+      type: "ReactNode",
+      required: true,
+      defaultValue: "-",
+      description: "Inline code value to render."
+    },
+    {
+      name: "className",
+      type: "string",
+      required: false,
+      defaultValue: "-",
+      description: "Optional classes for visual customization."
+    }
+  ]}
+/>
+
+## Usage Guidance
+
+Use `Code` for short inline commands, identifiers, and file paths. Prefer fenced code blocks for multi-line examples.

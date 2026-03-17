@@ -1,0 +1,48 @@
+# Component Template
+
+Use this structure for every new Alien/Chibi component page.
+
+## 1) Purpose
+
+- What user problem this component solves
+- Where it should and should not be used
+
+## 2) Import
+
+```tsx
+import { ComponentName } from "@repo/ui/component-file"
+```
+
+## 3) Live Example
+
+Show at least one interactive or visual usage example.
+
+## 4) Props
+
+Document each prop with:
+
+- name
+- type
+- required vs optional
+- default behavior
+
+## 5) Accessibility Notes
+
+- keyboard behavior
+- semantic tags
+- screen reader considerations
+
+## 6) Do / Do Not
+
+Use a structured `DoDont` block:
+
+<DoDont
+  doItems={[
+    "Keep component examples close to real product usage.",
+    "Document accessibility behavior with concrete expectations."
+  ]}
+  dontItems={[
+    "Ship docs pages with only prop names and no examples.",
+    "Hide known limitations that teams should understand upfront."
+  ]}
+/>

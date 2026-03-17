@@ -1,0 +1,8 @@
+:root {
+  --brand-primary: #1868db;
+  --brand-primary-strong: #0f3f83;
+}
+
+a[href] {
+  text-underline-offset: 3px;
+}
