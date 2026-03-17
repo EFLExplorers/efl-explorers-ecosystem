@@ -1,6 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { storage } from "@/lib/storage";
 import { requireTeacherApiSession } from "@/lib/requireTeacherApiSession";
+import {
+  parsePositiveIntQueryParam,
+  respondMethodNotAllowed,
+} from "@/lib/apiResponses";
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,16 +15,16 @@ export default async function handler(
     return;
   }
 
-  const { lessonId: rawLessonId } = req.query;
-  if (typeof rawLessonId !== "string") {
-    return res.status(400).json({ message: "Invalid lesson ID" });
+  const parsedLessonId = parsePositiveIntQueryParam(
+    req.query.lessonId,
+    "lesson ID"
+  );
+  if (!parsedLessonId.ok) {
+    return res.status(400).json({ message: parsedLessonId.message });
   }
 
   if (req.method === 'GET') {
-    const lessonIdNum = Number.parseInt(rawLessonId, 10);
-    if (Number.isNaN(lessonIdNum) || lessonIdNum <= 0) {
-      return res.status(400).json({ message: "Invalid lesson ID" });
-    }
+    const lessonIdNum = parsedLessonId.value;
 
     try {
       const materials = await storage.getLessonMaterials(lessonIdNum);
@@ -30,6 +34,5 @@ export default async function handler(
     }
   }
 
-  res.setHeader('Allow', ['GET']);
-  return res.status(405).json({ message: `Method ${req.method} Not Allowed` });
+  return respondMethodNotAllowed(req, res, ['GET']);
 }

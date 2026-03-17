@@ -1,6 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { storage } from "@/lib/storage";
 import { requireTeacherApiSession } from "@/lib/requireTeacherApiSession";
+import {
+  parsePositiveIntQueryParam,
+  respondMethodNotAllowed,
+} from "@/lib/apiResponses";
 import { insertCurriculumSchema } from "@shared/schema";
 import { z } from "zod";
 
@@ -13,15 +17,14 @@ export default async function handler(
     return;
   }
 
-  const { id: rawId } = req.query;
-  if (typeof rawId !== "string") {
-    return res.status(400).json({ message: "Invalid curriculum ID" });
+  const parsedCurriculumId = parsePositiveIntQueryParam(
+    req.query.id,
+    "curriculum ID"
+  );
+  if (!parsedCurriculumId.ok) {
+    return res.status(400).json({ message: parsedCurriculumId.message });
   }
-
-  const curriculumId = Number.parseInt(rawId, 10);
-  if (Number.isNaN(curriculumId) || curriculumId <= 0) {
-    return res.status(400).json({ message: "Invalid curriculum ID" });
-  }
+  const curriculumId = parsedCurriculumId.value;
 
   if (req.method === 'GET') {
     try {
@@ -68,6 +71,5 @@ export default async function handler(
     }
   }
 
-  res.setHeader('Allow', ['GET', 'PUT', 'PATCH', 'DELETE']);
-  return res.status(405).json({ message: `Method ${req.method} Not Allowed` });
+  return respondMethodNotAllowed(req, res, ['GET', 'PUT', 'PATCH', 'DELETE']);
 }

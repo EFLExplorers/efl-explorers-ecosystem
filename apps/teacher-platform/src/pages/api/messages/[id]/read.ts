@@ -1,6 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { storage } from "@/lib/storage";
 import { requireTeacherApiSession } from "@/lib/requireTeacherApiSession";
+import {
+  parsePositiveIntQueryParam,
+  respondMethodNotAllowed,
+} from "@/lib/apiResponses";
 
 export default async function handler(
   req: NextApiRequest,
@@ -12,16 +16,13 @@ export default async function handler(
   }
 
   const { teacherRecordUserId } = session;
-  const { id: rawId } = req.query;
-  if (typeof rawId !== "string") {
-    return res.status(400).json({ message: "Invalid message ID" });
+  const parsedMessageId = parsePositiveIntQueryParam(req.query.id, "message ID");
+  if (!parsedMessageId.ok) {
+    return res.status(400).json({ message: parsedMessageId.message });
   }
 
   if (req.method === 'PATCH') {
-    const messageId = Number.parseInt(rawId, 10);
-    if (Number.isNaN(messageId) || messageId <= 0) {
-      return res.status(400).json({ message: "Invalid message ID" });
-    }
+    const messageId = parsedMessageId.value;
 
     try {
       const message = await storage.getMessage(messageId);
@@ -45,6 +46,5 @@ export default async function handler(
     }
   }
 
-  res.setHeader('Allow', ['PATCH']);
-  return res.status(405).json({ message: `Method ${req.method} Not Allowed` });
+  return respondMethodNotAllowed(req, res, ['PATCH']);
 }

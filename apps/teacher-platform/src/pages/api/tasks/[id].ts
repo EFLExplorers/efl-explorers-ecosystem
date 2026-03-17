@@ -1,6 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { storage } from "@/lib/storage";
 import { requireTeacherApiSession } from "@/lib/requireTeacherApiSession";
+import {
+  parsePositiveIntQueryParam,
+  respondMethodNotAllowed,
+} from "@/lib/apiResponses";
 import { insertTaskSchema } from "@shared/schema";
 import { z } from "zod";
 
@@ -14,15 +18,11 @@ export default async function handler(
   }
 
   const { teacherRecordUserId } = session;
-  const { id: rawId } = req.query;
-  if (typeof rawId !== "string") {
-    return res.status(400).json({ message: "Invalid task ID" });
+  const parsedTaskId = parsePositiveIntQueryParam(req.query.id, "task ID");
+  if (!parsedTaskId.ok) {
+    return res.status(400).json({ message: parsedTaskId.message });
   }
-
-  const taskId = Number.parseInt(rawId, 10);
-  if (Number.isNaN(taskId) || taskId <= 0) {
-    return res.status(400).json({ message: "Invalid task ID" });
-  }
+  const taskId = parsedTaskId.value;
 
   if (req.method === 'PATCH') {
     try {
@@ -73,6 +73,5 @@ export default async function handler(
     }
   }
 
-  res.setHeader('Allow', ['PATCH', 'DELETE']);
-  return res.status(405).json({ message: `Method ${req.method} Not Allowed` });
+  return respondMethodNotAllowed(req, res, ['PATCH', 'DELETE']);
 }

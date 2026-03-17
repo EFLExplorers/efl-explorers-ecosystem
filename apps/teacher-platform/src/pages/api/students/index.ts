@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { storage } from "@/lib/storage";
 import { requireTeacherApiSession } from "@/lib/requireTeacherApiSession";
+import { respondMethodNotAllowed } from "@/lib/apiResponses";
 import { insertStudentSchema } from "@shared/schema";
 import { z } from "zod";
 
@@ -44,6 +45,5 @@ export default async function handler(
     }
   }
 
-  res.setHeader('Allow', ['GET', 'POST']);
-  return res.status(405).json({ message: `Method ${req.method} Not Allowed` });
+  return respondMethodNotAllowed(req, res, ['GET', 'POST']);
 }

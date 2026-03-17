@@ -1,6 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { storage } from "@/lib/storage";
 import { requireTeacherApiSession } from "@/lib/requireTeacherApiSession";
+import {
+  parsePositiveIntQueryParam,
+  respondMethodNotAllowed,
+} from "@/lib/apiResponses";
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,16 +15,16 @@ export default async function handler(
     return;
   }
 
-  const { id: rawId } = req.query;
-  if (typeof rawId !== "string") {
-    return res.status(400).json({ message: "Invalid lesson material ID" });
+  const parsedLessonMaterialId = parsePositiveIntQueryParam(
+    req.query.id,
+    "lesson material ID"
+  );
+  if (!parsedLessonMaterialId.ok) {
+    return res.status(400).json({ message: parsedLessonMaterialId.message });
   }
 
   if (req.method === 'DELETE') {
-    const materialId = Number.parseInt(rawId, 10);
-    if (Number.isNaN(materialId) || materialId <= 0) {
-      return res.status(400).json({ message: "Invalid lesson material ID" });
-    }
+    const materialId = parsedLessonMaterialId.value;
 
     try {
       const deleted = await storage.deleteLessonMaterial(materialId);
@@ -33,6 +37,5 @@ export default async function handler(
     }
   }
 
-  res.setHeader('Allow', ['DELETE']);
-  return res.status(405).json({ message: `Method ${req.method} Not Allowed` });
+  return respondMethodNotAllowed(req, res, ['DELETE']);
 }
