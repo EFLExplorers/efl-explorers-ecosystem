@@ -484,6 +484,9 @@ model Material {
   description String? @db.Text
   category  String
   url       String   @db.Text
+  kind      String   @default("other") @db.VarChar(64)
+  mimeType  String?  @map("mime_type") @db.Text
+  sizeBytes Int?     @map("size_bytes")
   createdBy Int      @map("created_by")
   createdAt DateTime @default(now()) @map("created_at")
 
@@ -498,6 +501,7 @@ model Bookmark {
   title     String
   url       String   @db.Text
   category  String?  @db.VarChar(128)
+  starred   Boolean  @default(false)
   userId    Int      @map("user_id")
   createdAt DateTime @default(now()) @map("created_at")
 
