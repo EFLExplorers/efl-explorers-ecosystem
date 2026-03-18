@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import crypto from "crypto";
 import { prisma } from "@repo/database";
+import { env } from "@/lib/env";
 
 const TOKEN_BYTES = 32;
 const TOKEN_TTL_MS = 60 * 60 * 1000;
@@ -49,13 +50,12 @@ export default async function handler(
       },
     });
 
-    const baseUrl =
-      process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_SITE_URL || "";
+    const baseUrl = env.NEXTAUTH_URL || env.NEXT_PUBLIC_SITE_URL || "";
     const resetUrl = baseUrl
       ? `${baseUrl}/Auth/reset-password?token=${rawToken}`
       : null;
 
-    if (process.env.NODE_ENV !== "production" && resetUrl) {
+    if (env.NODE_ENV !== "production" && resetUrl) {
       console.log("Password reset URL:", resetUrl);
       return res.status(200).json({ ok: true, resetUrl });
     }

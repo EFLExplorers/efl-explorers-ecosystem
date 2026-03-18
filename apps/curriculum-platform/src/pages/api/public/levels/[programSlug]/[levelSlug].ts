@@ -2,9 +2,10 @@ import { prisma } from "@repo/database";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import { respondMethodNotAllowed } from "@/lib/apiResponses";
+import { env } from "@/lib/env";
 
 const hasValidSharedSecret = (req: NextApiRequest) => {
-  const configured = process.env.CURRICULUM_API_SHARED_SECRET;
+  const configured = env.CURRICULUM_API_SHARED_SECRET;
   if (!configured) {
     return true;
   }

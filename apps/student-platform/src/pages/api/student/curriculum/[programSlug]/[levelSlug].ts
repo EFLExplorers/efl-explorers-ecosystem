@@ -1,14 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import { respondMethodNotAllowed } from "@/lib/apiResponses";
+import { env } from "@/lib/env";
 import { requireStudentApiSession } from "@/lib/requireStudentApiSession";
 
 const getCurriculumBaseUrl = () => {
-  return (process.env.CURRICULUM_PLATFORM_URL ?? "").replace(/\/$/, "");
+  return env.CURRICULUM_PLATFORM_URL.replace(/\/$/, "");
 };
 
 const getSecretHeader = () => {
-  const secret = process.env.CURRICULUM_API_SHARED_SECRET;
+  const secret = env.CURRICULUM_API_SHARED_SECRET;
   const headers: Record<string, string> = {};
   if (secret) {
     headers["x-curriculum-shared-secret"] = secret;

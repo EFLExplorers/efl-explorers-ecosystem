@@ -1,7 +1,9 @@
 import type { NextAuthConfig } from "next-auth";
+import { env } from "@/lib/env";
 
 export const authConfig: NextAuthConfig = {
   providers: [],
+  secret: env.AUTH_SECRET,
   session: {
     strategy: "jwt" as const,
   },
@@ -38,7 +40,6 @@ export const authConfig: NextAuthConfig = {
     },
   },
   pages: {
-    signIn:
-      (process.env.NEXT_PUBLIC_LANDING_PAGE_URL ?? "") + "/Auth/login/teacher",
+    signIn: `${env.NEXT_PUBLIC_LANDING_PAGE_URL}/Auth/login/teacher`,
   },
 };

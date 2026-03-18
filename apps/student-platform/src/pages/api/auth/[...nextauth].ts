@@ -2,6 +2,7 @@ import NextAuth, { type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { createHash } from "crypto";
 import { prisma } from "@repo/database";
+import { env } from "@/lib/env";
 
 const hashToken = (token: string) =>
   createHash("sha256").update(token).digest("hex");
@@ -107,11 +108,10 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn:
-      (process.env.NEXT_PUBLIC_LANDING_PAGE_URL ?? "") + "/Auth/login/student",
-    error:
-      (process.env.NEXT_PUBLIC_LANDING_PAGE_URL ?? "") + "/Auth/login/student",
+    signIn: `${env.NEXT_PUBLIC_LANDING_PAGE_URL}/Auth/login/student`,
+    error: `${env.NEXT_PUBLIC_LANDING_PAGE_URL}/Auth/login/student`,
   },
+  secret: env.NEXTAUTH_SECRET,
 };
 
 export default NextAuth(authOptions);

@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { createHash, randomBytes } from "crypto";
 import { authOptions } from "./[...nextauth]";
 import { prisma } from "@repo/database";
+import { env } from "@/lib/env";
 
 type SsoTokenResponse =
   | { token: string; redirectUrl: string; expiresAt: string }
@@ -14,9 +15,7 @@ const isPlatform = (value: unknown): value is "student" | "teacher" =>
   value === "student" || value === "teacher";
 
 const getPlatformBaseUrl = (platform: "student" | "teacher") =>
-  platform === "teacher"
-    ? process.env.NEXT_PUBLIC_TEACHER_URL
-    : process.env.NEXT_PUBLIC_STUDENT_URL;
+  platform === "teacher" ? env.NEXT_PUBLIC_TEACHER_URL : env.NEXT_PUBLIC_STUDENT_URL;
 
 /** Use origin only so we always hit /sso on the platform (never /dashboard/sso etc). */
 function getOrigin(baseUrl: string): string {

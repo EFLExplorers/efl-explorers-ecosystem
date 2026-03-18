@@ -35,6 +35,8 @@ Copy the templates and fill in real values:
 cp packages/database/.env.example packages/database/.env
 cp apps/landing-page/.env.local.example apps/landing-page/.env.local
 cp apps/teacher-platform/.env.local.example apps/teacher-platform/.env.local
+cp apps/student-platform/.env.local.example apps/student-platform/.env.local
+cp apps/curriculum-platform/.env.local.example apps/curriculum-platform/.env.local
 ```
 
 ### Required values
@@ -48,6 +50,8 @@ At minimum, configure these before running Prisma/app auth flows:
 - `NEXT_PUBLIC_LANDING_PAGE_URL`
 - `NEXT_PUBLIC_TEACHER_URL`
 - `NEXT_PUBLIC_STUDENT_URL`
+
+Teacher platform also accepts `AUTH_SECRET` as a compatibility alias, but `NEXTAUTH_SECRET` is the canonical variable used across the ecosystem.
 
 ## 3) Prisma setup
 

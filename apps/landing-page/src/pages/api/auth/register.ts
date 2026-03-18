@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { hash } from "bcryptjs";
 import { prisma } from "@repo/database";
+import { bcryptSaltRounds } from "@/lib/env";
 
 const normalizeEmail = (email: string) => email.trim().toLowerCase();
 
@@ -39,8 +40,7 @@ export default async function handler(
       return res.status(409).json({ error: "Email already registered" });
     }
 
-    const saltRounds = Number(process.env.BCRYPT_SALT_ROUNDS ?? "10");
-    const passwordHash = await hash(password, saltRounds);
+    const passwordHash = await hash(password, bcryptSaltRounds);
     const name = `${firstName} ${lastName}`.trim();
 
     const user = await prisma.user.create({

@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import crypto from "crypto";
 import { hash } from "bcryptjs";
 import { prisma } from "@repo/database";
+import { bcryptSaltRounds } from "@/lib/env";
 
 const hashToken = (token: string) =>
   crypto.createHash("sha256").update(token).digest("hex");
@@ -36,8 +37,7 @@ export default async function handler(
       return res.status(400).json({ error: "Reset token is invalid or expired" });
     }
 
-    const saltRounds = Number(process.env.BCRYPT_SALT_ROUNDS ?? "10");
-    const passwordHash = await hash(password, saltRounds);
+    const passwordHash = await hash(password, bcryptSaltRounds);
 
     await prisma.user.update({
       where: { id: resetToken.userId },

@@ -1,5 +1,7 @@
+import { env } from "@/lib/env";
+
 const parseBootstrapAllowlist = () => {
-  const raw = process.env.CURRICULUM_BOOTSTRAP_ALLOWLIST ?? "";
+  const raw = env.CURRICULUM_BOOTSTRAP_ALLOWLIST ?? "";
   const emails = raw
     .split(",")
     .map((email) => email.trim().toLowerCase())

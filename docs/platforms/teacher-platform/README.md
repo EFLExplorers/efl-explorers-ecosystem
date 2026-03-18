@@ -14,7 +14,7 @@ lesson planning, and analytics.
 - NextAuth (SSO provider).
 
 ## Environment Variables (Key)
-- `NEXTAUTH_URL`, `NEXTAUTH_SECRET`
+- `NEXTAUTH_URL`, `NEXTAUTH_SECRET` (preferred), `AUTH_SECRET` (alias)
 - `NEXT_PUBLIC_LANDING_PAGE_URL`
 - `DATABASE_URL`, `DIRECT_URL`
 

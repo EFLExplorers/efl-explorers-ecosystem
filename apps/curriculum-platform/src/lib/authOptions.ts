@@ -2,6 +2,7 @@ import { prisma } from "@repo/database";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
+import { env } from "@/lib/env";
 import { verifyPassword } from "@/lib/password";
 
 const normalizeEmail = (email: string) => email.trim().toLowerCase();
@@ -83,4 +84,5 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/login",
   },
+  secret: env.NEXTAUTH_SECRET,
 };

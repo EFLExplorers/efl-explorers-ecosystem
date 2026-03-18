@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { env } from "@/lib/env";
 
 const API_KEY_HEADER = "x-efl-api-key";
 
@@ -6,7 +7,7 @@ export const requireApiKey = (
   req: NextApiRequest,
   res: NextApiResponse
 ): boolean => {
-  const configuredKey = process.env.EFL_API_KEY;
+  const configuredKey = env.EFL_API_KEY;
 
   if (!configuredKey) {
     res.status(500).json({ error: "API key is not configured" });
