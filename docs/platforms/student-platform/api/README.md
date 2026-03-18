@@ -7,6 +7,7 @@
 - `GET /api/student/progress`
 - `GET /api/student/assignments`
 - `PATCH /api/student/assignments/[id]`
+- `GET /api/student/curriculum/[programSlug]/[levelSlug]`
 
 ## Auth
 

@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  schemas = ["auth", "teachers", "students", "shared"]
+  schemas = ["auth", "teachers", "students", "shared", "curriculum"]
 }
 
 enum UserRole {
@@ -517,4 +517,169 @@ model LessonMaterial {
   @@unique([lessonId, materialId])
   @@map("lesson_materials")
   @@schema("teachers")
+}
+
+enum CurriculumLevelStatus {
+  draft
+  published
+  archived
+
+  @@schema("curriculum")
+}
+
+model CurriculumManager {
+  id        String   @id @default(uuid()) @db.Uuid
+  email     String   @unique @db.Text
+  name      String   @db.Text
+  passwordHash String @map("password_hash") @db.Text
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  invitesSent CurriculumInvite[] @relation("CurriculumInviteSentBy")
+  invitesAccepted CurriculumInvite[] @relation("CurriculumInviteAcceptedBy")
+  programs CurriculumProgram[]
+  levelsCreated CurriculumLevel[] @relation("CurriculumLevelCreatedBy")
+  levelsUpdated CurriculumLevel[] @relation("CurriculumLevelUpdatedBy")
+  unitsCreated CurriculumUnit[] @relation("CurriculumUnitCreatedBy")
+  unitsUpdated CurriculumUnit[] @relation("CurriculumUnitUpdatedBy")
+  snapshotsPublished CurriculumPublishSnapshot[]
+
+  @@map("managers")
+  @@schema("curriculum")
+}
+
+model CurriculumInvite {
+  id                  String   @id @default(uuid()) @db.Uuid
+  email               String   @unique @db.Text
+  invitedByManagerId  String?  @map("invited_by_manager_id") @db.Uuid
+  acceptedByManagerId String?  @map("accepted_by_manager_id") @db.Uuid
+  expiresAt           DateTime? @map("expires_at")
+  acceptedAt          DateTime? @map("accepted_at")
+  revokedAt           DateTime? @map("revoked_at")
+  createdAt           DateTime  @default(now()) @map("created_at")
+  updatedAt           DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  invitedByManager CurriculumManager? @relation("CurriculumInviteSentBy", fields: [invitedByManagerId], references: [id], onDelete: SetNull)
+  acceptedByManager CurriculumManager? @relation("CurriculumInviteAcceptedBy", fields: [acceptedByManagerId], references: [id], onDelete: SetNull)
+
+  @@index([acceptedAt, revokedAt])
+  @@map("invites")
+  @@schema("curriculum")
+}
+
+model CurriculumProgram {
+  id                 Int      @id @default(autoincrement())
+  slug               String   @unique @db.VarChar(180)
+  title              String   @db.Text
+  description        String?  @db.Text
+  isArchived         Boolean  @default(false) @map("is_archived")
+  createdByManagerId String   @map("created_by_manager_id") @db.Uuid
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @default(now()) @updatedAt @map("updated_at")
+
+  createdByManager CurriculumManager @relation(fields: [createdByManagerId], references: [id], onDelete: Restrict)
+  levels CurriculumLevel[]
+
+  @@index([isArchived, updatedAt])
+  @@map("programs")
+  @@schema("curriculum")
+}
+
+model CurriculumLevel {
+  id                 Int      @id @default(autoincrement())
+  programId          Int      @map("program_id")
+  slug               String   @db.VarChar(180)
+  title              String   @db.Text
+  orderIndex         Int      @default(0) @map("order_index")
+  status             CurriculumLevelStatus @default(draft)
+  lastPublishedAt    DateTime? @map("last_published_at")
+  createdByManagerId String   @map("created_by_manager_id") @db.Uuid
+  updatedByManagerId String?  @map("updated_by_manager_id") @db.Uuid
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @default(now()) @updatedAt @map("updated_at")
+
+  program CurriculumProgram @relation(fields: [programId], references: [id], onDelete: Cascade)
+  createdByManager CurriculumManager @relation("CurriculumLevelCreatedBy", fields: [createdByManagerId], references: [id], onDelete: Restrict)
+  updatedByManager CurriculumManager? @relation("CurriculumLevelUpdatedBy", fields: [updatedByManagerId], references: [id], onDelete: SetNull)
+  units CurriculumUnit[]
+  snapshots CurriculumPublishSnapshot[]
+
+  @@unique([programId, slug])
+  @@index([programId, orderIndex])
+  @@index([status, lastPublishedAt])
+  @@map("levels")
+  @@schema("curriculum")
+}
+
+model CurriculumUnit {
+  id                 Int      @id @default(autoincrement())
+  levelId            Int      @map("level_id")
+  slug               String   @db.VarChar(220)
+  title              String   @db.Text
+  summary            String?  @db.Text
+  storyMarkdown      String   @default("") @map("story_markdown") @db.Text
+  mediaManifest      Json?    @map("media_manifest")
+  assignmentConfig   Json?    @map("assignment_config")
+  estimatedMinutes   Int?     @map("estimated_minutes")
+  orderIndex         Int      @default(0) @map("order_index")
+  isArchived         Boolean  @default(false) @map("is_archived")
+  createdByManagerId String   @map("created_by_manager_id") @db.Uuid
+  updatedByManagerId String?  @map("updated_by_manager_id") @db.Uuid
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @default(now()) @updatedAt @map("updated_at")
+
+  level CurriculumLevel @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  createdByManager CurriculumManager @relation("CurriculumUnitCreatedBy", fields: [createdByManagerId], references: [id], onDelete: Restrict)
+  updatedByManager CurriculumManager? @relation("CurriculumUnitUpdatedBy", fields: [updatedByManagerId], references: [id], onDelete: SetNull)
+  snapshotUnits CurriculumPublishSnapshotUnit[]
+
+  @@unique([levelId, slug])
+  @@index([levelId, orderIndex])
+  @@index([isArchived])
+  @@map("units")
+  @@schema("curriculum")
+}
+
+model CurriculumPublishSnapshot {
+  id                   String   @id @default(uuid()) @db.Uuid
+  levelId              Int      @map("level_id")
+  version              Int
+  isCurrent            Boolean  @default(false) @map("is_current")
+  publishedAt          DateTime @map("published_at")
+  publishedByManagerId String   @map("published_by_manager_id") @db.Uuid
+  snapshotPayload      Json?    @map("snapshot_payload")
+  createdAt            DateTime @default(now()) @map("created_at")
+
+  level CurriculumLevel @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  publishedByManager CurriculumManager @relation(fields: [publishedByManagerId], references: [id], onDelete: Restrict)
+  units CurriculumPublishSnapshotUnit[]
+
+  @@unique([levelId, version])
+  @@index([levelId, isCurrent])
+  @@map("publish_snapshots")
+  @@schema("curriculum")
+}
+
+model CurriculumPublishSnapshotUnit {
+  id               Int      @id @default(autoincrement())
+  snapshotId       String   @map("snapshot_id") @db.Uuid
+  sourceUnitId     Int      @map("source_unit_id")
+  orderIndex       Int      @map("order_index")
+  slug             String   @db.VarChar(220)
+  title            String   @db.Text
+  summary          String?  @db.Text
+  storyMarkdown    String   @map("story_markdown") @db.Text
+  estimatedMinutes Int?     @map("estimated_minutes")
+  mediaManifest    Json?    @map("media_manifest")
+  assignmentConfig Json?    @map("assignment_config")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  snapshot CurriculumPublishSnapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+  sourceUnit CurriculumUnit @relation(fields: [sourceUnitId], references: [id], onDelete: Restrict)
+
+  @@unique([snapshotId, sourceUnitId])
+  @@index([snapshotId, orderIndex])
+  @@map("publish_snapshot_units")
+  @@schema("curriculum")
 }

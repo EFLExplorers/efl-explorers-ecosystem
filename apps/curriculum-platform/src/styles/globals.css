@@ -1,0 +1,37 @@
+:root {
+  color-scheme: dark;
+  --bg: #0f1115;
+  --panel: #191d24;
+  --text: #f5f7fa;
+  --muted: #9aa5b1;
+  --accent: #4c8dff;
+  --danger: #e35d6a;
+  --border: #2a303a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#__next {
+  margin: 0;
+  min-height: 100%;
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input {
+  font: inherit;
+}
