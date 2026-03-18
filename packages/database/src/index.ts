@@ -22,6 +22,23 @@ const isPrismaAccelerateUrl = (url?: string) =>
 
 const isPostgresUrl = (url?: string) => /^postgres(ql)?:/i.test(url ?? "");
 
+const sanitizePostgresConnectionString = (connectionString: string) => {
+  try {
+    const parsed = new URL(connectionString);
+    // Some providers export ssl file params with value "system" (libpq style),
+    // which causes pg to try opening a local file named "system".
+    ["sslcert", "sslkey", "sslrootcert", "sslcrl"].forEach((param) => {
+      const value = parsed.searchParams.get(param)?.trim().toLowerCase();
+      if (value === "system") {
+        parsed.searchParams.delete(param);
+      }
+    });
+    return parsed.toString();
+  } catch {
+    return connectionString;
+  }
+};
+
 type GlobalPrisma = {
   prisma?: PrismaClient;
   prismaPool?: Pool;
@@ -38,11 +55,17 @@ const getPgPool = (connectionString: string) => {
 
 const createPrismaClient = () => {
   if (directUrl && isPostgresUrl(directUrl)) {
-    return new PrismaClient({ adapter: new PrismaPg(getPgPool(directUrl)) });
+    return new PrismaClient({
+      adapter: new PrismaPg(getPgPool(sanitizePostgresConnectionString(directUrl))),
+    });
   }
 
   if (databaseUrl && isPostgresUrl(databaseUrl)) {
-    return new PrismaClient({ adapter: new PrismaPg(getPgPool(databaseUrl)) });
+    return new PrismaClient({
+      adapter: new PrismaPg(
+        getPgPool(sanitizePostgresConnectionString(databaseUrl))
+      ),
+    });
   }
 
   if (databaseUrl && isPrismaAccelerateUrl(databaseUrl)) {
