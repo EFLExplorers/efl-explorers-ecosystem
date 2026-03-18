@@ -118,3 +118,9 @@ Landing page content endpoints require an API key:
 
 - Teacher platform is database-backed only and requires valid `DATABASE_URL`
   (and `DIRECT_URL` for migrations/seeding flows).
+
+## Vercel Deployment Notes
+
+- Set environment variables per Vercel project (`landing-page`, `teacher-platform`, `student-platform`, `curriculum-platform`), not only at monorepo level.
+- `DATABASE_URL` and `DIRECT_URL` should be present for all DB-backed apps: landing, teacher, student, and curriculum.
+- `CURRICULUM_API_SHARED_SECRET` must match across curriculum, teacher, and student when curriculum API protection is enabled.
