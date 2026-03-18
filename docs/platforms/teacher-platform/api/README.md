@@ -17,3 +17,7 @@ storage layer in `src/lib/storage.ts`.
 - `lesson-materials.md` — Lesson-material linking.
 - `examples.md` — Curl examples.
 - `errors.md` — Status codes by endpoint.
+
+## Curriculum Integration
+
+- `GET /api/curriculum/published/[programSlug]/[levelSlug]` proxies published curriculum snapshots from the curriculum platform for authenticated teacher sessions.
