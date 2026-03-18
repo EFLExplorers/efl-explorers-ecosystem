@@ -3,18 +3,14 @@ import { prisma } from "@repo/database";
 
 import type { StudentAssignmentMutationResponseDto } from "@/lib/api/student-contracts";
 import { mapTaskToStudentAssignment } from "@/lib/server/student-assignments";
+import {
+  parsePositiveIntQueryParam,
+  respondMethodNotAllowed,
+} from "@/lib/apiResponses";
+import { requireStudentApiSession } from "@/lib/requireStudentApiSession";
 
 type RequestBody = {
   readonly completed?: boolean;
-  readonly userId?: number;
-};
-
-const parseTaskId = (value: string | string[] | undefined) => {
-  const parsed = Number(Array.isArray(value) ? value[0] : value);
-  if (!Number.isFinite(parsed)) {
-    return null;
-  }
-  return parsed;
 };
 
 export const studentAssignmentByIdHandler = async (
@@ -24,14 +20,22 @@ export const studentAssignmentByIdHandler = async (
   >,
 ) => {
   if (request.method !== "PATCH") {
-    response.setHeader("Allow", "PATCH");
-    return response.status(405).json({ error: "Method not allowed" });
+    return respondMethodNotAllowed(request, response, ["PATCH"]);
   }
 
-  const taskId = parseTaskId(request.query.id);
-  if (!taskId) {
-    return response.status(400).json({ error: "Invalid assignment id" });
+  const session = await requireStudentApiSession(request, response);
+  if (!session) {
+    return;
   }
+
+  const parsedTaskId = parsePositiveIntQueryParam(
+    request.query.id,
+    "assignment ID"
+  );
+  if (!parsedTaskId.ok) {
+    return response.status(400).json({ error: parsedTaskId.message });
+  }
+  const taskId = parsedTaskId.value;
 
   const body = request.body as RequestBody;
   if (typeof body.completed !== "boolean") {
@@ -47,7 +51,7 @@ export const studentAssignmentByIdHandler = async (
       return response.status(404).json({ error: "Assignment not found" });
     }
 
-    if (typeof body.userId === "number" && existingTask.userId !== body.userId) {
+    if (existingTask.userId !== session.studentRecordUserId) {
       return response.status(403).json({ error: "Assignment ownership mismatch" });
     }
 

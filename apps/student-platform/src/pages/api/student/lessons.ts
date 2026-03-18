@@ -3,14 +3,20 @@ import { prisma } from "@repo/database";
 
 import type { StudentLessonsResponseDto } from "@/lib/api/student-contracts";
 import { mapLessonsForStudent } from "@/lib/server/student-lessons";
+import { respondMethodNotAllowed } from "@/lib/apiResponses";
+import { requireStudentApiSession } from "@/lib/requireStudentApiSession";
 
 export const studentLessonsHandler = async (
   request: NextApiRequest,
   response: NextApiResponse<StudentLessonsResponseDto | { error: string }>,
 ) => {
   if (request.method !== "GET") {
-    response.setHeader("Allow", "GET");
-    return response.status(405).json({ error: "Method not allowed" });
+    return respondMethodNotAllowed(request, response, ["GET"]);
+  }
+
+  const session = await requireStudentApiSession(request, response);
+  if (!session) {
+    return;
   }
 
   try {

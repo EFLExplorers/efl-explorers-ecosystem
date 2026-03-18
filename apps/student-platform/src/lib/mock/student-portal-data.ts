@@ -126,3 +126,21 @@ export const MOCK_STUDENT_PORTAL_DATA: StudentPortalData = {
     },
   ],
 };
+
+export const EMPTY_STUDENT_PORTAL_DATA: StudentPortalData = {
+  student: {
+    name: "Student",
+    levelLabel: "Level",
+    planetLabel: "Planet",
+    unitProgressLabel: "Unit 0 of 0",
+    stars: 0,
+    mode: "teacher-led",
+  },
+  teacher: {
+    name: "Teacher",
+    verified: false,
+  },
+  assignments: [],
+  lessons: [],
+  classes: [],
+};

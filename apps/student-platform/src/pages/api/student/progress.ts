@@ -3,16 +3,10 @@ import { prisma } from "@repo/database";
 
 import type { StudentProgressResponseDto } from "@/lib/api/student-contracts";
 import { mapTaskToStudentAssignment } from "@/lib/server/student-assignments";
+import { respondMethodNotAllowed } from "@/lib/apiResponses";
+import { requireStudentApiSession } from "@/lib/requireStudentApiSession";
 
 const TOTAL_UNITS = 30;
-
-const parseUserId = (value: string | string[] | undefined) => {
-  const parsed = Number(Array.isArray(value) ? value[0] : value);
-  if (!Number.isFinite(parsed)) {
-    return 1;
-  }
-  return parsed;
-};
 
 const clampPercent = (value: number) => Math.max(0, Math.min(100, value));
 
@@ -21,12 +15,16 @@ export const studentProgressHandler = async (
   response: NextApiResponse<StudentProgressResponseDto | { error: string }>,
 ) => {
   if (request.method !== "GET") {
-    response.setHeader("Allow", "GET");
-    return response.status(405).json({ error: "Method not allowed" });
+    return respondMethodNotAllowed(request, response, ["GET"]);
+  }
+
+  const session = await requireStudentApiSession(request, response);
+  if (!session) {
+    return;
   }
 
   try {
-    const userId = parseUserId(request.query.userId);
+    const userId = session.studentRecordUserId;
     const tasks = await prisma.task.findMany({
       where: { userId },
       orderBy: [{ completed: "asc" }, { dueDate: "asc" }],

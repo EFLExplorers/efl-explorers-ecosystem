@@ -8,7 +8,7 @@ import {
   fetchStudentAssignments,
   fetchStudentDashboard,
 } from "@/lib/api/student-client";
-import { MOCK_STUDENT_PORTAL_DATA } from "@/lib/mock/student-portal-data";
+import { EMPTY_STUDENT_PORTAL_DATA } from "@/lib/mock/student-portal-data";
 
 export const StudentsHomePage = () => {
   const { data: assignmentsResponse } = useQuery({
@@ -21,13 +21,9 @@ export const StudentsHomePage = () => {
   });
 
   const portalData = useMemo(() => {
-    if (!assignmentsResponse?.data) {
-      return MOCK_STUDENT_PORTAL_DATA;
-    }
-
     return {
-      ...MOCK_STUDENT_PORTAL_DATA,
-      assignments: assignmentsResponse.data,
+      ...EMPTY_STUDENT_PORTAL_DATA,
+      assignments: assignmentsResponse?.data ?? [],
     };
   }, [assignmentsResponse?.data]);
 

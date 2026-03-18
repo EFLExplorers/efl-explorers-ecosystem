@@ -1,7 +1,16 @@
 # Student Platform Backend
 
-No backend logic is implemented yet.
+Student platform backend supports SSO-based sessions and authenticated data access.
 
-Suggested next steps:
-- Add SSO sign-in flow similar to the teacher platform.
-- Define server-side storage boundaries and validation.
+## Key Files
+
+- `apps/student-platform/src/pages/api/auth/[...nextauth].ts` — SSO token validation.
+- `apps/student-platform/src/pages/sso.tsx` — SSO receiver route.
+- `apps/student-platform/src/lib/requireStudentApiSession.ts` — Auth + identity mapping.
+- `apps/student-platform/src/pages/api/student/*` — Authenticated API routes.
+
+## Identity Mapping
+
+Student sessions map authenticated UUIDs to numeric student record IDs via:
+
+- `students.student_user_mappings` (Prisma: `StudentUserMapping`)
