@@ -33,3 +33,9 @@ If a future demo mode is needed, it must be explicit and isolated:
 - clearly surfaced in UI (banner/badge)
 - never active by default
 - never enabled in staging/production
+
+## Tracked Runtime Exceptions
+
+Non-curriculum runtime exceptions and migration guidance are tracked in:
+
+- `non-curriculum-data-integrity-audit.md`

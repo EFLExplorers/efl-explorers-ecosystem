@@ -10,15 +10,13 @@ type TeacherSession = {
 const resolveTeacherRecordUserId = async (
   authUserId: string
 ): Promise<number> => {
-  const mapping = await prisma.teacherUserMapping.upsert({
+  const mapping = await prisma.teacherUserMapping.findUnique({
     where: { authUserId },
-    update: {},
-    create: { authUserId },
     select: { id: true },
   });
 
-  if (!mapping.id || mapping.id <= 0) {
-    throw new Error("Unable to resolve teacher record ID.");
+  if (!mapping?.id || mapping.id <= 0) {
+    throw new Error("Teacher account mapping is missing.");
   }
 
   return mapping.id;
@@ -47,7 +45,13 @@ export const requireTeacherApiSession = async (
     return { userId, teacherRecordUserId };
   } catch (error) {
     console.error("Failed to resolve teacher identity mapping:", error);
-    res.status(500).json({ message: "Failed to resolve teacher identity" });
+    const message =
+      error instanceof Error &&
+      error.message === "Teacher account mapping is missing."
+        ? "Teacher account is not provisioned."
+        : "Failed to resolve teacher identity";
+    const statusCode = message === "Teacher account is not provisioned." ? 403 : 500;
+    res.status(statusCode).json({ message });
     return null;
   }
 };
