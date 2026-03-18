@@ -6,6 +6,10 @@ import {
   parsePositiveIntQueryParam,
   respondMethodNotAllowed,
 } from "@/lib/apiResponses";
+import {
+  normalizeAssignmentConfig,
+  validateAssignmentConfig,
+} from "@/lib/assignmentHooks";
 import { requireCurriculumApiSession } from "@/lib/requireCurriculumApiSession";
 import { slugify } from "@/lib/slug";
 
@@ -65,6 +69,18 @@ export default async function handler(
       }
     }
 
+    if (parsed.data.assignmentConfig !== undefined) {
+      const assignmentValidation = validateAssignmentConfig(
+        parsed.data.assignmentConfig
+      );
+      if (!assignmentValidation.success) {
+        return res.status(400).json({
+          error: "Invalid assignmentConfig payload",
+          details: assignmentValidation.error.flatten(),
+        });
+      }
+    }
+
     const unit = await prisma.curriculumUnit.update({
       where: { id: unitId },
       data: {
@@ -91,7 +107,9 @@ export default async function handler(
         ...(parsed.data.assignmentConfig !== undefined
           ? {
               assignmentConfig:
-                parsed.data.assignmentConfig as Prisma.InputJsonValue,
+                normalizeAssignmentConfig(
+                  parsed.data.assignmentConfig
+                ) as Prisma.InputJsonValue,
             }
           : {}),
         ...(parsed.data.orderIndex !== undefined

@@ -28,6 +28,107 @@ type Unit = {
   slug: string;
   orderIndex: number;
   levelId: number;
+  estimatedMinutes?: number | null;
+  assignmentConfig?: AssignmentConfig;
+};
+
+type AssignmentConfig = {
+  mode?: "self_paced" | "teacher_led";
+  dueDays?: number;
+  maxAttempts?: number;
+  estimatedMinutes?: number;
+  scoring?: {
+    passingScore?: number;
+    masteryThreshold?: number;
+  };
+  reporting?: {
+    emitUnitCompletion?: boolean;
+  };
+};
+
+type AssignmentDraft = {
+  mode: "self_paced" | "teacher_led";
+  dueDays: string;
+  maxAttempts: string;
+  estimatedMinutes: string;
+  passingScore: string;
+  masteryThreshold: string;
+  emitUnitCompletion: boolean;
+};
+
+const emptyAssignmentDraft: AssignmentDraft = {
+  mode: "self_paced",
+  dueDays: "",
+  maxAttempts: "",
+  estimatedMinutes: "",
+  passingScore: "",
+  masteryThreshold: "",
+  emitUnitCompletion: true,
+};
+
+const toPositiveInt = (value: string) => {
+  const parsed = Number.parseInt(value, 10);
+  if (Number.isNaN(parsed) || parsed <= 0) {
+    return undefined;
+  }
+  return parsed;
+};
+
+const toBoundedPercent = (value: string) => {
+  const parsed = Number.parseInt(value, 10);
+  if (Number.isNaN(parsed) || parsed < 0 || parsed > 100) {
+    return undefined;
+  }
+  return parsed;
+};
+
+const assignmentConfigFromDraft = (draft: AssignmentDraft): AssignmentConfig => {
+  const dueDays = toPositiveInt(draft.dueDays);
+  const maxAttempts = toPositiveInt(draft.maxAttempts);
+  const estimatedMinutes = toPositiveInt(draft.estimatedMinutes);
+  const passingScore = toBoundedPercent(draft.passingScore);
+  const masteryThreshold = toBoundedPercent(draft.masteryThreshold);
+
+  return {
+    mode: draft.mode,
+    ...(dueDays ? { dueDays } : {}),
+    ...(maxAttempts ? { maxAttempts } : {}),
+    ...(estimatedMinutes ? { estimatedMinutes } : {}),
+    ...(passingScore !== undefined || masteryThreshold !== undefined
+      ? {
+          scoring: {
+            ...(passingScore !== undefined ? { passingScore } : {}),
+            ...(masteryThreshold !== undefined ? { masteryThreshold } : {}),
+          },
+        }
+      : {}),
+    reporting: {
+      emitUnitCompletion: draft.emitUnitCompletion,
+    },
+  };
+};
+
+const assignmentDraftFromUnit = (unit: Unit): AssignmentDraft => {
+  const config = unit.assignmentConfig;
+  return {
+    mode: config?.mode ?? "self_paced",
+    dueDays: config?.dueDays ? String(config.dueDays) : "",
+    maxAttempts: config?.maxAttempts ? String(config.maxAttempts) : "",
+    estimatedMinutes: config?.estimatedMinutes
+      ? String(config.estimatedMinutes)
+      : unit.estimatedMinutes
+        ? String(unit.estimatedMinutes)
+        : "",
+    passingScore:
+      config?.scoring?.passingScore !== undefined
+        ? String(config.scoring.passingScore)
+        : "",
+    masteryThreshold:
+      config?.scoring?.masteryThreshold !== undefined
+        ? String(config.scoring.masteryThreshold)
+        : "",
+    emitUnitCompletion: config?.reporting?.emitUnitCompletion ?? true,
+  };
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -49,9 +150,16 @@ export const ProgramsPage = () => {
   const [units, setUnits] = useState<Unit[]>([]);
   const [selectedProgramId, setSelectedProgramId] = useState<number | null>(null);
   const [selectedLevelId, setSelectedLevelId] = useState<number | null>(null);
+  const [selectedUnitId, setSelectedUnitId] = useState<number | null>(null);
   const [programTitle, setProgramTitle] = useState("");
   const [levelTitle, setLevelTitle] = useState("");
   const [unitTitle, setUnitTitle] = useState("");
+  const [createAssignmentDraft, setCreateAssignmentDraft] = useState<AssignmentDraft>(
+    emptyAssignmentDraft
+  );
+  const [editAssignmentDraft, setEditAssignmentDraft] = useState<AssignmentDraft>(
+    emptyAssignmentDraft
+  );
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loadingPrograms, setLoadingPrograms] = useState(false);
@@ -60,10 +168,15 @@ export const ProgramsPage = () => {
   const [creatingProgram, setCreatingProgram] = useState(false);
   const [creatingLevel, setCreatingLevel] = useState(false);
   const [creatingUnit, setCreatingUnit] = useState(false);
+  const [savingUnitConfig, setSavingUnitConfig] = useState(false);
 
   const currentProgram = useMemo(
     () => programs.find((item) => item.id === selectedProgramId) ?? null,
     [programs, selectedProgramId]
+  );
+  const selectedUnit = useMemo(
+    () => units.find((item) => item.id === selectedUnitId) ?? null,
+    [selectedUnitId, units]
   );
 
   const loadPrograms = useCallback(async () => {
@@ -97,6 +210,9 @@ export const ProgramsPage = () => {
     }
     const nextLevels = data.levels ?? [];
     setLevels(nextLevels);
+    setUnits([]);
+    setSelectedUnitId(null);
+    setEditAssignmentDraft(emptyAssignmentDraft);
     if (!selectedLevelId && nextLevels.length > 0) {
       const firstLevel = nextLevels[0];
       if (firstLevel) {
@@ -115,7 +231,16 @@ export const ProgramsPage = () => {
       setLoadingUnits(false);
       return;
     }
-    setUnits(data.units ?? []);
+    const nextUnits = data.units ?? [];
+    setUnits(nextUnits);
+    const firstUnit = nextUnits[0];
+    if (firstUnit) {
+      setSelectedUnitId(firstUnit.id);
+      setEditAssignmentDraft(assignmentDraftFromUnit(firstUnit));
+    } else {
+      setSelectedUnitId(null);
+      setEditAssignmentDraft(emptyAssignmentDraft);
+    }
     setLoadingUnits(false);
   }, []);
 
@@ -134,6 +259,12 @@ export const ProgramsPage = () => {
       void loadUnits(selectedLevelId);
     }
   }, [loadUnits, selectedLevelId]);
+
+  useEffect(() => {
+    if (selectedUnit) {
+      setEditAssignmentDraft(assignmentDraftFromUnit(selectedUnit));
+    }
+  }, [selectedUnit]);
 
   const createProgram = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -197,7 +328,12 @@ export const ProgramsPage = () => {
     const response = await fetch("/api/units", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ levelId: selectedLevelId, title: unitTitle }),
+      body: JSON.stringify({
+        levelId: selectedLevelId,
+        title: unitTitle,
+        estimatedMinutes: toPositiveInt(createAssignmentDraft.estimatedMinutes),
+        assignmentConfig: assignmentConfigFromDraft(createAssignmentDraft),
+      }),
     });
     const data = (await response.json()) as { unit?: Unit; error?: string };
     if (!response.ok || !data.unit) {
@@ -206,9 +342,41 @@ export const ProgramsPage = () => {
       return;
     }
     setUnitTitle("");
+    setCreateAssignmentDraft(emptyAssignmentDraft);
     await loadUnits(selectedLevelId);
     setSuccess(`Unit "${data.unit.title}" created.`);
     setCreatingUnit(false);
+  };
+
+  const saveSelectedUnitConfig = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!selectedUnitId) {
+      return;
+    }
+
+    setError(null);
+    setSuccess(null);
+    setSavingUnitConfig(true);
+    const response = await fetch(`/api/units/${selectedUnitId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        estimatedMinutes: toPositiveInt(editAssignmentDraft.estimatedMinutes) ?? null,
+        assignmentConfig: assignmentConfigFromDraft(editAssignmentDraft),
+      }),
+    });
+    const data = (await response.json()) as { unit?: Unit; error?: string };
+    if (!response.ok || !data.unit) {
+      setError(data.error ?? "Failed to update unit assignment config");
+      setSavingUnitConfig(false);
+      return;
+    }
+
+    if (selectedLevelId) {
+      await loadUnits(selectedLevelId);
+    }
+    setSuccess(`Assignment config updated for "${data.unit.title}".`);
+    setSavingUnitConfig(false);
   };
 
   return (
@@ -336,6 +504,116 @@ export const ProgramsPage = () => {
               required
             />
           </label>
+          <div className={styles.grid}>
+            <label className={styles.field}>
+              Assignment mode
+              <select
+                className={styles.select}
+                value={createAssignmentDraft.mode}
+                onChange={(event) =>
+                  setCreateAssignmentDraft((previous) => ({
+                    ...previous,
+                    mode: event.target.value as "self_paced" | "teacher_led",
+                  }))
+                }
+                aria-label="Create unit assignment mode"
+              >
+                <option value="self_paced">Self paced</option>
+                <option value="teacher_led">Teacher led</option>
+              </select>
+            </label>
+            <label className={styles.field}>
+              Due in days (optional)
+              <input
+                className={styles.input}
+                type="number"
+                min={1}
+                value={createAssignmentDraft.dueDays}
+                onChange={(event) =>
+                  setCreateAssignmentDraft((previous) => ({
+                    ...previous,
+                    dueDays: event.target.value,
+                  }))
+                }
+              />
+            </label>
+            <label className={styles.field}>
+              Max attempts (optional)
+              <input
+                className={styles.input}
+                type="number"
+                min={1}
+                value={createAssignmentDraft.maxAttempts}
+                onChange={(event) =>
+                  setCreateAssignmentDraft((previous) => ({
+                    ...previous,
+                    maxAttempts: event.target.value,
+                  }))
+                }
+              />
+            </label>
+            <label className={styles.field}>
+              Estimated minutes (optional)
+              <input
+                className={styles.input}
+                type="number"
+                min={1}
+                value={createAssignmentDraft.estimatedMinutes}
+                onChange={(event) =>
+                  setCreateAssignmentDraft((previous) => ({
+                    ...previous,
+                    estimatedMinutes: event.target.value,
+                  }))
+                }
+              />
+            </label>
+            <label className={styles.field}>
+              Passing score (0-100, optional)
+              <input
+                className={styles.input}
+                type="number"
+                min={0}
+                max={100}
+                value={createAssignmentDraft.passingScore}
+                onChange={(event) =>
+                  setCreateAssignmentDraft((previous) => ({
+                    ...previous,
+                    passingScore: event.target.value,
+                  }))
+                }
+              />
+            </label>
+            <label className={styles.field}>
+              Mastery threshold (0-100, optional)
+              <input
+                className={styles.input}
+                type="number"
+                min={0}
+                max={100}
+                value={createAssignmentDraft.masteryThreshold}
+                onChange={(event) =>
+                  setCreateAssignmentDraft((previous) => ({
+                    ...previous,
+                    masteryThreshold: event.target.value,
+                  }))
+                }
+              />
+            </label>
+          </div>
+          <label className={styles.field}>
+            <span>Emit unit completion event</span>
+            <input
+              type="checkbox"
+              checked={createAssignmentDraft.emitUnitCompletion}
+              onChange={(event) =>
+                setCreateAssignmentDraft((previous) => ({
+                  ...previous,
+                  emitUnitCompletion: event.target.checked,
+                }))
+              }
+              aria-label="Create unit emit unit completion event"
+            />
+          </label>
           <button
             className={`${styles.button} ${styles.buttonPrimary}`}
             type="submit"
@@ -358,10 +636,147 @@ export const ProgramsPage = () => {
         <ul className={styles.list}>
           {units.map((unit) => (
             <li key={unit.id}>
-              {unit.orderIndex + 1}. {unit.title} ({unit.slug})
+              <button
+                className={styles.button}
+                type="button"
+                onClick={() => setSelectedUnitId(unit.id)}
+                aria-label={`Select unit ${unit.title}`}
+              >
+                {unit.orderIndex + 1}. {unit.title} ({unit.slug})
+              </button>
             </li>
           ))}
         </ul>
+      </section>
+
+      <section className={styles.card}>
+        <h2>Assignment Config Editor</h2>
+        {!selectedUnit ? (
+          <p className={styles.empty}>Select a unit to edit assignment/reporting hooks.</p>
+        ) : (
+          <form onSubmit={saveSelectedUnitConfig}>
+            <p className={styles.meta}>
+              Editing: {selectedUnit.title} ({selectedUnit.slug})
+            </p>
+            <div className={styles.grid}>
+              <label className={styles.field}>
+                Assignment mode
+                <select
+                  className={styles.select}
+                  value={editAssignmentDraft.mode}
+                  onChange={(event) =>
+                    setEditAssignmentDraft((previous) => ({
+                      ...previous,
+                      mode: event.target.value as "self_paced" | "teacher_led",
+                    }))
+                  }
+                  aria-label="Edit unit assignment mode"
+                >
+                  <option value="self_paced">Self paced</option>
+                  <option value="teacher_led">Teacher led</option>
+                </select>
+              </label>
+              <label className={styles.field}>
+                Due in days (optional)
+                <input
+                  className={styles.input}
+                  type="number"
+                  min={1}
+                  value={editAssignmentDraft.dueDays}
+                  onChange={(event) =>
+                    setEditAssignmentDraft((previous) => ({
+                      ...previous,
+                      dueDays: event.target.value,
+                    }))
+                  }
+                />
+              </label>
+              <label className={styles.field}>
+                Max attempts (optional)
+                <input
+                  className={styles.input}
+                  type="number"
+                  min={1}
+                  value={editAssignmentDraft.maxAttempts}
+                  onChange={(event) =>
+                    setEditAssignmentDraft((previous) => ({
+                      ...previous,
+                      maxAttempts: event.target.value,
+                    }))
+                  }
+                />
+              </label>
+              <label className={styles.field}>
+                Estimated minutes (optional)
+                <input
+                  className={styles.input}
+                  type="number"
+                  min={1}
+                  value={editAssignmentDraft.estimatedMinutes}
+                  onChange={(event) =>
+                    setEditAssignmentDraft((previous) => ({
+                      ...previous,
+                      estimatedMinutes: event.target.value,
+                    }))
+                  }
+                />
+              </label>
+              <label className={styles.field}>
+                Passing score (0-100, optional)
+                <input
+                  className={styles.input}
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={editAssignmentDraft.passingScore}
+                  onChange={(event) =>
+                    setEditAssignmentDraft((previous) => ({
+                      ...previous,
+                      passingScore: event.target.value,
+                    }))
+                  }
+                />
+              </label>
+              <label className={styles.field}>
+                Mastery threshold (0-100, optional)
+                <input
+                  className={styles.input}
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={editAssignmentDraft.masteryThreshold}
+                  onChange={(event) =>
+                    setEditAssignmentDraft((previous) => ({
+                      ...previous,
+                      masteryThreshold: event.target.value,
+                    }))
+                  }
+                />
+              </label>
+            </div>
+            <label className={styles.field}>
+              <span>Emit unit completion event</span>
+              <input
+                type="checkbox"
+                checked={editAssignmentDraft.emitUnitCompletion}
+                onChange={(event) =>
+                  setEditAssignmentDraft((previous) => ({
+                    ...previous,
+                    emitUnitCompletion: event.target.checked,
+                  }))
+                }
+                aria-label="Edit unit emit unit completion event"
+              />
+            </label>
+            <button
+              className={`${styles.button} ${styles.buttonPrimary}`}
+              type="submit"
+              disabled={savingUnitConfig}
+            >
+              {savingUnitConfig ? "Saving..." : "Save assignment config"}
+            </button>
+          </form>
+        )}
       </section>
     </main>
   );

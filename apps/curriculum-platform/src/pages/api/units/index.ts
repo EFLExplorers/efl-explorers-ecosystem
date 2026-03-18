@@ -6,6 +6,10 @@ import {
   parsePositiveIntQueryParam,
   respondMethodNotAllowed,
 } from "@/lib/apiResponses";
+import {
+  normalizeAssignmentConfig,
+  validateAssignmentConfig,
+} from "@/lib/assignmentHooks";
 import { requireCurriculumApiSession } from "@/lib/requireCurriculumApiSession";
 import { slugify } from "@/lib/slug";
 
@@ -15,6 +19,7 @@ const createUnitSchema = z.object({
   slug: z.string().min(1).max(220).optional(),
   summary: z.string().max(2000).optional(),
   storyMarkdown: z.string().optional(),
+  assignmentConfig: z.record(z.unknown()).optional(),
   orderIndex: z.number().int().min(0).optional(),
   estimatedMinutes: z.number().int().positive().optional(),
 });
@@ -68,6 +73,18 @@ export default async function handler(
       return res.status(409).json({ error: "Unit slug already exists in level" });
     }
 
+    if (parsed.data.assignmentConfig !== undefined) {
+      const assignmentValidation = validateAssignmentConfig(
+        parsed.data.assignmentConfig
+      );
+      if (!assignmentValidation.success) {
+        return res.status(400).json({
+          error: "Invalid assignmentConfig payload",
+          details: assignmentValidation.error.flatten(),
+        });
+      }
+    }
+
     const maxUnit = await prisma.curriculumUnit.findFirst({
       where: { levelId: parsed.data.levelId },
       orderBy: { orderIndex: "desc" },
@@ -84,7 +101,9 @@ export default async function handler(
         orderIndex: parsed.data.orderIndex ?? (maxUnit?.orderIndex ?? -1) + 1,
         estimatedMinutes: parsed.data.estimatedMinutes ?? null,
         mediaManifest: {} as Prisma.InputJsonValue,
-        assignmentConfig: {} as Prisma.InputJsonValue,
+        assignmentConfig: normalizeAssignmentConfig(
+          parsed.data.assignmentConfig
+        ) as Prisma.InputJsonValue,
         createdByManagerId: session.managerId,
       },
     });
