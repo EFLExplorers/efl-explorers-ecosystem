@@ -40,6 +40,10 @@ The schema uses PostgreSQL with multiple schemas:
 - `Material`, `Bookmark`, `LessonMaterial`
 - `TeacherUserMapping` — maps authenticated UUID users to numeric teacher record IDs
 
+### Student Domain (`students.*`)
+
+- `StudentUserMapping` — maps authenticated UUID users to numeric student record IDs
+
 ## Runtime Behavior
 
 `packages/database/src/index.ts`:
@@ -61,3 +65,4 @@ The `db/` folder contains helpers for bootstrapping or resetting data and
 importing content (schema + content seeds).
 For incremental manual rollout, `db/20260317_add_teacher_user_mappings.sql`
 adds the teacher identity mapping table without requiring a full database reset.
+For student identity mapping, use `db/20260317_add_student_user_mappings.sql`.

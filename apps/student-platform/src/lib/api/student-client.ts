@@ -6,16 +6,11 @@ import type {
   StudentProgressResponseDto,
 } from "@/lib/api/student-contracts";
 
-const DEFAULT_STUDENT_USER_ID = 1;
-
 export const fetchStudentAssignments =
   async (): Promise<StudentAssignmentsResponseDto> => {
-    const response = await fetch(
-      `/api/student/assignments?userId=${DEFAULT_STUDENT_USER_ID}`,
-      {
-        credentials: "include",
-      },
-    );
+    const response = await fetch("/api/student/assignments", {
+      credentials: "include",
+    });
 
     if (!response.ok) {
       throw new Error("Unable to fetch assignments");
@@ -26,12 +21,9 @@ export const fetchStudentAssignments =
 
 export const fetchStudentDashboard =
   async (): Promise<StudentDashboardResponseDto> => {
-    const response = await fetch(
-      `/api/student/dashboard?userId=${DEFAULT_STUDENT_USER_ID}`,
-      {
-        credentials: "include",
-      },
-    );
+    const response = await fetch("/api/student/dashboard", {
+      credentials: "include",
+    });
 
     if (!response.ok) {
       throw new Error("Unable to fetch dashboard");
@@ -49,7 +41,6 @@ export const markStudentAssignmentCompleted = async (
     credentials: "include",
     body: JSON.stringify({
       completed: true,
-      userId: DEFAULT_STUDENT_USER_ID,
     }),
   });
 
@@ -74,12 +65,9 @@ export const fetchStudentLessons = async (): Promise<StudentLessonsResponseDto> 
 
 export const fetchStudentProgress =
   async (): Promise<StudentProgressResponseDto> => {
-    const response = await fetch(
-      `/api/student/progress?userId=${DEFAULT_STUDENT_USER_ID}`,
-      {
-        credentials: "include",
-      },
-    );
+    const response = await fetch("/api/student/progress", {
+      credentials: "include",
+    });
 
     if (!response.ok) {
       throw new Error("Unable to fetch progress");

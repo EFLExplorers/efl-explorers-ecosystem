@@ -8,6 +8,7 @@
    - `packages/database/.env.example` ➜ `packages/database/.env`
    - `apps/landing-page/.env.local.example` ➜ `apps/landing-page/.env.local`
    - `apps/teacher-platform/.env.local.example` ➜ `apps/teacher-platform/.env.local`
+   - `apps/student-platform/.env.local.example` ➜ `apps/student-platform/.env.local`
 3. Generate Prisma client:
    - `pnpm --filter @repo/database build`
 4. Apply SQL migrations (non-destructive, tracked by filename/checksum):

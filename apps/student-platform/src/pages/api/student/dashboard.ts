@@ -3,26 +3,24 @@ import { prisma } from "@repo/database";
 
 import type { StudentDashboardResponseDto } from "@/lib/api/student-contracts";
 import { mapTaskToStudentAssignment } from "@/lib/server/student-assignments";
-
-const parseUserId = (value: string | string[] | undefined) => {
-  const parsed = Number(Array.isArray(value) ? value[0] : value);
-  if (!Number.isFinite(parsed)) {
-    return 1;
-  }
-  return parsed;
-};
+import { respondMethodNotAllowed } from "@/lib/apiResponses";
+import { requireStudentApiSession } from "@/lib/requireStudentApiSession";
 
 export const studentDashboardHandler = async (
   request: NextApiRequest,
   response: NextApiResponse<StudentDashboardResponseDto | { error: string }>,
 ) => {
   if (request.method !== "GET") {
-    response.setHeader("Allow", "GET");
-    return response.status(405).json({ error: "Method not allowed" });
+    return respondMethodNotAllowed(request, response, ["GET"]);
+  }
+
+  const session = await requireStudentApiSession(request, response);
+  if (!session) {
+    return;
   }
 
   try {
-    const userId = parseUserId(request.query.userId);
+    const userId = session.studentRecordUserId;
     const [tasks, nextLesson] = await Promise.all([
       prisma.task.findMany({
         where: { userId },

@@ -1,7 +1,13 @@
 # Student Platform API
 
-No API routes are implemented yet.
+## Implemented Routes
 
-Suggested next steps:
-- Add `/api/auth` endpoints for SSO.
-- Define student domain endpoints (progress, assignments, lessons).
+- `GET /api/student/dashboard`
+- `GET /api/student/lessons`
+- `GET /api/student/progress`
+- `GET /api/student/assignments`
+- `PATCH /api/student/assignments/[id]`
+
+## Auth
+
+- Student API endpoints require an authenticated student session (SSO).
