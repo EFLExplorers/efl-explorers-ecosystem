@@ -31,6 +31,19 @@ import { formatDistanceToNow } from "date-fns";
 import { classNames } from "@/utils/classNames";
 import styles from './messages.module.css';
 
+type Conversation = {
+  contactId: number;
+  contactName: string;
+  lastMessage: Message;
+  unreadCount: number;
+  messages: Message[];
+};
+
+type ConversationsResponse = {
+  viewerId: number;
+  conversations: Conversation[];
+};
+
 export default function MessagesPage() {
   const [tab, setTab] = useState("messages");
   const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
@@ -39,12 +52,9 @@ export default function MessagesPage() {
   const [announcementTitle, setAnnouncementTitle] = useState("");
   const [announcementContent, setAnnouncementContent] = useState("");
   const [announcementPriority, setAnnouncementPriority] = useState("normal");
-  
-  // Current user for demo (would come from auth context in real app)
-  const currentUserId = 1;
-  
-  const { data: messages, isLoading: messagesLoading } = useQuery<Message[]>({
-    queryKey: ["/api/messages"]
+
+  const { data: conversationsData, isLoading: messagesLoading } = useQuery<ConversationsResponse>({
+    queryKey: ["/api/messages/conversations"]
   });
   
   const { data: announcements, isLoading: announcementsLoading } = useQuery<Announcement[]>({
@@ -57,6 +67,7 @@ export default function MessagesPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/messages/conversations"] });
       setMessageText("");
     }
   });
@@ -92,43 +103,11 @@ export default function MessagesPage() {
     });
   };
   
-  // Simple conversation grouping for demo purposes
-  const conversations = messages
-    ? Array.from(new Set(messages.map(msg => 
-        msg.senderId === currentUserId ? msg.receiverId : msg.senderId
-      )))
-        .map(contactId => {
-          const conversationMessages = messages.filter(msg => 
-            (msg.senderId === currentUserId && msg.receiverId === contactId) || 
-            (msg.receiverId === currentUserId && msg.senderId === contactId)
-          ).sort((a, b) => {
-            const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-            const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-            return dateA - dateB;
-          });
-          
-          const lastMessage = conversationMessages[conversationMessages.length - 1];
-          const unreadCount = conversationMessages.filter(m => 
-            m.senderId !== currentUserId && !m.isRead
-          ).length;
-          
-          return {
-            contactId,
-            contactName: contactId === 2 ? "Sarah Wilson" : "Robert Miller", // Mock names for demo
-            lastMessage,
-            unreadCount,
-            messages: conversationMessages
-          };
-        })
-        .filter(conv => 
-          !searchText || conv.contactName.toLowerCase().includes(searchText.toLowerCase())
-        )
-        .sort((a, b) => {
-          const dateA = a.lastMessage.createdAt ? new Date(a.lastMessage.createdAt).getTime() : 0;
-          const dateB = b.lastMessage.createdAt ? new Date(b.lastMessage.createdAt).getTime() : 0;
-          return dateB - dateA;
-        })
-    : [];
+  const viewerId = conversationsData?.viewerId ?? null;
+  const conversations =
+    conversationsData?.conversations.filter((conversation) =>
+      !searchText || conversation.contactName.toLowerCase().includes(searchText.toLowerCase())
+    ) ?? [];
   
   const selectedConversationData = conversations?.find(c => c.contactId === selectedConversation);
   
@@ -246,19 +225,19 @@ export default function MessagesPage() {
                           key={index}
                           className={classNames(
                             styles.messageWrapper,
-                            msg.senderId === currentUserId ? styles.messageWrapperSent : styles.messageWrapperReceived
+                            msg.senderId === viewerId ? styles.messageWrapperSent : styles.messageWrapperReceived
                           )}
                         >
                           <div 
                             className={classNames(
                               styles.messageBubble,
-                              msg.senderId === currentUserId ? styles.messageBubbleSent : styles.messageBubbleReceived
+                              msg.senderId === viewerId ? styles.messageBubbleSent : styles.messageBubbleReceived
                             )}
                           >
                             <p>{msg.content}</p>
                             <p className={classNames(
                               styles.messageTime,
-                              msg.senderId === currentUserId ? styles.messageTimeSent : styles.messageTimeReceived
+                              msg.senderId === viewerId ? styles.messageTimeSent : styles.messageTimeReceived
                             )}>
                               {getTimeAgo(msg.createdAt)}
                             </p>

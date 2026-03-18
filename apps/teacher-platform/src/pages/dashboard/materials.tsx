@@ -20,7 +20,6 @@ import {
   List as ListIcon,
   Download,
   ExternalLink,
-  Star,
   Bookmark,
   MoreVertical,
   Folder,
@@ -61,6 +60,30 @@ type CategoryFilter = "all" | "documents" | "videos" | "images" | "links" | "oth
 type SortBy = "name" | "date" | "category" | "size";
 type SortOrder = "asc" | "desc";
 
+type MaterialsUsageResponse = {
+  totalCount: number;
+  totalSizeBytes: number;
+  byKind: Array<{
+    kind: string;
+    count: number;
+    totalSizeBytes: number;
+  }>;
+};
+
+const formatSize = (bytes: number | null | undefined) => {
+  if (bytes === null || bytes === undefined) {
+    return "Unknown";
+  }
+  if (bytes === 0) {
+    return "0 B";
+  }
+  const units = ["B", "KB", "MB", "GB", "TB"];
+  const value = Math.floor(Math.log(bytes) / Math.log(1024));
+  const unitIndex = Math.min(value, units.length - 1);
+  const size = bytes / 1024 ** unitIndex;
+  return `${size.toFixed(size >= 10 || unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
+};
+
 export default function MaterialsPage() {
   const [search, setSearch] = useState("");
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
@@ -72,36 +95,23 @@ export default function MaterialsPage() {
   const { data: materials, isLoading } = useQuery<Material[]>({
     queryKey: ["/api/materials"]
   });
-  
-  // Helper function to determine category from URL
-  const getCategoryFromUrl = (url: string): CategoryFilter => {
-    const lowerUrl = url.toLowerCase();
-    if (lowerUrl.endsWith('.pdf') || lowerUrl.endsWith('.doc') || lowerUrl.endsWith('.docx') || lowerUrl.endsWith('.txt')) {
-      return "documents";
-    } else if (lowerUrl.endsWith('.mp4') || lowerUrl.endsWith('.avi') || lowerUrl.endsWith('.mov') || lowerUrl.includes('youtube.com') || lowerUrl.includes('vimeo.com')) {
-      return "videos";
-    } else if (lowerUrl.endsWith('.jpg') || lowerUrl.endsWith('.jpeg') || lowerUrl.endsWith('.png') || lowerUrl.endsWith('.gif') || lowerUrl.endsWith('.webp')) {
-      return "images";
-    } else if (lowerUrl.startsWith('http') || lowerUrl.startsWith('www')) {
-      return "links";
-    } else {
-      return "other";
-    }
-  };
 
-  // Get file size (mock for now - would come from metadata)
-  const getFileSize = (url: string): string => {
-    // Mock sizes based on category
-    const category = getCategoryFromUrl(url);
-    const sizes: Record<CategoryFilter, string> = {
-      all: "0 KB",
-      documents: "2.4 MB",
-      videos: "15.8 MB",
-      images: "1.2 MB",
-      links: "0 KB",
-      other: "0.5 MB"
-    };
-    return sizes[category] || "0 KB";
+  const { data: usage } = useQuery<MaterialsUsageResponse>({
+    queryKey: ["/api/materials/usage"],
+  });
+  
+  const getCategoryFromMaterial = (material: Material): CategoryFilter => {
+    const kind = (material.kind ?? "other").toLowerCase();
+    if (
+      kind === "documents" ||
+      kind === "videos" ||
+      kind === "images" ||
+      kind === "links" ||
+      kind === "other"
+    ) {
+      return kind;
+    }
+    return "other";
   };
 
   // Get formatted date
@@ -165,7 +175,7 @@ export default function MaterialsPage() {
     let filtered = materials.filter(material => {
       const matchesSearch = material.title.toLowerCase().includes(search.toLowerCase()) ||
                            (material.description?.toLowerCase().includes(search.toLowerCase()) ?? false);
-      const matchesCategory = categoryFilter === "all" || getCategoryFromUrl(material.url) === categoryFilter;
+      const matchesCategory = categoryFilter === "all" || getCategoryFromMaterial(material) === categoryFilter;
       return matchesSearch && matchesCategory;
     });
 
@@ -186,10 +196,7 @@ export default function MaterialsPage() {
           comparison = a.category.localeCompare(b.category);
           break;
         case "size":
-          // Mock size comparison
-          const sizeA = getFileSize(a.url);
-          const sizeB = getFileSize(b.url);
-          comparison = sizeA.localeCompare(sizeB);
+          comparison = (a.sizeBytes ?? 0) - (b.sizeBytes ?? 0);
           break;
       }
       
@@ -220,7 +227,7 @@ export default function MaterialsPage() {
       other: 0
     };
     materials.forEach(material => {
-      const category = getCategoryFromUrl(material.url);
+      const category = getCategoryFromMaterial(material);
       counts[category]++;
     });
     return counts;
@@ -235,11 +242,18 @@ export default function MaterialsPage() {
     { id: "other" as CategoryFilter, label: "Other", icon: Folder, count: categoryCounts.other },
   ];
 
+  const usageByKind = new Map(
+    (usage?.byKind ?? []).map((entry) => [entry.kind, entry.totalSizeBytes])
+  );
+  const quotaBytes = 10 * 1024 * 1024 * 1024;
+  const usedBytes = usage?.totalSizeBytes ?? 0;
+  const usedPercent = Math.min(Math.round((usedBytes / quotaBytes) * 100), 100);
+
   // Preview component
   const renderPreview = () => {
     if (!previewMaterial) return null;
     
-    const category = getCategoryFromUrl(previewMaterial.url);
+    const category = getCategoryFromMaterial(previewMaterial);
     const isImage = category === "images";
     const isVideo = category === "videos";
     const isPDF = previewMaterial.url.toLowerCase().endsWith('.pdf');
@@ -345,7 +359,7 @@ export default function MaterialsPage() {
               <div className={styles.previewMetadataItem}>
                 <span className={styles.previewMetadataLabel}>Size:</span>
                 <span className={styles.previewMetadataValue}>
-                  {getFileSize(previewMaterial.url)}
+                  {formatSize(previewMaterial.sizeBytes)}
                 </span>
               </div>
             </div>
@@ -371,14 +385,9 @@ export default function MaterialsPage() {
               <Download className={styles.previewActionIcon} />
               Download
             </Button>
-            <Button 
-              variant="outline"
-              onClick={() => {
-                // Bookmark functionality would go here
-              }}
-            >
+            <Button variant="outline" disabled>
               <Bookmark className={styles.previewActionIcon} />
-              Bookmark
+              Bookmark (Coming Soon)
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -394,9 +403,9 @@ export default function MaterialsPage() {
           <p className={styles.subtitle}>Browse and manage your teaching resources</p>
         </div>
         <div className={styles.headerAction}>
-          <Button className={styles.uploadButton}>
+          <Button className={styles.uploadButton} disabled>
             <Plus className={styles.uploadIcon} />
-            Upload Material
+            Upload Material (Coming Soon)
           </Button>
         </div>
       </div>
@@ -440,10 +449,12 @@ export default function MaterialsPage() {
                 <div className={styles.storageInfo}>
                   <div className={styles.storageLabel}>
                     <span>Used</span>
-                    <span className={styles.storageValue}>4.8 GB of 10 GB</span>
+                    <span className={styles.storageValue}>
+                      {formatSize(usedBytes)} of {formatSize(quotaBytes)}
+                    </span>
                   </div>
                   <div className={styles.storageBar}>
-                    <div className={styles.storageBarFill} style={{ width: '48%' }}></div>
+                    <div className={styles.storageBarFill} style={{ width: `${usedPercent}%` }}></div>
                   </div>
                 </div>
                 <Separator className={styles.storageSeparator} />
@@ -453,28 +464,38 @@ export default function MaterialsPage() {
                       <div className={classNames(styles.storageDot, styles.storageDotBlue)}></div>
                       <span>Documents</span>
                     </span>
-                    <span className={styles.storageItemValue}>2.1 GB</span>
+                    <span className={styles.storageItemValue}>
+                      {formatSize(usageByKind.get("documents") ?? 0)}
+                    </span>
                   </div>
                   <div className={styles.storageItem}>
                     <span className={styles.storageItemLabel}>
                       <div className={classNames(styles.storageDot, styles.storageDotPurple)}></div>
                       <span>Videos</span>
                     </span>
-                    <span className={styles.storageItemValue}>1.9 GB</span>
+                    <span className={styles.storageItemValue}>
+                      {formatSize(usageByKind.get("videos") ?? 0)}
+                    </span>
                   </div>
                   <div className={styles.storageItem}>
                     <span className={styles.storageItemLabel}>
                       <div className={classNames(styles.storageDot, styles.storageDotGreen)}></div>
                       <span>Images</span>
                     </span>
-                    <span className={styles.storageItemValue}>0.6 GB</span>
+                    <span className={styles.storageItemValue}>
+                      {formatSize(usageByKind.get("images") ?? 0)}
+                    </span>
                   </div>
                   <div className={styles.storageItem}>
                     <span className={styles.storageItemLabel}>
                       <div className={classNames(styles.storageDot, styles.storageDotGray)}></div>
                       <span>Other</span>
                     </span>
-                    <span className={styles.storageItemValue}>0.2 GB</span>
+                    <span className={styles.storageItemValue}>
+                      {formatSize(
+                        (usageByKind.get("other") ?? 0) + (usageByKind.get("links") ?? 0)
+                      )}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -599,12 +620,10 @@ export default function MaterialsPage() {
                       </p>
                       <Button
                         className={styles.emptyStateButton}
-                        onClick={() => {
-                          // Upload functionality would go here
-                        }}
+                        disabled
                       >
                         <Plus className={styles.emptyStateButtonIcon} />
-                        Upload Material
+                        Upload Material (Coming Soon)
                       </Button>
                     </>
                   )}
@@ -612,7 +631,7 @@ export default function MaterialsPage() {
               ) : viewMode === "grid" ? (
                 <div className={styles.materialsGrid}>
                   {filteredAndSortedMaterials.map((material) => {
-                    const category = getCategoryFromUrl(material.url);
+                    const category = getCategoryFromMaterial(material);
                     const categoryColorClass = getCategoryColor(category);
                     const recentlyAdded = isRecentlyAdded(material.createdAt);
                     const isImage = category === "images";
@@ -666,14 +685,6 @@ export default function MaterialsPage() {
                                   <Download className={styles.dropdownIcon} />
                                   Download
                                 </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                  <Bookmark className={styles.dropdownIcon} />
-                                  Bookmark
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                  <Star className={styles.dropdownIcon} />
-                                  Add to Favorites
-                                </DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem className={styles.deleteItem}>Delete</DropdownMenuItem>
                               </DropdownMenuContent>
@@ -692,7 +703,7 @@ export default function MaterialsPage() {
                             <div className={styles.materialCardMetaItem}>
                               <HardDrive className={styles.materialCardMetaIcon} />
                               <span className={styles.materialCardMetaText}>
-                                {getFileSize(material.url)}
+                                {formatSize(material.sizeBytes)}
                               </span>
                             </div>
                           </div>
@@ -727,7 +738,7 @@ export default function MaterialsPage() {
               ) : (
                 <div className={styles.materialsList}>
                   {filteredAndSortedMaterials.map((material) => {
-                    const category = getCategoryFromUrl(material.url);
+                    const category = getCategoryFromMaterial(material);
                     const categoryColorClass = getCategoryColor(category);
                     const recentlyAdded = isRecentlyAdded(material.createdAt);
                     
@@ -755,7 +766,7 @@ export default function MaterialsPage() {
                             </div>
                             <div className={styles.materialListMetaItem}>
                               <HardDrive className={styles.materialListMetaIcon} />
-                              <span>{getFileSize(material.url)}</span>
+                              <span>{formatSize(material.sizeBytes)}</span>
                             </div>
                           </div>
                         </div>
@@ -784,13 +795,6 @@ export default function MaterialsPage() {
                           >
                             <Download className={styles.materialListButtonIcon} />
                           </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className={styles.materialListButton}
-                          >
-                            <Bookmark className={styles.materialListButtonIcon} />
-                          </Button>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button variant="ghost" size="sm" className={styles.materialListButton}>
@@ -801,10 +805,6 @@ export default function MaterialsPage() {
                               <DropdownMenuItem onClick={() => setPreviewMaterial(material)}>
                                 <Eye className={styles.dropdownIcon} />
                                 Preview
-                              </DropdownMenuItem>
-                              <DropdownMenuItem>
-                                <Star className={styles.dropdownIcon} />
-                                Add to Favorites
                               </DropdownMenuItem>
                               <DropdownMenuItem>
                                 <ExternalLink className={styles.dropdownIcon} />
