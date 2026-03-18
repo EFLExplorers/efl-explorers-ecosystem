@@ -5,6 +5,7 @@
 - `apps/curriculum-platform/src/lib/authOptions.ts` - Standalone credentials-based NextAuth configuration.
 - `apps/curriculum-platform/src/lib/requireCurriculumApiSession.ts` - API session guard for manager-only routes.
 - `apps/curriculum-platform/src/lib/invitePolicy.ts` - Bootstrap allowlist handling.
+- `apps/curriculum-platform/src/lib/assignmentHooks.ts` - Assignment/reporting hook contract schema + payload builder.
 - `apps/curriculum-platform/src/pages/api/auth/register.ts` - Invite-only registration flow.
 - `apps/curriculum-platform/src/pages/api/publish/levels/[levelId].ts` - Publish snapshot transaction.
 

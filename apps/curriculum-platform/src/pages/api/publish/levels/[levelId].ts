@@ -1,10 +1,14 @@
-import { prisma } from "@repo/database";
+import { prisma, type Prisma } from "@repo/database";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import {
   parsePositiveIntQueryParam,
   respondMethodNotAllowed,
 } from "@/lib/apiResponses";
+import {
+  buildAssignmentHooksPayload,
+  validateAssignmentConfig,
+} from "@/lib/assignmentHooks";
 import { requireCurriculumApiSession } from "@/lib/requireCurriculumApiSession";
 
 export default async function handler(
@@ -51,6 +55,27 @@ export default async function handler(
     return res.status(400).json({ error: "Cannot publish empty level" });
   }
 
+  const invalidUnits = level.units
+    .map((unit) => {
+      const result = validateAssignmentConfig(unit.assignmentConfig);
+      if (result.success) {
+        return null;
+      }
+      return {
+        unitId: unit.id,
+        unitSlug: unit.slug,
+        errors: result.error.flatten(),
+      };
+    })
+    .filter((item) => item !== null);
+
+  if (invalidUnits.length > 0) {
+    return res.status(400).json({
+      error: "Cannot publish level with invalid assignmentConfig in units",
+      invalidUnits,
+    });
+  }
+
   const latest = await prisma.curriculumPublishSnapshot.findFirst({
     where: { levelId },
     orderBy: { version: "desc" },
@@ -58,6 +83,25 @@ export default async function handler(
   });
   const nextVersion = (latest?.version ?? 0) + 1;
   const now = new Date();
+
+  const assignmentHooks = buildAssignmentHooksPayload({
+    program: level.program,
+    level: {
+      id: level.id,
+      slug: level.slug,
+      title: level.title,
+    },
+    units: level.units.map((unit) => ({
+      id: unit.id,
+      slug: unit.slug,
+      title: unit.title,
+      orderIndex: unit.orderIndex,
+      estimatedMinutes: unit.estimatedMinutes,
+      assignmentConfig: unit.assignmentConfig,
+    })),
+    snapshotVersion: nextVersion,
+  });
+  const assignmentHooksJson = assignmentHooks as Prisma.InputJsonValue;
 
   const snapshot = await prisma.$transaction(async (tx) => {
     await tx.curriculumPublishSnapshot.updateMany({
@@ -81,7 +125,8 @@ export default async function handler(
             orderIndex: level.orderIndex,
           },
           unitCount: level.units.length,
-        },
+          assignmentHooks: assignmentHooksJson,
+        } as Prisma.InputJsonValue,
       },
       select: { id: true, version: true },
     });
@@ -113,5 +158,5 @@ export default async function handler(
     return created;
   });
 
-  return res.status(201).json({ snapshot });
+  return res.status(201).json({ snapshot, assignmentHooks });
 }

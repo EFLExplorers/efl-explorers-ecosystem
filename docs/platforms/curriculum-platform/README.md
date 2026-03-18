@@ -7,7 +7,7 @@ Curriculum Platform is the authoring and publishing system for story-like EFL cu
 - Invite-only manager access.
 - Program/level/unit authoring.
 - Immutable publish snapshots for downstream platforms.
-- Direct integration with teacher and student platforms for content delivery.
+- Assignment/reporting hook payloads prepared for downstream platform integration.
 
 ## Documentation Index
 
