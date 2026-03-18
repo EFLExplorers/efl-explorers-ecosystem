@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Card, CardHeader, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/DropdownMenu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Bookmark } from "@shared/schema";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { classNames } from "@/utils/classNames";
 import styles from './bookmarks.module.css';
 
@@ -45,13 +46,44 @@ export default function BookmarksPage() {
   const { data: bookmarks, isLoading } = useQuery<Bookmark[]>({
     queryKey: ["/api/bookmarks"]
   });
+
+  const updateBookmarkMutation = useMutation({
+    mutationFn: async (variables: { id: number; starred: boolean }) => {
+      await apiRequest("PATCH", `/api/bookmarks/item/${variables.id}`, {
+        starred: variables.starred,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/bookmarks"] });
+    },
+  });
+
+  const deleteBookmarkMutation = useMutation({
+    mutationFn: async (bookmarkId: number) => {
+      await apiRequest("DELETE", `/api/bookmarks/item/${bookmarkId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/bookmarks"] });
+    },
+  });
   
   // Filter bookmarks based on search, folder, and starred status
   const filteredBookmarks = bookmarks?.filter(bookmark => 
     bookmark.title.toLowerCase().includes(search.toLowerCase()) &&
     (currentFolder === "all" || bookmark.category === currentFolder) &&
-    (!starredFilter || bookmark.id % 3 === 0) // Mock starred status for demo
+    (!starredFilter || bookmark.starred)
   ) || [];
+
+  const handleToggleStar = (bookmark: Bookmark) => {
+    updateBookmarkMutation.mutate({
+      id: bookmark.id,
+      starred: !bookmark.starred,
+    });
+  };
+
+  const handleDeleteBookmark = (bookmarkId: number) => {
+    deleteBookmarkMutation.mutate(bookmarkId);
+  };
   
   // Folder colors for visual distinction
   const getFolderColor = (folder: BookmarkFolder) => {
@@ -238,7 +270,7 @@ export default function BookmarksPage() {
               ) : viewMode === "grid" ? (
                 <div className={styles.bookmarksGrid}>
                   {filteredBookmarks.map((bookmark) => {
-                    const isStarred = bookmark.id % 3 === 0; // Mock starred status for demo
+                    const isStarred = bookmark.starred;
                     const folderColor = getFolderColor(bookmark.category as BookmarkFolder || "unfiled");
                     
                     return (
@@ -251,7 +283,7 @@ export default function BookmarksPage() {
                               variant="ghost" 
                               size="sm" 
                               className={styles.starButton}
-                              onClick={() => {/* Toggle star in real app */}}
+                              onClick={() => handleToggleStar(bookmark)}
                             >
                               {isStarred ? <Star className={styles.starIconFilled} /> : <StarOff className={styles.starIcon} />}
                             </Button>
@@ -279,7 +311,7 @@ export default function BookmarksPage() {
                                   <FolderPlus className={styles.dropdownIcon} />
                                   Move to Folder
                                 </DropdownMenuItem>
-                                <DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleToggleStar(bookmark)}>
                                   {isStarred ? (
                                     <>
                                       <StarOff className={styles.dropdownIcon} />
@@ -293,7 +325,7 @@ export default function BookmarksPage() {
                                   )}
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem className={styles.deleteItem}>
+                                <DropdownMenuItem className={styles.deleteItem} onClick={() => handleDeleteBookmark(bookmark.id)}>
                                   <Trash2 className={styles.dropdownIcon} />
                                   Delete
                                 </DropdownMenuItem>
@@ -308,7 +340,7 @@ export default function BookmarksPage() {
               ) : (
                 <div className={styles.bookmarksList}>
                   {filteredBookmarks.map((bookmark) => {
-                    const isStarred = bookmark.id % 3 === 0; // Mock starred status for demo
+                    const isStarred = bookmark.starred;
                     
                     return (
                       <div key={bookmark.id} className={styles.bookmarkListItem}>
@@ -316,7 +348,7 @@ export default function BookmarksPage() {
                           variant="ghost" 
                           size="sm" 
                           className={styles.listStarButton}
-                          onClick={() => {/* Toggle star in real app */}}
+                          onClick={() => handleToggleStar(bookmark)}
                         >
                           {isStarred ? <Star className={styles.starIconFilled} /> : <StarOff className={styles.starIcon} />}
                         </Button>
@@ -346,7 +378,7 @@ export default function BookmarksPage() {
                                 <FolderPlus className={styles.dropdownIcon} />
                                 Move to Folder
                               </DropdownMenuItem>
-                              <DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleToggleStar(bookmark)}>
                                 {isStarred ? (
                                   <>
                                     <StarOff className={styles.dropdownIcon} />
@@ -360,7 +392,7 @@ export default function BookmarksPage() {
                                 )}
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
-                              <DropdownMenuItem className={styles.deleteItem}>
+                              <DropdownMenuItem className={styles.deleteItem} onClick={() => handleDeleteBookmark(bookmark.id)}>
                                 <Trash2 className={styles.dropdownIcon} />
                                 Delete
                               </DropdownMenuItem>

@@ -72,57 +72,7 @@ import {
 import { classNames } from "@/utils/classNames";
 import styles from './reports.module.css';
 
-// Enhanced mock data for comprehensive analytics
-const performanceData = [
-  { name: "Grade A", students: 12, color: "#4ade80", trend: "+2" },
-  { name: "Grade B", students: 25, color: "#60a5fa", trend: "+5" },
-  { name: "Grade C", students: 18, color: "#facc15", trend: "-3" },
-  { name: "Grade D", students: 8, color: "#f87171", trend: "-1" },
-  { name: "Grade F", students: 2, color: "#ef4444", trend: "-2" },
-];
-
-const attendanceData = [
-  { name: "90-100%", students: 35, color: "#4ade80" },
-  { name: "80-90%", students: 20, color: "#60a5fa" },
-  { name: "70-80%", students: 12, color: "#facc15" },
-  { name: "<70%", students: 8, color: "#f87171" },
-];
-
-const progressData = [
-  { month: "Jan", science: 78, math: 72, english: 65, average: 71.7 },
-  { month: "Feb", science: 80, math: 75, english: 68, average: 74.3 },
-  { month: "Mar", science: 82, math: 78, english: 70, average: 76.7 },
-  { month: "Apr", science: 85, math: 80, english: 75, average: 80.0 },
-  { month: "May", science: 87, math: 83, english: 78, average: 82.7 },
-];
-
-const engagementData = [
-  { week: "W1", participation: 68, assignments: 75, attendance: 82 },
-  { week: "W2", participation: 72, assignments: 78, attendance: 85 },
-  { week: "W3", participation: 70, assignments: 80, attendance: 83 },
-  { week: "W4", participation: 75, assignments: 82, attendance: 87 },
-  { week: "W5", participation: 78, assignments: 85, attendance: 89 },
-];
-
-const subjectPerformance = [
-  { subject: "Science", score: 85, trend: 4.2, students: 45 },
-  { subject: "Math", score: 78, trend: 2.8, students: 45 },
-  { subject: "English", score: 72, trend: 3.5, students: 45 },
-  { subject: "Reading", score: 80, trend: 5.1, students: 45 },
-];
-
-const riskStudents = [
-  { name: "Emma Johnson", risk: "High", reason: "Declining attendance", score: 45 },
-  { name: "Michael Chen", risk: "Medium", reason: "Low assignment completion", score: 58 },
-  { name: "Sarah Williams", risk: "Medium", reason: "Performance drop", score: 62 },
-];
-
-const insights = [
-  { type: "success", icon: CheckCircle2, title: "Strong Improvement", description: "25 students improved by 5+ points this month" },
-  { type: "warning", icon: AlertTriangle, title: "Attention Needed", description: "8 students showing declining trends" },
-  { type: "info", icon: Lightbulb, title: "Opportunity", description: "Math scores have 12% improvement potential" },
-  { type: "success", icon: Target, title: "On Track", description: "82% of students meeting performance goals" },
-];
+const gradeOrder = ["A", "B", "C", "D", "F"] as const;
 
 export default function ReportsPage() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -166,12 +116,126 @@ export default function ReportsPage() {
       totalStudents,
       averageAttendance: Math.round(avgAttendance),
       averagePerformance: Math.round(avgPerformance),
-      improvementRate: 4.2, // Mock
+      improvementRate: 0,
       atRiskCount: atRisk,
       topPerformers,
       engagementScore: Math.round((avgAttendance + avgPerformance) / 2),
     };
   }, [students]);
+
+  const performanceData = useMemo(() => {
+    const baseColors: Record<(typeof gradeOrder)[number], string> = {
+      A: "#4ade80",
+      B: "#60a5fa",
+      C: "#facc15",
+      D: "#f87171",
+      F: "#ef4444",
+    };
+    const counts = new Map<(typeof gradeOrder)[number], number>(
+      gradeOrder.map((grade) => [grade, 0])
+    );
+
+    for (const student of students ?? []) {
+      const grade = student.performanceLevel as (typeof gradeOrder)[number] | null;
+      if (grade && counts.has(grade)) {
+        counts.set(grade, (counts.get(grade) ?? 0) + 1);
+      }
+    }
+
+    return gradeOrder.map((grade) => ({
+      name: `Grade ${grade}`,
+      students: counts.get(grade) ?? 0,
+      color: baseColors[grade],
+      trend: "N/A",
+    }));
+  }, [students]);
+
+  const attendanceData = useMemo(() => {
+    const buckets = [
+      { name: "90-100%", students: 0, color: "#4ade80" },
+      { name: "80-90%", students: 0, color: "#60a5fa" },
+      { name: "70-80%", students: 0, color: "#facc15" },
+      { name: "<70%", students: 0, color: "#f87171" },
+    ];
+
+    for (const student of students ?? []) {
+      const rate = student.attendanceRate ?? 0;
+      if (rate >= 90) {
+        buckets[0].students += 1;
+      } else if (rate >= 80) {
+        buckets[1].students += 1;
+      } else if (rate >= 70) {
+        buckets[2].students += 1;
+      } else {
+        buckets[3].students += 1;
+      }
+    }
+
+    return buckets;
+  }, [students]);
+
+  const subjectPerformance: Array<{ subject: string; score: number; trend: number; students: number }> = [];
+  const progressData: Array<{ month: string; science: number; math: number; english: number }> = [];
+  const engagementData: Array<{ week: string; participation: number; assignments: number; attendance: number }> = [];
+
+  const riskStudents = useMemo(() => {
+    return (students ?? [])
+      .filter((student) => (student.attendanceRate ?? 0) < 70 || student.performanceLevel === "D" || student.performanceLevel === "F")
+      .slice(0, 10)
+      .map((student) => ({
+        name: student.fullName,
+        risk: (student.attendanceRate ?? 0) < 70 ? "High" : "Medium",
+        reason:
+          (student.attendanceRate ?? 0) < 70
+            ? "Low attendance"
+            : "Low performance level",
+        score: Math.round(
+          (((student.attendanceRate ?? 0) +
+            (student.performanceLevel === "A"
+              ? 90
+              : student.performanceLevel === "B"
+              ? 80
+              : student.performanceLevel === "C"
+              ? 70
+              : student.performanceLevel === "D"
+              ? 60
+              : student.performanceLevel === "F"
+              ? 50
+              : 0)) /
+            2)
+        ),
+      }));
+  }, [students]);
+
+  const insights = useMemo(
+    () => [
+      {
+        type: "success",
+        icon: CheckCircle2,
+        title: "Top Performers",
+        description: `${analytics.topPerformers} students are currently in top performance bands.`,
+      },
+      {
+        type: "warning",
+        icon: AlertTriangle,
+        title: "Students At Risk",
+        description: `${analytics.atRiskCount} students currently need additional support.`,
+      },
+      {
+        type: "info",
+        icon: Info,
+        title: "Data Source",
+        description: "Metrics in this view are derived from current persisted student records.",
+      },
+      {
+        type: "success",
+        icon: Target,
+        title: "Coverage",
+        description: `${analytics.totalStudents} students included in this report scope.`,
+      },
+    ],
+    [analytics]
+  );
   
   const getPerformanceBadge = (grade: string | undefined | null) => {
     if (!grade) return <Badge variant="outline">Not Graded</Badge>;
@@ -214,7 +278,7 @@ export default function ReportsPage() {
           <CardContent className={styles.metricContent}>
             <div className={styles.metricHeader}>
               <Users className={styles.metricIcon} />
-              <span className={styles.metricTrend}>+3 this month</span>
+              <span className={styles.metricTrend}>Current snapshot</span>
             </div>
             <div className={styles.metricValue}>{analytics.totalStudents}</div>
             <div className={styles.metricLabel}>Total Students</div>
@@ -236,7 +300,7 @@ export default function ReportsPage() {
           <CardContent className={styles.metricContent}>
             <div className={styles.metricHeader}>
               <Clock className={styles.metricIcon} />
-              <span className={styles.metricTrendPositive}>+2.5%</span>
+              <span className={styles.metricTrendPositive}>N/A</span>
             </div>
             <div className={styles.metricValue}>{analytics.averageAttendance}%</div>
             <div className={styles.metricLabel}>Average Attendance</div>
@@ -247,7 +311,7 @@ export default function ReportsPage() {
           <CardContent className={styles.metricContent}>
             <div className={styles.metricHeader}>
               <Activity className={styles.metricIcon} />
-              <span className={styles.metricTrendPositive}>+5.2%</span>
+              <span className={styles.metricTrendPositive}>N/A</span>
             </div>
             <div className={styles.metricValue}>{analytics.engagementScore}%</div>
             <div className={styles.metricLabel}>Engagement Score</div>
@@ -258,7 +322,7 @@ export default function ReportsPage() {
           <CardContent className={styles.metricContent}>
             <div className={styles.metricHeader}>
               <Award className={styles.metricIcon} />
-              <span className={styles.metricTrendPositive}>+4</span>
+              <span className={styles.metricTrendPositive}>Current count</span>
             </div>
             <div className={styles.metricValue}>{analytics.topPerformers}</div>
             <div className={styles.metricLabel}>Top Performers</div>
@@ -269,7 +333,7 @@ export default function ReportsPage() {
           <CardContent className={styles.metricContent}>
             <div className={styles.metricHeader}>
               <AlertCircle className={styles.metricIcon} />
-              <span className={styles.metricTrendNegative}>-2</span>
+              <span className={styles.metricTrendNegative}>Current count</span>
             </div>
             <div className={styles.metricValue}>{analytics.atRiskCount}</div>
             <div className={styles.metricLabel}>Students at Risk</div>
@@ -545,11 +609,21 @@ export default function ReportsPage() {
             <div className={styles.statsGrid}>
               <div className={styles.statBox}>
                 <p className={styles.statLabel}>Average Grade</p>
-                <p className={styles.statValue}>B</p>
+                <p className={styles.statValue}>
+                  {analytics.averagePerformance >= 85
+                    ? "A"
+                    : analytics.averagePerformance >= 75
+                    ? "B"
+                    : analytics.averagePerformance >= 65
+                    ? "C"
+                    : analytics.averagePerformance >= 55
+                    ? "D"
+                    : "F"}
+                </p>
               </div>
               <div className={styles.statBox}>
                 <p className={styles.statLabel}>Top Subject</p>
-                <p className={styles.statValue}>Science</p>
+                <p className={styles.statValue}>N/A</p>
               </div>
             </div>
           </CardContent>
@@ -632,35 +706,17 @@ export default function ReportsPage() {
                     <TableRow key={student.id}>
                       <TableCell className={styles.nameCell}>{student.fullName}</TableCell>
                       <TableCell>Level {student.level}</TableCell>
-                      <TableCell>
-                        {student.id % 5 === 0 ? 'C+' : student.id % 3 === 0 ? 'B+' : student.id % 2 === 0 ? 'A-' : 'B'}
-                      </TableCell>
-                      <TableCell>
-                        {student.id % 4 === 0 ? 'B-' : student.id % 3 === 0 ? 'A' : student.id % 2 === 0 ? 'B+' : 'C+'}
-                      </TableCell>
-                      <TableCell>
-                        {student.id % 5 === 0 ? 'B' : student.id % 3 === 0 ? 'B+' : student.id % 2 === 0 ? 'C+' : 'A-'}
-                      </TableCell>
+                      <TableCell>N/A</TableCell>
+                      <TableCell>N/A</TableCell>
+                      <TableCell>N/A</TableCell>
                       <TableCell>
                         {getPerformanceBadge(student.performanceLevel)}
                       </TableCell>
                       <TableCell>
-                        {student.id % 3 === 0 ? (
-                          <div className={classNames(styles.trend, styles.trendUp)}>
-                            <ArrowUpRight className={styles.trendIcon} />
-                            <span>+4.2%</span>
-                          </div>
-                        ) : student.id % 5 === 0 ? (
-                          <div className={classNames(styles.trend, styles.trendDown)}>
-                            <ArrowDownRight className={styles.trendIcon} />
-                            <span>-2.8%</span>
-                          </div>
-                        ) : (
-                          <div className={classNames(styles.trend, styles.trendNeutral)}>
-                            <ArrowUpRight className={styles.trendIcon} />
-                            <span>+1.5%</span>
-                          </div>
-                        )}
+                        <div className={classNames(styles.trend, styles.trendNeutral)}>
+                          <ArrowUpRight className={styles.trendIcon} />
+                          <span>N/A</span>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))
@@ -709,11 +765,11 @@ export default function ReportsPage() {
             <div className={styles.statsGrid}>
               <div className={styles.statBox}>
                 <p className={styles.statLabel}>Average Attendance</p>
-                <p className={styles.statValue}>86%</p>
+                <p className={styles.statValue}>{analytics.averageAttendance}%</p>
               </div>
               <div className={styles.statBox}>
                 <p className={styles.statLabel}>Absence Rate</p>
-                <p className={styles.statValue}>14%</p>
+                <p className={styles.statValue}>{Math.max(0, 100 - analytics.averageAttendance)}%</p>
               </div>
             </div>
           </CardContent>
@@ -730,13 +786,7 @@ export default function ReportsPage() {
             <div className={styles.progressChartContainer}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
-                  data={[
-                    { month: "Jan", present: 92, absent: 8 },
-                    { month: "Feb", present: 88, absent: 12 },
-                    { month: "Mar", present: 85, absent: 15 },
-                    { month: "Apr", present: 90, absent: 10 },
-                    { month: "May", present: 83, absent: 17 },
-                  ]}
+                  data={[]}
                   margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -810,9 +860,7 @@ export default function ReportsPage() {
                         {90 - Math.round((student.attendanceRate || 80) / 100 * 90)}
                       </TableCell>
                       <TableCell>
-                        {student.id % 5 === 0 ? 'May 15, 2023' : 
-                         student.id % 3 === 0 ? 'May 10, 2023' : 
-                         student.id % 2 === 0 ? 'May 3, 2023' : 'Apr 28, 2023'}
+                        N/A
                       </TableCell>
                     </TableRow>
                   ))

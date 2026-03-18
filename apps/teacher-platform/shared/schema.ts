@@ -125,6 +125,9 @@ export const insertMaterialSchema = z.object({
   description: z.string().optional().nullable(),
   category: z.string(),
   url: z.string(),
+  kind: z.enum(["documents", "videos", "images", "links", "other"]).default("other").optional(),
+  mimeType: z.string().optional().nullable(),
+  sizeBytes: z.number().int().nonnegative().optional().nullable(),
   createdBy: z.number(),
 });
 export type InsertMaterial = z.infer<typeof insertMaterialSchema>;
@@ -133,6 +136,7 @@ export const insertBookmarkSchema = z.object({
   title: z.string(),
   url: z.string(),
   category: z.string().optional().nullable(),
+  starred: z.boolean().default(false).optional(),
   userId: z.number(),
 });
 export type InsertBookmark = z.infer<typeof insertBookmarkSchema>;

@@ -721,7 +721,10 @@ export class MemStorage implements IStorage {
       ...insertMaterial, 
       id, 
       createdAt: new Date(),
-      description: insertMaterial.description ?? null
+      description: insertMaterial.description ?? null,
+      kind: insertMaterial.kind ?? "other",
+      mimeType: insertMaterial.mimeType ?? null,
+      sizeBytes: insertMaterial.sizeBytes ?? null,
     };
     this.materials.set(id, material);
     return material;
@@ -757,7 +760,8 @@ export class MemStorage implements IStorage {
       ...insertBookmark, 
       id, 
       createdAt: new Date(),
-      category: insertBookmark.category ?? null
+      category: insertBookmark.category ?? null,
+      starred: insertBookmark.starred ?? false,
     };
     this.bookmarks.set(id, bookmark);
     return bookmark;

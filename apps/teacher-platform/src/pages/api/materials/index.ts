@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { storage } from "@/lib/storage";
+import { prisma } from "@/lib/db";
 import { requireTeacherApiSession } from "@/lib/requireTeacherApiSession";
 import { respondMethodNotAllowed } from "@/lib/apiResponses";
 import { insertMaterialSchema } from "@shared/schema";
@@ -18,7 +19,10 @@ export default async function handler(
 
   if (req.method === 'GET') {
     try {
-      const materials = await storage.getMaterials();
+      const materials = await prisma.material.findMany({
+        where: { createdBy: teacherRecordUserId },
+        orderBy: { createdAt: "desc" },
+      });
       return res.status(200).json(materials);
     } catch (error) {
       return res.status(500).json({ message: "Failed to fetch materials" });
