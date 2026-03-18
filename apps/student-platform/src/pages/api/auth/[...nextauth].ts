@@ -108,8 +108,8 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: `${env.NEXT_PUBLIC_LANDING_PAGE_URL}/Auth/login/student`,
-    error: `${env.NEXT_PUBLIC_LANDING_PAGE_URL}/Auth/login/student`,
+    signIn: `${env.NEXT_PUBLIC_LANDING_PAGE_URL ?? ""}/Auth/login/student`,
+    error: `${env.NEXT_PUBLIC_LANDING_PAGE_URL ?? ""}/Auth/login/student`,
   },
   secret: env.NEXTAUTH_SECRET,
 };

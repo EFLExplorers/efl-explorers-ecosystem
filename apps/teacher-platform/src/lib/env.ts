@@ -1,10 +1,10 @@
 import { z } from "zod";
 
 const envSchema = z.object({
-  NEXTAUTH_URL: z.string().url(),
+  NEXTAUTH_URL: z.string().url().optional(),
   NEXTAUTH_SECRET: z.string().min(1).optional(),
   AUTH_SECRET: z.string().min(1).optional(),
-  NEXT_PUBLIC_LANDING_PAGE_URL: z.string().url(),
+  NEXT_PUBLIC_LANDING_PAGE_URL: z.string().url().optional(),
   CURRICULUM_PLATFORM_URL: z.string().url().optional(),
   CURRICULUM_API_SHARED_SECRET: z.string().min(1).optional(),
 });

@@ -40,6 +40,6 @@ export const authConfig: NextAuthConfig = {
     },
   },
   pages: {
-    signIn: `${env.NEXT_PUBLIC_LANDING_PAGE_URL}/Auth/login/teacher`,
+    signIn: `${env.NEXT_PUBLIC_LANDING_PAGE_URL ?? ""}/Auth/login/teacher`,
   },
 };

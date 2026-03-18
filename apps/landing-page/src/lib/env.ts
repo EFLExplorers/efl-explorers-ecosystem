@@ -1,12 +1,12 @@
 import { z } from "zod";
 
 const envSchema = z.object({
-  NEXTAUTH_URL: z.string().url(),
+  NEXTAUTH_URL: z.string().url().optional(),
   NEXTAUTH_SECRET: z.string().min(1),
   NEXT_PUBLIC_SITE_URL: z.string().url().optional(),
-  NEXT_PUBLIC_LANDING_PAGE_URL: z.string().url(),
-  NEXT_PUBLIC_TEACHER_URL: z.string().url(),
-  NEXT_PUBLIC_STUDENT_URL: z.string().url(),
+  NEXT_PUBLIC_LANDING_PAGE_URL: z.string().url().optional(),
+  NEXT_PUBLIC_TEACHER_URL: z.string().url().optional(),
+  NEXT_PUBLIC_STUDENT_URL: z.string().url().optional(),
   EFL_API_KEY: z.string().min(1).optional(),
   BCRYPT_SALT_ROUNDS: z.string().regex(/^\d+$/).optional(),
   NODE_ENV: z.enum(["development", "test", "production"]).optional(),

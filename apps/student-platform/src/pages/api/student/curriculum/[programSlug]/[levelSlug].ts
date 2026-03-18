@@ -5,7 +5,7 @@ import { env } from "@/lib/env";
 import { requireStudentApiSession } from "@/lib/requireStudentApiSession";
 
 const getCurriculumBaseUrl = () => {
-  return env.CURRICULUM_PLATFORM_URL.replace(/\/$/, "");
+  return (env.CURRICULUM_PLATFORM_URL ?? "").replace(/\/$/, "");
 };
 
 const getSecretHeader = () => {
