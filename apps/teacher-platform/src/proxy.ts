@@ -56,7 +56,7 @@ export default auth((req) => {
 
 export const config = {
   matcher: [
-    // Protect EVERYTHING in the app EXCEPT the /sso receiver page and static files.
-    "/((?!sso|_next/static|_next/image|favicon.ico).*)",
+    // Protect app and API routes, but skip NextAuth internals, /sso, and static files.
+    "/((?!api/auth|sso|_next/static|_next/image|favicon.ico).*)",
   ],
 };
