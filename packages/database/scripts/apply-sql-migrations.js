@@ -14,6 +14,21 @@ const getConnectionString = () =>
 
 const isPostgresUrl = (value) => /^postgres(ql)?:/i.test(value ?? "");
 
+const sanitizePostgresConnectionString = (connectionString) => {
+  try {
+    const parsed = new URL(connectionString);
+    ["sslcert", "sslkey", "sslrootcert", "sslcrl"].forEach((param) => {
+      const value = parsed.searchParams.get(param)?.trim().toLowerCase();
+      if (value === "system") {
+        parsed.searchParams.delete(param);
+      }
+    });
+    return parsed.toString();
+  } catch {
+    return connectionString;
+  }
+};
+
 const getChecksum = (contents) =>
   crypto.createHash("sha256").update(contents).digest("hex");
 
@@ -44,7 +59,9 @@ const run = async () => {
     throw new Error("Expected a Postgres connection string for SQL migrations.");
   }
 
-  const pool = new Pool({ connectionString });
+  const pool = new Pool({
+    connectionString: sanitizePostgresConnectionString(connectionString),
+  });
   const client = await pool.connect();
 
   try {

@@ -15,6 +15,15 @@
 - Managers are stored in `curriculum.managers`.
 - Registration is blocked unless invite is valid, except for first-manager bootstrap allowlist.
 
+## Dev Seed Helper
+
+- Seed or reset a curriculum manager account with:
+  `pnpm --filter @repo/database seed:curriculum-manager`
+- Optional environment overrides in `packages/database/.env`:
+  - `CURRICULUM_MANAGER_EMAIL`
+  - `CURRICULUM_MANAGER_PASSWORD`
+  - `CURRICULUM_MANAGER_NAME`
+
 ## Deployment Inputs
 
 - Runtime env contract is defined in `apps/curriculum-platform/.env.local.example`.

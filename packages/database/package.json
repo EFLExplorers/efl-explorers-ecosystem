@@ -9,6 +9,7 @@
     "db:seed": "prisma db seed",
     "db:apply-sql-migrations": "node ./scripts/apply-sql-migrations.js",
     "seed:dev-user": "node ./scripts/seed-dev-user.js",
+    "seed:curriculum-manager": "node ./scripts/seed-curriculum-manager.js",
     "approve-user": "node ./scripts/approve-user.js"
   },
   "prisma": {
