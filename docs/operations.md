@@ -102,8 +102,8 @@ These are referenced in `turbo.json` and flow to tasks:
 
 | Variable | Scope | Required In | Public |
 |---|---|---|---|
-| `DATABASE_URL` | DB runtime | landing, teacher, student, curriculum, database package | No |
-| `DIRECT_URL` | DB migrations/seeding | landing, teacher, student, curriculum, database package | No |
+| `DATABASE_URL` | DB runtime | landing, teacher, student, curriculum, **db-visualizer** (read-only role), database package | No |
+| `DIRECT_URL` | DB migrations/seeding | landing, teacher, student, curriculum, db-visualizer (optional; often same as `DATABASE_URL`), database package | No |
 | `NEXTAUTH_URL` | Auth callback base URL | landing, teacher, student, curriculum | No |
 | `NEXTAUTH_SECRET` | Auth session signing | landing, teacher, student, curriculum | No |
 | `AUTH_SECRET` | Teacher Auth.js alias | teacher (optional alias only) | No |
@@ -159,6 +159,12 @@ These are referenced in `turbo.json` and flow to tasks:
 - Optional seed values like `DEV_USER_EMAIL`, `DEV_TEACHER_EMAIL`, etc.
 - See **[PostgreSQL, Prisma, and hosted DB (definite behavior)](#postgresql-prisma-and-hosted-db-definite-behavior)** and `packages/database/.env.example` for PlanetScale Postgres / Accelerate patterns.
 
+### DB Visualizer (`apps/db-visualizer/.env.local`)
+
+- `DATABASE_URL` — Read-only Postgres URL for internal inspection UI and `/api/*` routes.
+- `DIRECT_URL` — Optional; often set equal to `DATABASE_URL` when not using separate direct/pooler split.
+- No NextAuth or curriculum secrets required for baseline deploy. See `apps/db-visualizer/.env.local.example` and [`docs/db-visualizer/scaling-and-operating-model.md`](db-visualizer/scaling-and-operating-model.md).
+
 ## Content API Auth
 
 Landing page content endpoints require an API key:
@@ -173,7 +179,8 @@ Landing page content endpoints require an API key:
 
 ## Vercel Deployment Notes
 
-- Set environment variables per Vercel project (`landing-page`, `teacher-platform`, `student-platform`, `curriculum-platform`), not only at monorepo level.
+- Set environment variables per Vercel project (`landing-page`, `teacher-platform`, `student-platform`, `curriculum-platform`, `db-visualizer`), not only at monorepo level.
+- **`db-visualizer`:** use a **read-only** Postgres role for `DATABASE_URL` / `DIRECT_URL` in Production and Preview. See `apps/db-visualizer/.env.local.example` and [`docs/db-visualizer/scaling-and-operating-model.md`](db-visualizer/scaling-and-operating-model.md).
 - **Shared env vars (optional):** On Vercel Teams **Pro** or **Enterprise**, you can define [shared environment variables](https://vercel.com/docs/concepts/projects/environment-variables/shared-environment-variables) once and link them to multiple projects (e.g. the same `DATABASE_URL`, `DIRECT_URL`, or `CURRICULUM_API_SHARED_SECRET`). Updates propagate to every linked project. Project-level variables with the **same key** and **same environment** (Production / Preview / Development) **override** shared values—use that for app-specific secrets like `NEXTAUTH_SECRET` or `NEXTAUTH_URL`.
 - `DATABASE_URL` and `DIRECT_URL` should be present for all DB-backed apps: landing, teacher, student, and curriculum. For **PlanetScale Postgres**, use the connection strings from the PlanetScale dashboard: typically **direct** for `DIRECT_URL` and, if offered, a **pooler** URL for serverless `DATABASE_URL` (see [PostgreSQL, Prisma, and hosted DB](#postgresql-prisma-and-hosted-db-definite-behavior) above).
 - `CURRICULUM_API_SHARED_SECRET` must match across curriculum, teacher, and student when curriculum API protection is enabled.

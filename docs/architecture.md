@@ -1,5 +1,7 @@
 # Architecture
 
+**Current schema and models:** treat [`packages/database/prisma/schema.prisma`](../packages/database/prisma/schema.prisma) as the source of truth. For operating the internal **DB Visualizer** (read-only inspection across schemas), see [`docs/db-visualizer/scaling-and-operating-model.md`](db-visualizer/scaling-and-operating-model.md).
+
 ## Monorepo Layout
 
 - **Apps** live under `apps/` and are deployed independently.
