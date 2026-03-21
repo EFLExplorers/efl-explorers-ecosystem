@@ -19,7 +19,7 @@ Failures surface as `RouteWarning` when `fetchFromApi` throws (e.g. missing `DAT
 
 ### Schema map / API shows Postgres `53300` or “connection slots”
 
-That is **connection exhaustion** on the server, not a broken schema-graph query. Use a **pooled** `DATABASE_URL`, set **`DATABASE_POOL_MAX`** to a low value per instance (see `packages/database` / `docs/operations.md`), and ensure other deployed apps are not all opening large pools against the same small database.
+That is **connection exhaustion** on the server, not a broken schema-graph query. Use a **pooled** `DATABASE_URL` when your host provides one, set **`DATABASE_POOL_MAX`** to **`1`–`3`** in `packages/database/.env` (or per app) if you still see `53300`, stop extra local dev servers that share the same DB, and see `docs/operations.md`. `@repo/database` already uses a **smaller default pool in development** (2) than in production (10).
 
 ## Scaling (when data or UI grows)
 

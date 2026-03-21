@@ -44,14 +44,14 @@ For local Docker or a single Postgres instance, **`DATABASE_URL`** and **`DIRECT
 
 If APIs return **500** with Postgres **`53300`** or text like **“remaining connection slots are reserved for roles with the SUPERUSER attribute”**, the database has hit **`max_connections`** for normal roles. This is common when:
 
-- Many **serverless** workers each open a **`pg` pool** (default up to **10** connections per pool), or
+- Many **serverless** workers each open a **`pg` pool** (defaults: **2** per process in development, **10** in production unless **`DATABASE_POOL_MAX`** is set), or
 - Several apps share one small Postgres tier, or
 - **`DATABASE_URL`** points at the **direct** port instead of the host’s **pooler**.
 
 **Mitigations (use one or more):**
 
 1. Switch runtime **`DATABASE_URL`** to the provider’s **pooled** / transaction-pooler URL (keep **`DIRECT_URL`** on a direct URL for migrations).
-2. Set **`DATABASE_POOL_MAX`** (read by `@repo/database` when using the `pg` adapter) to a **small** integer per instance — often **`1`–`5`** on Vercel/serverless alongside a pooler.
+2. Set **`DATABASE_POOL_MAX`** (read by `@repo/database` when using the `pg` adapter) to a **small** integer **per running Node process** — often **`1`–`5`** on Vercel/serverless alongside a pooler. If the pooler allows only **two** client connections total, use **`DATABASE_POOL_MAX=1`** and run at most **two** app processes against that URL (or one process with **`2`** and nothing else). When unset, the client also tightens the default if the runtime URL includes **`pgbouncer=true`** or **`connection_limit=N`**.
 3. Upgrade the database plan or raise **`max_connections`** only if the provider allows it (still prefer pooling for serverless).
 
 ### SQL migrations (not Prisma Migrate folders)

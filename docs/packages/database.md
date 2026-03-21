@@ -49,8 +49,8 @@ The schema uses PostgreSQL with multiple schemas:
 `packages/database/src/index.ts`:
 
 - Loads `.env` from `packages/database/.env` if present.
-- Chooses connection via `DIRECT_URL`, `DATABASE_URL`, or Prisma Accelerate URL.
-- Reuses a shared PostgreSQL pool in development.
+- Chooses connection via **`DATABASE_URL` first** when it is a Postgres URL (so a provider **pooler** URL is honored), then `DIRECT_URL`, then Prisma Accelerate.
+- Reuses one shared **`pg` pool** per Node process (connections are not opened per query).
 
 ## Scripts
 
