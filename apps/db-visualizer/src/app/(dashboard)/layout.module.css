@@ -78,6 +78,7 @@
 
 .content {
   background: transparent;
+  -webkit-backdrop-filter: none;
   backdrop-filter: none;
   padding: 1rem 1.2rem;
   overflow-x: auto;
