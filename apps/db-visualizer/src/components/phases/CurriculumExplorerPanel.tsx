@@ -66,7 +66,12 @@ export const CurriculumExplorerPanel = ({ data }: CurriculumExplorerPanelProps) 
           </div>
         </article>
       ))}
-      {data.programs.length === 0 ? <p className={styles.emptyState}>No curriculum programs found.</p> : null}
+      {data.programs.length === 0 ? (
+        <p className={styles.emptyState}>
+          No curriculum programs in this database. When you add programs via the Curriculum Platform,
+          they will show here (same <code>DATABASE_URL</code>).
+        </p>
+      ) : null}
     </section>
   );
 };

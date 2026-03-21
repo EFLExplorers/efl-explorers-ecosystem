@@ -3,14 +3,15 @@
   display: grid;
   place-items: center;
   padding: 24px;
+  background: var(--bg);
 }
 
 .card {
   width: 100%;
   max-width: 480px;
   background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  border: 2px dashed var(--border);
+  border-radius: 2px;
   padding: 24px;
 }
 
@@ -22,30 +23,33 @@
 .field {
   display: grid;
   gap: 6px;
+  font-size: 13px;
 }
 
 .input {
   border: 1px solid var(--border);
-  background: #10131a;
+  background: var(--panel);
   color: var(--text);
   padding: 10px 12px;
-  border-radius: 8px;
+  border-radius: 2px;
 }
 
 .button {
-  background: var(--accent);
-  color: white;
-  border: none;
+  background: var(--text);
+  color: var(--panel);
+  border: 2px solid var(--text);
   padding: 10px 14px;
-  border-radius: 8px;
+  border-radius: 2px;
   cursor: pointer;
   font-weight: 700;
 }
 
 .error {
   color: var(--danger);
+  font-size: 13px;
 }
 
 .ok {
-  color: #4cc38a;
+  color: var(--success);
+  font-size: 13px;
 }

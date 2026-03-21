@@ -51,12 +51,20 @@
 
 .checkRow {
   display: grid;
-  grid-template-columns: auto 220px 1fr;
+  grid-template-columns: auto minmax(0, 1fr);
   gap: 0.55rem;
-  align-items: center;
+  align-items: start;
   border-bottom: 1px solid var(--line);
   padding: 0.5rem 0.2rem;
   font-size: 0.8rem;
+}
+
+/* Lets the text column use remaining sidebar width (avoids 1fr collapsing). */
+.checkBody {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .statusBadge {
@@ -83,15 +91,18 @@
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New",
     monospace;
   color: #dddddd;
+  word-break: break-word;
 }
 
 .message {
   color: var(--text-muted);
-  overflow-wrap: anywhere;
+  line-height: 1.35;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 @media (max-width: 900px) {
   .checkRow {
-    grid-template-columns: 1fr;
+    grid-template-columns: auto minmax(0, 1fr);
   }
 }

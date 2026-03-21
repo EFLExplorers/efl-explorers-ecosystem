@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@repo/database": "workspace:*",
+    "@xyflow/react": "^12.10.1",
     "lucide-react": "^0.574.0",
     "next": "^16.1.6",
     "react": "^19.2.4",

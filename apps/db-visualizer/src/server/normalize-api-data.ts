@@ -3,6 +3,7 @@ import type {
   CurriculumExplorerData,
   IdentityBridgeData,
   LandingLogicData,
+  SchemaGraphData,
   SchemaHealthData,
 } from "@/types/db-visualizer";
 
@@ -335,5 +336,50 @@ export const normalizeSchemaHealthData = (raw: unknown): SchemaHealthData => {
       ok: asNumber(summaryRecord.ok),
       error: asNumber(summaryRecord.error),
     },
+  };
+};
+
+const EMPTY_SCHEMA_GRAPH: SchemaGraphData = {
+  tables: [],
+  edges: [],
+  schemas: [],
+};
+
+export const normalizeSchemaGraphData = (raw: unknown): SchemaGraphData => {
+  if (!isRecord(raw)) {
+    return EMPTY_SCHEMA_GRAPH;
+  }
+
+  const tables = asArray(raw.tables).map((row, index) => {
+    const rec = isRecord(row) ? row : {};
+    const schema = asString(rec.schema, "public");
+    const name = asString(rec.name, `table-${index}`);
+    const id = asString(rec.id, `${schema}.${name}`);
+    const columns = asArray(rec.columns).map((col) => {
+      const c = isRecord(col) ? col : {};
+      return { name: asString(c.name) };
+    });
+    return { id, schema, name, columns };
+  });
+
+  const edges = asArray(raw.edges).map((row, index) => {
+    const rec = isRecord(row) ? row : {};
+    return {
+      id: asString(rec.id, `edge-${index}`),
+      fromTableId: asString(rec.fromTableId),
+      fromColumn: asString(rec.fromColumn),
+      toTableId: asString(rec.toTableId),
+      toColumn: asString(rec.toColumn),
+    };
+  });
+
+  const schemasRaw = asArray(raw.schemas)
+    .map((s) => (typeof s === "string" ? s : ""))
+    .filter(Boolean);
+
+  return {
+    tables,
+    edges,
+    schemas: schemasRaw.length > 0 ? schemasRaw : EMPTY_SCHEMA_GRAPH.schemas,
   };
 };

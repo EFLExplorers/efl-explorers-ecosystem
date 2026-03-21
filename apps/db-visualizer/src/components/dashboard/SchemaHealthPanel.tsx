@@ -27,10 +27,12 @@ export const SchemaHealthPanel = ({ data }: SchemaHealthPanelProps) => {
             >
               {check.status}
             </span>
-            <span className={styles.target}>
-              {check.schema}.{check.table}
-            </span>
-            <span className={styles.message}>{check.message}</span>
+            <div className={styles.checkBody}>
+              <span className={styles.target}>
+                {check.schema}.{check.table}
+              </span>
+              <span className={styles.message}>{check.message}</span>
+            </div>
           </li>
         ))}
       </ul>

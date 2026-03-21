@@ -1,0 +1,128 @@
+/* App chrome — wireframe / low-fidelity shell */
+
+.root {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  border-right: 2px dashed var(--border);
+  background: var(--panel);
+  display: flex;
+  flex-direction: column;
+  padding: 12px 10px;
+}
+
+.brand {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 8px 8px 16px;
+  border-bottom: 1px dashed var(--border);
+  margin-bottom: 12px;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.navLink {
+  display: block;
+  padding: 8px 10px;
+  font-size: 14px;
+  color: var(--text);
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: 2px;
+}
+
+.navLink:hover {
+  border-color: var(--border);
+  background: var(--bg);
+}
+
+.navLinkActive {
+  border-style: solid;
+  border-color: var(--text);
+  background: var(--bg);
+  font-weight: 600;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 2px dashed var(--border);
+  background: var(--panel);
+}
+
+.titleBlock {
+  min-width: 0;
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.pageSubtitle {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.headerActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.userChip {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 4px 8px;
+  border: 1px dashed var(--border);
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.signOut {
+  font-size: 12px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.signOut:hover {
+  border-color: var(--text);
+}
+
+.content {
+  flex: 1;
+  padding: 16px 20px 24px;
+  overflow: auto;
+}

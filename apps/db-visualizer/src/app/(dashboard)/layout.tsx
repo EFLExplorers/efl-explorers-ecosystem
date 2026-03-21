@@ -38,16 +38,19 @@ export const DashboardShellLayout = async ({
   return (
     <main className={styles.shell}>
       <header className={styles.header}>
-        <div>
-          <h1>EFL Ecosystem DB Visualizer</h1>
-          <p>
-            Route-based read-only inspector for shared, auth, teachers, students, and curriculum schemas.
+        <div className={styles.headerMain}>
+          <div className={styles.titleRow}>
+            <h1>EFL Ecosystem DB Visualizer</h1>
+            <div className={styles.opsBadges}>
+              <span className={styles.badge}>env: {runtimeEnvironment}</span>
+              <span className={styles.badge}>region: {deploymentRegion}</span>
+              <span className={styles.badge}>commit: {shortCommitSha}</span>
+            </div>
+          </div>
+          <p className={styles.tagline}>
+            Route-based read-only inspector for shared, auth, teachers, students, and
+            curriculum schemas.
           </p>
-        </div>
-        <div className={styles.opsBadges}>
-          <span className={styles.badge}>env: {runtimeEnvironment}</span>
-          <span className={styles.badge}>region: {deploymentRegion}</span>
-          <span className={styles.badge}>commit: {shortCommitSha}</span>
         </div>
       </header>
 

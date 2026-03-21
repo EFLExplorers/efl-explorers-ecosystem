@@ -1,0 +1,69 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  min-height: 72vh;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.toolbar strong {
+  color: var(--text-main);
+  font-size: 0.78rem;
+}
+
+.flowRoot {
+  position: relative;
+  flex: 1;
+  min-height: 520px;
+  height: min(72vh, 880px);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #0a0a0a;
+  overflow: hidden;
+}
+
+.flowRoot :global(.react-flow__background) {
+  background-color: #0a0a0a;
+}
+
+.flowControls {
+  box-shadow: none;
+}
+
+.flowControls :global(.react-flow__controls-button) {
+  background: var(--bg-soft);
+  border-bottom: 1px solid var(--line);
+  color: var(--text-muted);
+}
+
+.flowControls :global(.react-flow__controls-button:hover) {
+  background: #1a1a1a;
+  color: var(--text-main);
+}
+
+.flowControls :global(.react-flow__controls-button svg) {
+  fill: currentColor;
+}
+
+.flowMinimap {
+  background: #0d0d0d;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+.empty {
+  margin: 0;
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}

@@ -9,38 +9,53 @@
 
 .header {
   border-bottom: 1px solid var(--line-strong);
-  padding: 0.9rem 1rem;
+  padding: 0.18rem 0.75rem 0.2rem;
   background: var(--bg-soft);
+}
+
+.headerMain {
+  display: grid;
+  gap: 0.06rem;
+  max-width: 100%;
+}
+
+.titleRow {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: space-between;
-  gap: 0.9rem;
-  align-items: flex-start;
+  gap: 0.2rem 0.55rem;
 }
 
 .header h1 {
   margin: 0;
-  font-size: 1.15rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.15;
 }
 
-.header p {
-  margin: 0.45rem 0 0;
-  max-width: 88ch;
+.tagline {
+  margin: 0;
+  max-width: 78ch;
   color: var(--text-muted);
-  font-size: 0.84rem;
+  font-size: 0.62rem;
+  line-height: 1.25;
 }
 
 .opsBadges {
   display: inline-flex;
   flex-wrap: wrap;
-  gap: 0.42rem;
+  gap: 0.22rem;
+  align-items: center;
 }
 
 .badge {
   border: 1px solid var(--line);
   background: transparent;
-  padding: 0.2rem 0.5rem;
-  font-size: 0.76rem;
+  padding: 0.06rem 0.32rem;
+  font-size: 0.6rem;
   color: var(--text-muted);
+  line-height: 1.15;
 }
 
 .body {

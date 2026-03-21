@@ -1,7 +1,7 @@
 import type { GetServerSideProps } from "next";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { requireActiveCurriculumManager } from "@/lib/curriculumDashboardGuard";
 import styles from "@/pages/dashboard/workspace.module.css";
 
@@ -107,12 +107,11 @@ export const PublishPage = () => {
   };
 
   return (
-    <main className={styles.page}>
-      <header className={styles.header}>
-        <h1>Publish Workspace</h1>
-        <Link href="/dashboard">Back to dashboard</Link>
-      </header>
-
+    <DashboardShell
+      pageTitle="Publish"
+      pageSubtitle="[wireframe] Level snapshots → teacher/student"
+    >
+      <div className={styles.workspaceRoot}>
       <section className={styles.card}>
         <h2>Select level to publish</h2>
         <label className={styles.field}>
@@ -179,7 +178,8 @@ export const PublishPage = () => {
         {error ? <p className={styles.error}>{error}</p> : null}
         {status ? <p className={styles.success}>{status}</p> : null}
       </section>
-    </main>
+      </div>
+    </DashboardShell>
   );
 };
 

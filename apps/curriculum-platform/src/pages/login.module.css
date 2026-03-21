@@ -3,25 +3,28 @@
   display: grid;
   place-items: center;
   padding: 24px;
+  background: var(--bg);
 }
 
 .card {
   width: 100%;
   max-width: 420px;
   background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  border: 2px dashed var(--border);
+  border-radius: 2px;
   padding: 24px;
 }
 
 .title {
   margin: 0 0 6px;
-  font-size: 1.4rem;
+  font-size: 1.1rem;
+  font-weight: 700;
 }
 
 .subtitle {
   margin: 0 0 20px;
   color: var(--muted);
+  font-size: 12px;
 }
 
 .form {
@@ -33,23 +36,24 @@
   display: grid;
   gap: 6px;
   font-weight: 600;
+  font-size: 13px;
 }
 
 .input {
   border: 1px solid var(--border);
-  background: #10131a;
+  background: var(--panel);
   color: var(--text);
   padding: 10px 12px;
-  border-radius: 8px;
+  border-radius: 2px;
 }
 
 .button {
   margin-top: 6px;
-  background: var(--accent);
-  color: white;
-  border: none;
+  background: var(--text);
+  color: var(--panel);
+  border: 2px solid var(--text);
   padding: 10px 14px;
-  border-radius: 8px;
+  border-radius: 2px;
   cursor: pointer;
   font-weight: 700;
 }
@@ -57,9 +61,11 @@
 .error {
   color: var(--danger);
   margin: 6px 0 0;
+  font-size: 13px;
 }
 
 .links {
   margin-top: 14px;
   color: var(--muted);
+  font-size: 13px;
 }

@@ -182,3 +182,28 @@ export type SchemaHealthData = {
     error: number;
   };
 };
+
+export type SchemaGraphColumn = {
+  name: string;
+};
+
+export type SchemaGraphTable = {
+  id: string;
+  schema: string;
+  name: string;
+  columns: SchemaGraphColumn[];
+};
+
+export type SchemaGraphEdge = {
+  id: string;
+  fromTableId: string;
+  fromColumn: string;
+  toTableId: string;
+  toColumn: string;
+};
+
+export type SchemaGraphData = {
+  tables: SchemaGraphTable[];
+  edges: SchemaGraphEdge[];
+  schemas: readonly string[];
+};

@@ -1,7 +1,7 @@
 import type { GetServerSideProps } from "next";
-import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { requireActiveCurriculumManager } from "@/lib/curriculumDashboardGuard";
 import styles from "@/pages/dashboard/workspace.module.css";
 
@@ -462,12 +462,11 @@ export const ProgramsPage = () => {
   };
 
   return (
-    <main className={styles.page}>
-      <header className={styles.header}>
-        <h1>Programs Workspace</h1>
-        <Link href="/dashboard">Back to dashboard</Link>
-      </header>
-
+    <DashboardShell
+      pageTitle="Programs workspace"
+      pageSubtitle="[wireframe] Programs · levels · units"
+    >
+      <div className={styles.workspaceRoot}>
       <section className={styles.card}>
         <h2>Create program</h2>
         <form onSubmit={createProgram}>
@@ -936,7 +935,8 @@ export const ProgramsPage = () => {
           </form>
         )}
       </section>
-    </main>
+      </div>
+    </DashboardShell>
   );
 };
 

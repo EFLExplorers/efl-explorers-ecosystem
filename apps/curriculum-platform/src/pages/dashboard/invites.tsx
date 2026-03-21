@@ -1,7 +1,7 @@
 import type { GetServerSideProps } from "next";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { requireActiveCurriculumManager } from "@/lib/curriculumDashboardGuard";
 import styles from "@/pages/dashboard/workspace.module.css";
 
@@ -83,12 +83,11 @@ export const InvitesPage = () => {
   };
 
   return (
-    <main className={styles.page}>
-      <header className={styles.header}>
-        <h1>Invite Management</h1>
-        <Link href="/dashboard">Back to dashboard</Link>
-      </header>
-
+    <DashboardShell
+      pageTitle="Invites"
+      pageSubtitle="[wireframe] Manager invite lifecycle"
+    >
+      <div className={styles.workspaceRoot}>
       <section className={styles.card}>
         <h2>Create invite</h2>
         <form onSubmit={createInvite}>
@@ -135,7 +134,8 @@ export const InvitesPage = () => {
           <p className={styles.empty}>No invites yet. Create one above.</p>
         ) : null}
       </section>
-    </main>
+      </div>
+    </DashboardShell>
   );
 };
 

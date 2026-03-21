@@ -4,32 +4,31 @@
   align-items: center;
   justify-content: center;
   padding: 2rem 1.25rem;
-  background: #f9fafb;
+  background: var(--bg);
 }
 
 .card {
   max-width: 26rem;
   width: 100%;
-  padding: 2rem;
-  border-radius: 0.75rem;
-  border: 1px solid #e5e7eb;
-  background: #fff;
-  box-shadow: 0 4px 24px rgb(0 0 0 / 0.06);
+  padding: 1.5rem;
+  border: 2px dashed var(--border);
+  border-radius: 2px;
+  background: var(--panel);
   text-align: center;
 }
 
 .title {
   margin: 0 0 0.75rem;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #b45309;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--danger);
 }
 
 .text {
   margin: 0 0 1.5rem;
-  font-size: 0.9375rem;
+  font-size: 0.9rem;
   line-height: 1.5;
-  color: #4b5563;
+  color: var(--muted);
 }
 
 .actions {
@@ -42,47 +41,36 @@
 .link {
   display: inline-block;
   padding: 0.5rem 1rem;
-  font-size: 0.9375rem;
-  font-weight: 500;
-  color: #fff;
-  background: #111827;
-  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--panel);
+  background: var(--text);
+  border: 2px solid var(--text);
+  border-radius: 2px;
   text-decoration: none;
-}
-
-.link:hover {
-  background: #374151;
 }
 
 .button {
   display: inline-block;
   padding: 0.5rem 1rem;
-  font-size: 0.9375rem;
-  font-weight: 500;
-  color: #fff;
-  background: #111827;
-  border: none;
-  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--panel);
+  background: var(--text);
+  border: 2px solid var(--text);
+  border-radius: 2px;
   cursor: pointer;
   font-family: inherit;
-}
-
-.button:hover {
-  background: #374151;
 }
 
 .linkSecondary {
   display: inline-block;
   padding: 0.5rem 1rem;
-  font-size: 0.9375rem;
-  font-weight: 500;
-  color: #111827;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
   background: transparent;
-  border: 1px solid #d1d5db;
-  border-radius: 0.5rem;
+  border: 2px dashed var(--border);
+  border-radius: 2px;
   text-decoration: none;
-}
-
-.linkSecondary:hover {
-  background: #f3f4f6;
 }

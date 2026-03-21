@@ -12,6 +12,7 @@ Curriculum Platform is the authoring and publishing system for story-like EFL cu
 ## Documentation Index
 
 - `ui/README.md`
+- `ui-scaling.md` — wireframe shell, navigation, and scaling checklist
 - `api/README.md`
 - `backend/README.md`
 - `database/README.md`
