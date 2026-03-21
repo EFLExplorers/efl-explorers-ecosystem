@@ -34,3 +34,18 @@
 .panelArea {
   display: grid;
 }
+
+.warningList {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.warningCard {
+  margin: 0;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(255, 163, 163, 0.45);
+  background: rgba(255, 98, 98, 0.12);
+  padding: 0.7rem 0.85rem;
+  color: #ffd6d6;
+  font-size: 0.84rem;
+}

@@ -166,3 +166,19 @@ export type ConnectivityData = {
     programTitle: string;
   }[];
 };
+
+export type SchemaHealthCheck = {
+  id: string;
+  schema: "shared" | "auth" | "students" | "teachers" | "curriculum";
+  table: string;
+  status: "ok" | "error";
+  message: string;
+};
+
+export type SchemaHealthData = {
+  checks: SchemaHealthCheck[];
+  summary: {
+    ok: number;
+    error: number;
+  };
+};
