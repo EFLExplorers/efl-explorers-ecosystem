@@ -73,6 +73,12 @@
   font-weight: 700;
 }
 
+.buttonDanger {
+  border: 1px solid var(--danger);
+  background: transparent;
+  color: var(--danger);
+}
+
 .error {
   color: var(--danger);
 }

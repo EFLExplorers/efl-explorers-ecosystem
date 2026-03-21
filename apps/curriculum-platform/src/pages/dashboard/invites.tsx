@@ -1,9 +1,8 @@
 import type { GetServerSideProps } from "next";
-import { getServerSession } from "next-auth/next";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { authOptions } from "@/lib/authOptions";
+import { requireActiveCurriculumManager } from "@/lib/curriculumDashboardGuard";
 import styles from "@/pages/dashboard/workspace.module.css";
 
 type InviteRecord = {
@@ -16,16 +15,10 @@ type InviteRecord = {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getServerSession(context.req, context.res, authOptions);
-  if (!session?.user?.id) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
+  const access = await requireActiveCurriculumManager(context);
+  if ("redirect" in access) {
+    return access;
   }
-
   return { props: {} };
 };
 

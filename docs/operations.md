@@ -13,11 +13,62 @@
    - `pnpm --filter @repo/database build`
 4. Apply SQL migrations (non-destructive, tracked by filename/checksum):
    - `pnpm --filter @repo/database db:apply-sql-migrations`
-5. Run apps:
+5. Copy env for curriculum (if you use it):
+   - `apps/curriculum-platform/.env.local.example` ➜ `apps/curriculum-platform/.env.local`
+6. Run apps:
    - `pnpm dev` (all apps)
    - `pnpm --filter landing-page dev`
    - `pnpm --filter teacher-platform dev`
    - `pnpm --filter student-platform dev`
+   - `pnpm --filter curriculum-platform dev` (port **3003**)
+
+## PostgreSQL, Prisma, and hosted DB (definite behavior)
+
+These points are the source of truth for how this repo expects the database to work locally, on Vercel, and on **PlanetScale Postgres** (or any other Postgres provider).
+
+### Engine and schema
+
+- The database is **PostgreSQL** with **multiple schemas** (`auth`, `curriculum`, `teachers`, etc.). Table DDL lives in dated files under `packages/database/db/*.sql`; the Prisma model layer is `packages/database/prisma/schema.prisma`.
+- **Classic PlanetScale (MySQL / Vitess)** is **not** compatible with this codebase as-is. **PlanetScale Postgres** (`*.pg.psdb.cloud`) **is** compatible: use standard `postgresql://` URLs.
+
+### How `DATABASE_URL` and `DIRECT_URL` are used
+
+| Variable | Typical use | Notes |
+|----------|-------------|--------|
+| **`DATABASE_URL`** | Runtime in apps and `@repo/database` | If the value starts with **`prisma://`**, Prisma Client is created with **`accelerateUrl`** (Prisma Accelerate). If it is **`postgres://`** or **`postgresql://`**, the client uses the **`pg`** driver via **`PrismaPg`** (`packages/database/src/index.ts`). |
+| **`DIRECT_URL`** | Migrations, `db:apply-sql-migrations`, and DB scripts | Must be a **direct Postgres** URL (`postgresql://…`) with credentials that can run DDL and seeds. If the provider gives **direct** and **pooler** URLs, put **direct** here and often use the **pooler** (or provider recommendation) for **`DATABASE_URL`** in serverless. |
+
+For local Docker or a single Postgres instance, **`DATABASE_URL`** and **`DIRECT_URL`** are commonly **identical**.
+
+### SQL migrations (not Prisma Migrate folders)
+
+- Schema changes ship as **ordered SQL files** in `packages/database/db/` (e.g. `20260318_*.sql`).
+- Apply them with: `pnpm --filter @repo/database db:apply-sql-migrations` (uses `DIRECT_URL` or `DATABASE_URL`).
+- Tracked in the DB in `public.manual_sql_migrations` (filename + checksum). **Production** should run the same script against the same migration set as `main` before or when you promote a release.
+
+### Prisma Client generation
+
+- `pnpm --filter @repo/database build` runs **`prisma generate`**. Turbo builds **`@repo/database`** before dependent apps, so deployed apps should ship a client generated from the **same commit** as the SQL migrations you applied.
+
+### TLS query params (`sslrootcert=system`)
+
+- Providers sometimes append **`sslmode=verify-full`** and **`sslrootcert=system`** (libpq-style). **node-pg** does not treat `system` like libpq; `@repo/database` **strips** SSL file query params when the value is `system` so the pool does not try to open a file named `system` (`sanitizePostgresConnectionString` in `packages/database/src/index.ts`).
+- If TLS verification still fails in your environment, fix it with your provider’s **Node/pg** guidance (e.g. explicit CA bundle), not by pasting secrets into chat.
+
+### Prisma seed name (`seed-planetscale.js`)
+
+- The Prisma **`db seed`** entry in `packages/database/package.json` runs **`scripts/seed-planetscale.js`**. Despite the filename, that script **requires a Postgres** connection string; it seeds **content** via SQL parsing + Prisma. It is **not** MySQL PlanetScale classic.
+
+### Sharing connection strings (e.g. with teammates or tools)
+
+- Never commit real passwords or API keys. Share **redacted** URLs (placeholders for user/password) plus **metadata**: provider name, region, `sslmode`, whether you use **direct vs pooler**, and which env var holds which URL.
+
+### Production / preview checklist
+
+1. Set **`DATABASE_URL`** and **`DIRECT_URL`** on every DB-backed Vercel project (and in CI) per the table above.
+2. Run **`db:apply-sql-migrations`** against the target database when `db/*.sql` changes (production with an approval gate; previews against a branch DB if you use one).
+3. Deploy apps from a build that includes an up-to-date **`prisma generate`** for that commit.
+4. Optional but recommended: pin **`prisma`** / **`@prisma/client`** in `packages/database/package.json` instead of **`"latest"`** for reproducible builds.
 
 ## Environment Variables
 
@@ -106,6 +157,7 @@ These are referenced in `turbo.json` and flow to tasks:
 - `DATABASE_URL` — Primary connection used at runtime.
 - `DIRECT_URL` — Direct connection for migrations/seeding.
 - Optional seed values like `DEV_USER_EMAIL`, `DEV_TEACHER_EMAIL`, etc.
+- See **[PostgreSQL, Prisma, and hosted DB (definite behavior)](#postgresql-prisma-and-hosted-db-definite-behavior)** and `packages/database/.env.example` for PlanetScale Postgres / Accelerate patterns.
 
 ## Content API Auth
 
@@ -122,5 +174,6 @@ Landing page content endpoints require an API key:
 ## Vercel Deployment Notes
 
 - Set environment variables per Vercel project (`landing-page`, `teacher-platform`, `student-platform`, `curriculum-platform`), not only at monorepo level.
-- `DATABASE_URL` and `DIRECT_URL` should be present for all DB-backed apps: landing, teacher, student, and curriculum.
+- **Shared env vars (optional):** On Vercel Teams **Pro** or **Enterprise**, you can define [shared environment variables](https://vercel.com/docs/concepts/projects/environment-variables/shared-environment-variables) once and link them to multiple projects (e.g. the same `DATABASE_URL`, `DIRECT_URL`, or `CURRICULUM_API_SHARED_SECRET`). Updates propagate to every linked project. Project-level variables with the **same key** and **same environment** (Production / Preview / Development) **override** shared values—use that for app-specific secrets like `NEXTAUTH_SECRET` or `NEXTAUTH_URL`.
+- `DATABASE_URL` and `DIRECT_URL` should be present for all DB-backed apps: landing, teacher, student, and curriculum. For **PlanetScale Postgres**, use the connection strings from the PlanetScale dashboard: typically **direct** for `DIRECT_URL` and, if offered, a **pooler** URL for serverless `DATABASE_URL` (see [PostgreSQL, Prisma, and hosted DB](#postgresql-prisma-and-hosted-db-definite-behavior) above).
 - `CURRICULUM_API_SHARED_SECRET` must match across curriculum, teacher, and student when curriculum API protection is enabled.
