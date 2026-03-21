@@ -40,6 +40,20 @@ These points are the source of truth for how this repo expects the database to w
 
 For local Docker or a single Postgres instance, **`DATABASE_URL`** and **`DIRECT_URL`** are commonly **identical**.
 
+### PostgreSQL connection limits (error `53300`, “remaining connection slots…”)
+
+If APIs return **500** with Postgres **`53300`** or text like **“remaining connection slots are reserved for roles with the SUPERUSER attribute”**, the database has hit **`max_connections`** for normal roles. This is common when:
+
+- Many **serverless** workers each open a **`pg` pool** (default up to **10** connections per pool), or
+- Several apps share one small Postgres tier, or
+- **`DATABASE_URL`** points at the **direct** port instead of the host’s **pooler**.
+
+**Mitigations (use one or more):**
+
+1. Switch runtime **`DATABASE_URL`** to the provider’s **pooled** / transaction-pooler URL (keep **`DIRECT_URL`** on a direct URL for migrations).
+2. Set **`DATABASE_POOL_MAX`** (read by `@repo/database` when using the `pg` adapter) to a **small** integer per instance — often **`1`–`5`** on Vercel/serverless alongside a pooler.
+3. Upgrade the database plan or raise **`max_connections`** only if the provider allows it (still prefer pooling for serverless).
+
 ### SQL migrations (not Prisma Migrate folders)
 
 - Schema changes ship as **ordered SQL files** in `packages/database/db/` (e.g. `20260318_*.sql`).

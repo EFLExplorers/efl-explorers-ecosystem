@@ -17,6 +17,10 @@ Read-only Next.js dashboard for exploring EFL database structure and cross-schem
 
 Failures surface as `RouteWarning` when `fetchFromApi` throws (e.g. missing `DATABASE_URL` or API error).
 
+### Schema map / API shows Postgres `53300` or “connection slots”
+
+That is **connection exhaustion** on the server, not a broken schema-graph query. Use a **pooled** `DATABASE_URL`, set **`DATABASE_POOL_MAX`** to a low value per instance (see `packages/database` / `docs/operations.md`), and ensure other deployed apps are not all opening large pools against the same small database.
+
 ## Scaling (when data or UI grows)
 
 - **Landing:** Paginate or lazy-load in `getLandingLogicData`; cap JSON or add `?limit=`.
