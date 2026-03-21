@@ -46,9 +46,24 @@ type GlobalPrisma = {
 
 const globalForPrisma = globalThis as unknown as GlobalPrisma;
 
+/** Max connections per Node isolate for `pg` (each serverless worker × this counts against Postgres `max_connections`). */
+const poolMaxConnections = (() => {
+  const raw = process.env.DATABASE_POOL_MAX?.trim();
+  if (!raw) {
+    return 10;
+  }
+  const n = Number.parseInt(raw, 10);
+  return Number.isFinite(n) && n >= 1 ? Math.min(n, 100) : 10;
+})();
+
 const getPgPool = (connectionString: string) => {
   if (!globalForPrisma.prismaPool) {
-    globalForPrisma.prismaPool = new Pool({ connectionString });
+    globalForPrisma.prismaPool = new Pool({
+      connectionString,
+      max: poolMaxConnections,
+      idleTimeoutMillis: 30_000,
+      connectionTimeoutMillis: 15_000,
+    });
   }
   return globalForPrisma.prismaPool;
 };
@@ -75,11 +90,11 @@ const createPrismaClient = () => {
   throw new Error("Missing DATABASE_URL or DIRECT_URL for Prisma client.");
 };
 
-export const prisma = globalForPrisma.prisma ?? createPrismaClient();
-
-if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma;
+/** One client + one pool per runtime (dev HMR, serverless warm instance, `next start` worker). */
+if (!globalForPrisma.prisma) {
+  globalForPrisma.prisma = createPrismaClient();
 }
+export const prisma = globalForPrisma.prisma;
 
 export { PrismaClient };
 export * from "@prisma/client";
