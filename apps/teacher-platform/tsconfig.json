@@ -43,6 +43,8 @@
     "node_modules",
     "client",
     "server",
-    "app"
+    "app",
+    // Next may add `.next/dev/types` to `include` during build; exclude keeps dev artifacts out of tsc.
+    ".next/dev"
   ]
 }
