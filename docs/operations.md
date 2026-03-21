@@ -40,6 +40,8 @@ These points are the source of truth for how this repo expects the database to w
 
 For local Docker or a single Postgres instance, **`DATABASE_URL`** and **`DIRECT_URL`** are commonly **identical**.
 
+For a **full inventory** of processes and scripts that open DB connections (and an optimization checklist), see **[`database-connection-inventory.md`](./database-connection-inventory.md)**.
+
 ### PostgreSQL connection limits (error `53300`, “remaining connection slots…”)
 
 If APIs return **500** with Postgres **`53300`** or text like **“remaining connection slots are reserved for roles with the SUPERUSER attribute”**, the database has hit **`max_connections`** for normal roles. This is common when:

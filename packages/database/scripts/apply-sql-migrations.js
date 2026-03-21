@@ -61,6 +61,7 @@ const run = async () => {
 
   const pool = new Pool({
     connectionString: sanitizePostgresConnectionString(connectionString),
+    max: 1,
   });
   const client = await pool.connect();
 

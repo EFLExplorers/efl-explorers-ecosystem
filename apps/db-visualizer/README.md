@@ -11,11 +11,15 @@ Read-only Next.js dashboard for exploring EFL database structure and cross-schem
 | Auth & mapping | `(dashboard)/auth` | `/api/auth` | `AuthMappingPanel` | Users + student/teacher mappings; Prisma has no `teachers.Teacher` model (called out in-panel) |
 | Curriculum | `(dashboard)/curriculum` | `/api/curriculum` | `CurriculumExplorerPanel` | Tree-shaped; empty when no programs |
 | Connectivity | `(dashboard)/connectivity` | `/api/connectivity` | `ConnectivityPanel` | Cross-schema links |
-| Schema map | `(dashboard)/schema-map` | `/api/schema-graph` | `SchemaGraphCanvas` | Postgres `information_schema` metadata |
+| Schema map | `(dashboard)/schema-map` | `/api/schema-graph` | `SchemaGraphCanvas` | Postgres `information_schema` via **direct `DIRECT_URL`** when `DATABASE_URL` is **Prisma Accelerate** (`prisma://…`); otherwise Prisma raw SQL |
 
 **Presentational-only (no fetch):** `RouteWarning`, `JsonCodeBlock`, `AppSidebarNav`.
 
 Failures surface as `RouteWarning` when `fetchFromApi` throws (e.g. missing `DATABASE_URL` or API error).
+
+### Prisma Accelerate and the schema map
+
+Accelerate does not reliably run the schema map’s `information_schema` introspection. If **`DATABASE_URL`** is **`prisma://…`**, you **must** set **`DIRECT_URL=postgresql://…`** (PlanetScale direct or pooler URL). The map opens **one short-lived direct session** per load, then disconnects — it counts toward your **direct** connection limit only while that request runs.
 
 ### Schema map / API shows Postgres `53300` or “connection slots”
 

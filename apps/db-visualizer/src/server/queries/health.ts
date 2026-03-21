@@ -36,23 +36,24 @@ const runCheck = async (
 };
 
 export const getSchemaHealthData = async (): Promise<SchemaHealthData> => {
-  const checks = await Promise.all([
-    runCheck("shared-page", "shared", "pages", () =>
+  /* Sequential: avoids N concurrent checkouts against a tiny pool (53300 on shared Postgres). */
+  const checks = [
+    await runCheck("shared-page", "shared", "pages", () =>
       prisma.page.findFirst({ select: { id: true } })
     ),
-    runCheck("auth-user", "auth", "users", () =>
+    await runCheck("auth-user", "auth", "users", () =>
       prisma.user.findFirst({ select: { id: true } })
     ),
-    runCheck("students-mapping", "students", "student_user_mappings", () =>
+    await runCheck("students-mapping", "students", "student_user_mappings", () =>
       prisma.studentUserMapping.findFirst({ select: { id: true } })
     ),
-    runCheck("teachers-student", "teachers", "students", () =>
+    await runCheck("teachers-student", "teachers", "students", () =>
       prisma.student.findFirst({ select: { id: true } })
     ),
-    runCheck("curriculum-level", "curriculum", "levels", () =>
+    await runCheck("curriculum-level", "curriculum", "levels", () =>
       prisma.curriculumLevel.findFirst({ select: { id: true } })
     ),
-  ]);
+  ];
 
   const summary = checks.reduce(
     (accumulator, check) => {
