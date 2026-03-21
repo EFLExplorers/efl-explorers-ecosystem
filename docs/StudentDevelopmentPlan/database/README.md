@@ -7,15 +7,16 @@ domain models should be introduced.
 
 - `auth` schema: identity, sessions, SSO tokens, and role flags.
 - `shared` schema: reusable content sections and media metadata.
-- `teachers` schema: teacher workflow data and source records authored by staff.
+- `curriculum` schema: canonical programs/levels/units and publish snapshots (owned by curriculum platform).
+- `teachers` schema: teacher workflow data and staff-authored records tied to classroom operations.
 - `students` schema: student-centric tracking, progress, and outcomes.
 
 ## Ownership Rules
 
 - Student platform is source of truth for `students` schema entities.
 - Landing page remains source of truth for identity and auth in `auth`.
-- Teacher platform remains source of truth for lesson/curriculum authoring in
-  `teachers`.
+- **Curriculum platform** is source of truth for **published EFL curriculum** in `curriculum.*` (programs, levels, units, snapshots). Other apps consume it via HTTP; they should not write `curriculum.*` directly.
+- Teacher platform remains source of truth for **teacher workflow** data in `teachers.*` (students, lessons, teacher-local planning, materials)—distinct from canonical curriculum content.
 - Shared marketing content remains source of truth in `shared`.
 
 ## Integration Principles

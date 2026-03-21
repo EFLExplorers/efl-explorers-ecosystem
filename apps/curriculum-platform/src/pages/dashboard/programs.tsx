@@ -1,4 +1,5 @@
 import type { GetServerSideProps } from "next";
+import type { FormEvent } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
@@ -28,6 +29,9 @@ type Unit = {
   slug: string;
   orderIndex: number;
   levelId: number;
+  summary?: string | null;
+  storyMarkdown?: string;
+  mediaManifest?: Record<string, unknown> | null;
   estimatedMinutes?: number | null;
   assignmentConfig?: AssignmentConfig;
 };
@@ -108,6 +112,20 @@ const assignmentConfigFromDraft = (draft: AssignmentDraft): AssignmentConfig => 
   };
 };
 
+const mediaManifestToEditorString = (value: unknown): string => {
+  if (value === null || value === undefined) {
+    return "{}";
+  }
+  if (typeof value === "object") {
+    try {
+      return JSON.stringify(value, null, 2);
+    } catch {
+      return "{}";
+    }
+  }
+  return "{}";
+};
+
 const assignmentDraftFromUnit = (unit: Unit): AssignmentDraft => {
   const config = unit.assignmentConfig;
   return {
@@ -169,6 +187,14 @@ export const ProgramsPage = () => {
   const [creatingLevel, setCreatingLevel] = useState(false);
   const [creatingUnit, setCreatingUnit] = useState(false);
   const [savingUnitConfig, setSavingUnitConfig] = useState(false);
+  const [savingLessonContent, setSavingLessonContent] = useState(false);
+  const [archivingUnit, setArchivingUnit] = useState(false);
+  const [editLessonSlug, setEditLessonSlug] = useState("");
+  const [editLessonSummary, setEditLessonSummary] = useState("");
+  const [editLessonStory, setEditLessonStory] = useState("");
+  const [editLessonMediaJson, setEditLessonMediaJson] = useState("{}");
+  const [editLessonOrderIndex, setEditLessonOrderIndex] = useState("");
+  const [lessonContentError, setLessonContentError] = useState<string | null>(null);
   const [savingProgram, setSavingProgram] = useState(false);
   const [archivingProgram, setArchivingProgram] = useState(false);
 
@@ -265,6 +291,12 @@ export const ProgramsPage = () => {
   useEffect(() => {
     if (selectedUnit) {
       setEditAssignmentDraft(assignmentDraftFromUnit(selectedUnit));
+      setEditLessonSlug(selectedUnit.slug);
+      setEditLessonSummary(selectedUnit.summary ?? "");
+      setEditLessonStory(selectedUnit.storyMarkdown ?? "");
+      setEditLessonMediaJson(mediaManifestToEditorString(selectedUnit.mediaManifest));
+      setEditLessonOrderIndex(String(selectedUnit.orderIndex));
+      setLessonContentError(null);
     }
   }, [selectedUnit]);
 
@@ -459,6 +491,103 @@ export const ProgramsPage = () => {
     }
     setSuccess(`Assignment config updated for "${data.unit.title}".`);
     setSavingUnitConfig(false);
+  };
+
+  const saveSelectedUnitLessonContent = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!selectedUnitId) {
+      return;
+    }
+
+    setError(null);
+    setSuccess(null);
+    setLessonContentError(null);
+
+    const trimmedJson = editLessonMediaJson.trim();
+    let parsedManifest: Record<string, unknown>;
+    try {
+      const raw = trimmedJson === "" ? {} : JSON.parse(trimmedJson);
+      if (raw === null || typeof raw !== "object" || Array.isArray(raw)) {
+        setLessonContentError("Media manifest must be a JSON object.");
+        return;
+      }
+      parsedManifest = raw as Record<string, unknown>;
+    } catch {
+      setLessonContentError("Media manifest is not valid JSON.");
+      return;
+    }
+
+    const orderParsed = Number.parseInt(editLessonOrderIndex, 10);
+    if (
+      editLessonOrderIndex.trim() === "" ||
+      Number.isNaN(orderParsed) ||
+      orderParsed < 0
+    ) {
+      setLessonContentError("Order index must be a non-negative integer.");
+      return;
+    }
+
+    setSavingLessonContent(true);
+    const response = await fetch(`/api/units/${selectedUnitId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        slug: editLessonSlug.trim(),
+        summary:
+          editLessonSummary.trim() === "" ? null : editLessonSummary.trim(),
+        storyMarkdown: editLessonStory,
+        mediaManifest: parsedManifest,
+        orderIndex: orderParsed,
+      }),
+    });
+    const data = (await response.json()) as { unit?: Unit; error?: string };
+    if (!response.ok || !data.unit) {
+      setError(data.error ?? "Failed to update lesson content");
+      setSavingLessonContent(false);
+      return;
+    }
+
+    if (selectedLevelId) {
+      await loadUnits(selectedLevelId);
+    }
+    setSuccess(`Lesson content updated for "${data.unit.title}".`);
+    setSavingLessonContent(false);
+  };
+
+  const archiveSelectedUnit = async () => {
+    if (!selectedUnitId || !selectedUnit) {
+      return;
+    }
+    if (
+      !window.confirm(
+        `Archive unit "${selectedUnit.title}"? It will be hidden from lists and excluded from publish.`
+      )
+    ) {
+      return;
+    }
+
+    setError(null);
+    setSuccess(null);
+    setLessonContentError(null);
+    setArchivingUnit(true);
+    const response = await fetch(`/api/units/${selectedUnitId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ isArchived: true }),
+    });
+    const data = (await response.json()) as { unit?: Unit; error?: string };
+    if (!response.ok || !data.unit) {
+      setError(data.error ?? "Failed to archive unit");
+      setArchivingUnit(false);
+      return;
+    }
+
+    setSelectedUnitId(null);
+    if (selectedLevelId) {
+      await loadUnits(selectedLevelId);
+    }
+    setSuccess(`Unit archived.`);
+    setArchivingUnit(false);
   };
 
   return (
@@ -804,6 +933,98 @@ export const ProgramsPage = () => {
             </li>
           ))}
         </ul>
+      </section>
+
+      <section className={styles.card}>
+        <h2>Lesson content</h2>
+        <p className={styles.meta}>
+          URL slug, summary, story markdown, display order, and media manifest JSON
+          (for assets / scenes). Saved separately from assignment settings.
+        </p>
+        {!selectedUnit ? (
+          <p className={styles.empty}>Select a unit to edit lesson content.</p>
+        ) : (
+          <form onSubmit={saveSelectedUnitLessonContent}>
+            <p className={styles.meta}>
+              Editing: {selectedUnit.title} (id {selectedUnit.id})
+            </p>
+            {lessonContentError ? (
+              <p className={styles.error} role="alert">
+                {lessonContentError}
+              </p>
+            ) : null}
+            <label className={styles.field}>
+              Unit slug
+              <input
+                className={styles.input}
+                value={editLessonSlug}
+                onChange={(event) => setEditLessonSlug(event.target.value)}
+                required
+                autoComplete="off"
+                aria-label="Unit URL slug"
+              />
+            </label>
+            <label className={styles.field}>
+              Order index
+              <input
+                className={styles.input}
+                type="number"
+                min={0}
+                value={editLessonOrderIndex}
+                onChange={(event) => setEditLessonOrderIndex(event.target.value)}
+                required
+                aria-label="Unit order index"
+              />
+            </label>
+            <label className={styles.field}>
+              Summary
+              <textarea
+                className={styles.textarea}
+                value={editLessonSummary}
+                onChange={(event) => setEditLessonSummary(event.target.value)}
+                rows={3}
+                placeholder="Short summary for authors or listings"
+              />
+            </label>
+            <label className={styles.field}>
+              Story markdown
+              <textarea
+                className={styles.textarea}
+                value={editLessonStory}
+                onChange={(event) => setEditLessonStory(event.target.value)}
+                rows={8}
+                placeholder="Main narrative body"
+              />
+            </label>
+            <label className={styles.field}>
+              Media manifest (JSON object)
+              <textarea
+                className={styles.textareaMono}
+                value={editLessonMediaJson}
+                onChange={(event) => setEditLessonMediaJson(event.target.value)}
+                rows={10}
+                spellCheck={false}
+              />
+            </label>
+            <div className={styles.actions}>
+              <button
+                className={`${styles.button} ${styles.buttonPrimary}`}
+                type="submit"
+                disabled={savingLessonContent || archivingUnit}
+              >
+                {savingLessonContent ? "Saving…" : "Save lesson content"}
+              </button>
+              <button
+                className={`${styles.button} ${styles.buttonDanger}`}
+                type="button"
+                disabled={savingLessonContent || archivingUnit}
+                onClick={() => void archiveSelectedUnit()}
+              >
+                {archivingUnit ? "Archiving…" : "Archive unit"}
+              </button>
+            </div>
+          </form>
+        )}
       </section>
 
       <section className={styles.card}>

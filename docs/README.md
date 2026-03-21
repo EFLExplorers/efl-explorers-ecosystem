@@ -15,6 +15,7 @@ architecture, operations, and app/package details.
 
 ## Platforms
 - `platforms/README.md` — Platform index + UI/API/backend/database split.
+- `platforms/curriculum-platform/README.md` — What the curriculum builder is for, publish/snapshot logic, and how teacher/student apps consume it.
 
 ## Packages
 - `packages/database.md` — Prisma schema + DB client.

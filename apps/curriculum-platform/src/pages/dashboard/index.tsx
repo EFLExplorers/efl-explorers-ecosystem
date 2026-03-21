@@ -1,11 +1,23 @@
 import type { GetServerSideProps } from "next";
 
+import { ProcessHubCard } from "@/components/dashboard/ProcessHubCard";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { requireActiveCurriculumManager } from "@/lib/curriculumDashboardGuard";
+import { prisma } from "@repo/database";
+
 import styles from "@/pages/dashboard/index.module.css";
+
+export type DashboardMetrics = {
+  readonly programCount: number;
+  readonly levelCount: number;
+  readonly unitCount: number;
+  readonly publishedLevelCount: number;
+  readonly pendingInviteCount: number;
+};
 
 type DashboardPageProps = {
   readonly userEmail: string;
+  readonly metrics: DashboardMetrics;
 };
 
 export const getServerSideProps: GetServerSideProps<DashboardPageProps> = async (
@@ -16,60 +28,80 @@ export const getServerSideProps: GetServerSideProps<DashboardPageProps> = async 
     return access;
   }
 
+  const [
+    programCount,
+    levelCount,
+    unitCount,
+    publishedLevelCount,
+    pendingInviteCount,
+  ] = await Promise.all([
+    prisma.curriculumProgram.count({ where: { isArchived: false } }),
+    prisma.curriculumLevel.count({ where: { status: { not: "archived" } } }),
+    prisma.curriculumUnit.count({ where: { isArchived: false } }),
+    prisma.curriculumLevel.count({ where: { status: "published" } }),
+    prisma.curriculumInvite.count({
+      where: { acceptedAt: null, revokedAt: null },
+    }),
+  ]);
+
   return {
     props: {
       userEmail: access.userEmail ?? "Unknown user",
+      metrics: {
+        programCount,
+        levelCount,
+        unitCount,
+        publishedLevelCount,
+        pendingInviteCount,
+      },
     },
   };
 };
 
-export const DashboardPage = ({ userEmail }: DashboardPageProps) => {
+export const DashboardPage = ({ userEmail, metrics }: DashboardPageProps) => {
   return (
     <DashboardShell
       pageTitle="Dashboard"
-      pageSubtitle="[wireframe] High-level regions — replace with metrics & shortcuts"
+      pageSubtitle="Start a workflow or jump back into authoring and publishing."
       userEmailOverride={userEmail}
     >
+      <p className={styles.welcome}>
+        Signed in as <strong>{userEmail}</strong>. Use the cards below to open
+        each process.
+      </p>
+
       <div className={styles.grid}>
-        <article className={styles.block}>
-          <h2 className={styles.blockTitle}>Overview</h2>
-          <p className={styles.blockBody}>
-            Signed in as <strong>{userEmail}</strong>.
-          </p>
-          <p className={styles.placeholder}>
-            [placeholder] KPIs · recent edits · system status
-          </p>
-        </article>
-
-        <article className={styles.block}>
-          <h2 className={styles.blockTitle}>Authoring</h2>
-          <p className={styles.blockBody}>
-            Programs, levels, units — use sidebar → Programs.
-          </p>
-          <p className={styles.placeholder}>
-            [placeholder] Continue editing · draft counts
-          </p>
-        </article>
-
-        <article className={styles.block}>
-          <h2 className={styles.blockTitle}>Publishing</h2>
-          <p className={styles.blockBody}>
-            Snapshots for downstream apps — sidebar → Publish.
-          </p>
-          <p className={styles.placeholder}>
-            [placeholder] Last publish · version diff
-          </p>
-        </article>
-
-        <article className={styles.block}>
-          <h2 className={styles.blockTitle}>Access</h2>
-          <p className={styles.blockBody}>
-            Invites and manager policy — sidebar → Invites.
-          </p>
-          <p className={styles.placeholder}>
-            [placeholder] Pending invites · audit
-          </p>
-        </article>
+        <ProcessHubCard
+          title="Author curriculum"
+          description="Create programs, levels, and units. Edit lesson copy, media manifest JSON, and assignment settings."
+          href="/dashboard/programs"
+          actionLabel="Open programs workspace"
+          meta={`${metrics.programCount} program(s) · ${metrics.unitCount} active unit(s)`}
+        />
+        <ProcessHubCard
+          title="Publish to teacher & student apps"
+          description="Create an immutable snapshot for a level so downstream APIs can serve stable content."
+          href="/dashboard/publish"
+          actionLabel="Go to publish"
+          meta={`${metrics.publishedLevelCount} published level(s) · ${metrics.levelCount} active level(s) total`}
+        />
+        <ProcessHubCard
+          title="Team access"
+          description="Invite other curriculum managers by email. Invites must be accepted before registration."
+          href="/dashboard/invites"
+          actionLabel="Manage invites"
+          meta={
+            metrics.pendingInviteCount > 0
+              ? `${metrics.pendingInviteCount} pending invite(s)`
+              : "No pending invites"
+          }
+        />
+        <ProcessHubCard
+          title="Account"
+          description="View your manager profile on this curriculum deployment."
+          href="/settings"
+          actionLabel="Open settings"
+        />
       </div>
     </DashboardShell>
   );

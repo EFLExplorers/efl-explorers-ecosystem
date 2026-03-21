@@ -1,7 +1,10 @@
 # Teacher Platform
 
-Operational dashboard for instructors, with student management, curriculum,
-lesson planning, and analytics.
+Operational dashboard for instructors, with student management, lesson
+planning, and analytics. **Canonical published EFL curriculum** (programs /
+levels / story units) is authored in [`curriculum-platform`](../curriculum-platform/README.md)
+and consumed here via proxy APIs when `CURRICULUM_PLATFORM_URL` is set; teacher-local
+curriculum/planning data remains under `teachers.*`.
 
 ## Runtime
 - Framework: Next.js (pages router)
