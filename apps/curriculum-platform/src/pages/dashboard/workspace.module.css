@@ -54,6 +54,14 @@
   resize: vertical;
 }
 
+.textareaMono {
+  composes: textarea;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
 .actions {
   display: flex;
   gap: 8px;
@@ -111,4 +119,37 @@
   color: var(--muted);
   margin: 0;
   font-size: 13px;
+}
+
+.preJson {
+  margin: 10px 0 0;
+  padding: 12px;
+  max-height: 320px;
+  overflow: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-size: 11px;
+  line-height: 1.4;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  border-radius: 2px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.readinessList {
+  margin: 8px 0 0;
+  padding-left: 1.2rem;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.readinessWarn {
+  font-weight: 600;
+}
+
+.readinessOk {
+  color: var(--muted);
 }

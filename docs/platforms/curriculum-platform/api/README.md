@@ -30,6 +30,10 @@ All API routes live in `apps/curriculum-platform/src/pages/api`.
 - `GET /api/public/levels/[programSlug]/[levelSlug]` - Read current published snapshot for downstream platforms.
 - `GET /api/hooks/assignments/preview/[levelId]` - Preview normalized assignment/reporting hook payload before publish (manager auth required).
 
+## Downstream consumption
+
+Teacher and student apps do not call these routes directly from the browser in production; they use **authenticated proxies** that forward to `GET /api/public/levels/[programSlug]/[levelSlug]` on the curriculum deployment (`CURRICULUM_PLATFORM_URL`) with optional `x-curriculum-shared-secret`. See `docs/operations.md` and `../README.md` (runtime logic).
+
 ## Additional Docs
 
 - `assignment-hooks.md` - Assignment/reporting hook contract and validation behavior.

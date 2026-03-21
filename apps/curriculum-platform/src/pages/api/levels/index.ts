@@ -37,7 +37,13 @@ export default async function handler(
     const levels = await prisma.curriculumLevel.findMany({
       where: { programId: programIdResult.value, status: { not: "archived" } },
       orderBy: { orderIndex: "asc" },
-      include: { _count: { select: { units: true } } },
+      include: {
+        _count: {
+          select: {
+            units: { where: { isArchived: false } },
+          },
+        },
+      },
     });
     return res.status(200).json({ levels });
   }

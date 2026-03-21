@@ -74,6 +74,45 @@ Single-sheet view of all current endpoints.
 - `DELETE /api/lesson-materials/[id]`
 - `GET /api/lesson-materials/lesson/[lessonId]`
 
-## Students Platform (Port 3002)
+### Published curriculum (proxy to curriculum-platform)
 
-- No API routes yet (boilerplate).
+- `GET /api/curriculum/published/[programSlug]/[levelSlug]` — requires teacher session; forwards to `CURRICULUM_PLATFORM_URL` / `api/public/levels/...`.
+
+## Curriculum Platform (Port 3003)
+
+### Auth + invites
+
+- `POST /api/auth/register`
+- `GET /api/auth/invites`
+- `POST /api/auth/invites`
+- `GET|POST /api/auth/[...nextauth]` (handler under `src/app/api/auth/`)
+
+### Authoring
+
+- `GET|POST /api/programs`, `GET|PATCH|DELETE /api/programs/[id]`
+- `GET|POST /api/levels`, `GET|POST /api/units`, `PATCH|DELETE /api/units/[id]`
+
+### Publish + public read
+
+- `POST /api/publish/levels/[levelId]`
+- `GET /api/public/levels/[programSlug]/[levelSlug]`
+- `GET /api/hooks/assignments/preview/[levelId]`
+
+Details: `docs/platforms/curriculum-platform/api/README.md`.
+
+## Student Platform (Port 3002)
+
+### Student session APIs
+
+- `GET /api/student/dashboard`
+- `GET /api/student/lessons`
+- `GET /api/student/progress`
+- `GET /api/student/assignments`
+- `PATCH /api/student/assignments/[id]`
+- `GET /api/student/curriculum/[programSlug]/[levelSlug]` — proxies published curriculum when configured.
+
+### Auth
+
+- `GET|POST /api/auth/[...nextauth]`
+
+Details: `docs/platforms/student-platform/api/README.md`.
