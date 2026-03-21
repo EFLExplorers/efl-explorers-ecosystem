@@ -1,3 +1,4 @@
+import { DashboardPageHeader } from "@/components/layout/DashboardPageHeader";
 import { CurriculumExplorerPanel } from "@/components/phases/CurriculumExplorerPanel";
 import { RouteWarning } from "@/components/layout/RouteWarning";
 import { fetchFromApi } from "@/server/api-client";
@@ -22,6 +23,10 @@ export const CurriculumRoutePage = async () => {
 
   return (
     <>
+      <DashboardPageHeader
+        title="Curriculum engine"
+        description="Programs, levels, units, and live publish snapshots as stored for the curriculum platform."
+      />
       {warning ? <RouteWarning message={`Curriculum data unavailable: ${warning}`} /> : null}
       <CurriculumExplorerPanel data={data} />
     </>

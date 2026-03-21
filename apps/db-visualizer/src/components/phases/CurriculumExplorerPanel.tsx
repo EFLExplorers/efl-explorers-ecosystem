@@ -1,4 +1,5 @@
 import { JsonCodeBlock } from "@/components/common/JsonCodeBlock";
+import ui from "@/components/layout/dashboardUi.module.css";
 import type { CurriculumExplorerData } from "@/types/db-visualizer";
 
 import styles from "./CurriculumExplorerPanel.module.css";
@@ -9,11 +10,11 @@ type CurriculumExplorerPanelProps = {
 
 export const CurriculumExplorerPanel = ({ data }: CurriculumExplorerPanelProps) => {
   return (
-    <section className={styles.panel}>
+    <section className={ui.pageStack}>
       {data.programs.map((program) => (
-        <article key={program.id} className={styles.programCard}>
+        <article key={program.id} className={`${ui.card} ${styles.programCard}`}>
           <header className={styles.programHeader}>
-            <h3>{program.title}</h3>
+            <h2 className={styles.programTitle}>{program.title}</h2>
             <span className={styles.slug}>/{program.slug}</span>
           </header>
 
@@ -21,10 +22,10 @@ export const CurriculumExplorerPanel = ({ data }: CurriculumExplorerPanelProps) 
             {program.levels.map((level) => {
               const liveSnapshot = data.liveSnapshotsByLevel[level.id];
               return (
-                <section key={level.id} className={styles.levelCard}>
+                <section key={level.id} className={`${ui.cardQuiet} ${styles.levelCard}`}>
                   <header className={styles.levelHeader}>
                     <div>
-                      <h4>{level.title}</h4>
+                      <h3 className={styles.levelTitle}>{level.title}</h3>
                       <span className={styles.slug}>/{level.slug}</span>
                     </div>
                     <span className={styles.statusBadge}>{level.status}</span>
@@ -41,9 +42,9 @@ export const CurriculumExplorerPanel = ({ data }: CurriculumExplorerPanelProps) 
 
                   <div className={styles.unitList}>
                     {level.units.map((unit) => (
-                      <article key={unit.id} className={styles.unitCard}>
+                      <article key={unit.id} className={`${ui.cardQuiet} ${styles.unitCard}`}>
                         <header className={styles.unitHeader}>
-                          <strong>{unit.title}</strong>
+                          <strong className={styles.unitTitle}>{unit.title}</strong>
                           <span className={styles.slug}>/{unit.slug}</span>
                         </header>
                         <p className={styles.summary}>{unit.summary ?? "No summary provided."}</p>
@@ -67,7 +68,7 @@ export const CurriculumExplorerPanel = ({ data }: CurriculumExplorerPanelProps) 
         </article>
       ))}
       {data.programs.length === 0 ? (
-        <p className={styles.emptyState}>
+        <p className={ui.empty}>
           No curriculum programs in this database. When you add programs via the Curriculum Platform,
           they will show here (same <code>DATABASE_URL</code>).
         </p>

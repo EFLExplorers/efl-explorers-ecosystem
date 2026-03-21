@@ -26,9 +26,10 @@
   min-height: 520px;
   height: min(72vh, 880px);
   border: 1px solid var(--line);
-  border-radius: 6px;
-  background: #0a0a0a;
+  border-radius: var(--radius-lg);
+  background: var(--bg-main);
   overflow: hidden;
+  box-shadow: var(--shadow-card);
 }
 
 .flowRoot :global(.react-flow__background) {
@@ -63,7 +64,16 @@
 .empty {
   margin: 0;
   padding: 2rem 1rem;
+  max-width: 42rem;
+  margin-inline: auto;
   text-align: center;
   color: var(--text-muted);
   font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.emptyCode {
+  font-family: ui-monospace, monospace;
+  font-size: 0.8em;
+  color: var(--text-main);
 }

@@ -350,6 +350,11 @@ export const normalizeSchemaGraphData = (raw: unknown): SchemaGraphData => {
     return EMPTY_SCHEMA_GRAPH;
   }
 
+  /* Successful API responses must not be confused with { error: string } bodies. */
+  if (typeof raw.error === "string" && raw.error.length > 0 && !Array.isArray(raw.tables)) {
+    return EMPTY_SCHEMA_GRAPH;
+  }
+
   const tables = asArray(raw.tables).map((row, index) => {
     const rec = isRecord(row) ? row : {};
     const schema = asString(rec.schema, "public");

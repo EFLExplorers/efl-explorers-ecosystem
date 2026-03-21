@@ -2,16 +2,78 @@
 
 :root {
   color-scheme: dark;
-  --bg-main: #0d0d0d;
-  --bg-soft: #131313;
+
+  /* Surfaces */
+  --bg-main: #0a0a0a;
+  --bg-elevated: #111111;
+  --bg-soft: #141414;
+  --bg-sidebar: #101010;
   --line: #2a2a2a;
-  --line-strong: #3a3a3a;
-  --text-main: #f1f1f1;
-  --text-muted: #b8b8b8;
+  --line-strong: #3d3d3d;
+
+  /* Typography */
+  --text-main: #f0f0f0;
+  --text-muted: #a8a8a8;
+  --text-faint: #7a7a7a;
+
+  /* Accent (inspect / primary actions) */
+  --accent: #6eb8ff;
+  --accent-dim: rgba(110, 184, 255, 0.14);
+  --accent-muted: rgba(110, 184, 255, 0.45);
+  --accent-contrast: #0a0a0a;
+
+  /* Semantic */
+  --success-bg: #132818;
+  --success-border: #2d6a40;
+  --success-text: #b8e6c4;
+  --danger-bg: #261616;
+  --danger-border: #6f3737;
+  --danger-text: #f0c4c4;
+  --warn-bg: #241f10;
+  --warn-border: #6a5b31;
+  --warn-text: #e8d9a8;
+
+  /* Code blocks */
+  --code-bg: rgba(12, 18, 32, 0.88);
+  --code-border: rgba(140, 170, 255, 0.18);
+  --code-text: #d8e4ff;
+
+  /* Shape & motion */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --shadow-header: 0 1px 0 rgba(0, 0, 0, 0.45);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --transition-fast: 0.14s ease;
+  --focus-ring-shadow: 0 0 0 2px var(--bg-main), 0 0 0 4px var(--accent-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition-fast: 0.01ms;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 * {
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 html,
@@ -23,12 +85,40 @@ body {
 }
 
 body {
-  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
   color: var(--text-main);
   background: var(--bg-main);
-  line-height: 1.35;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--accent-dim);
+  color: var(--text-main);
 }
 
 a {
   color: inherit;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring-shadow);
+  border-radius: var(--radius-sm);
+}
+
+button {
+  font: inherit;
 }

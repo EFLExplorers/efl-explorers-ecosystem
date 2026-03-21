@@ -1,0 +1,110 @@
+/* Shared surfaces for dashboard panels — compose with local modules */
+
+.pageStack {
+  display: grid;
+  gap: 1rem;
+}
+
+.card {
+  margin: 0;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 0.85rem 1rem;
+  box-shadow: var(--shadow-card);
+}
+
+.cardQuiet {
+  composes: card;
+  box-shadow: none;
+  background: var(--bg-elevated);
+}
+
+.cardTitle {
+  margin: 0 0 0.65rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+
+.callout {
+  margin: 0;
+  border: 1px solid var(--warn-border);
+  background: var(--warn-bg);
+  color: var(--warn-text);
+  padding: 0.75rem 0.95rem;
+  border-radius: var(--radius-lg);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.callout strong {
+  color: var(--warn-text);
+  font-weight: 600;
+}
+
+.callout code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.88em;
+  padding: 0.08rem 0.28rem;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(232, 217, 168, 0.2);
+}
+
+.empty {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.empty code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.9em;
+  padding: 0.06rem 0.3rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-main);
+  border: 1px solid var(--line);
+  color: var(--text-main);
+}
+
+.formStack {
+  display: grid;
+  gap: 0.5rem;
+  max-width: 32rem;
+}
+
+.formStack label {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.formStack select,
+.formStack button {
+  border: 1px solid var(--line-strong);
+  background: var(--bg-elevated);
+  color: var(--text-main);
+  padding: 0.55rem 0.7rem;
+  border-radius: var(--radius-md);
+  font-size: 0.84rem;
+}
+
+.formStack select {
+  min-height: 2.35rem;
+}
+
+.formStack button {
+  width: fit-content;
+  cursor: pointer;
+  background: var(--accent-dim);
+  border-color: var(--accent-muted);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.formStack button:hover {
+  background: rgba(110, 184, 255, 0.22);
+}

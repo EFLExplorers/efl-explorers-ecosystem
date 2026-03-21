@@ -1,0 +1,23 @@
+.wrap {
+  margin: 0 0 1rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--line);
+  max-width: 72rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--text-main);
+}
+
+.desc {
+  margin: 0.35rem 0 0;
+  max-width: 62ch;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+}

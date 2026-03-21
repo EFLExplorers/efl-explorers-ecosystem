@@ -1,11 +1,16 @@
 .codeBlock {
   margin: 0;
-  padding: 0.9rem;
-  border-radius: 0.8rem;
-  background: rgba(11, 17, 32, 0.72);
-  border: 1px solid rgba(162, 180, 255, 0.2);
-  font-size: 0.78rem;
-  line-height: 1.45;
+  padding: 0.85rem 0.95rem;
+  border-radius: var(--radius-lg);
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  font-size: 0.76rem;
+  line-height: 1.48;
   overflow-x: auto;
-  color: #dae5ff;
+  color: var(--code-text);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.codeBlock code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }

@@ -26,6 +26,7 @@ export const AppSidebarNav = () => {
 
   return (
     <nav className={styles.nav} aria-label="Visualizer routes">
+      <p className={styles.navHeading}>Views</p>
       {navItems.map((item) => {
         const Icon = item.icon;
         const isActive = pathname === item.href;
@@ -34,8 +35,9 @@ export const AppSidebarNav = () => {
             key={item.href}
             href={item.href}
             className={`${styles.navLink} ${isActive ? styles.navLinkActive : ""}`}
+            aria-current={isActive ? "page" : undefined}
           >
-            <Icon size={16} />
+            <Icon size={16} aria-hidden />
             <span>{item.label}</span>
           </Link>
         );

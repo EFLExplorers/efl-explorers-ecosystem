@@ -27,7 +27,20 @@ import {
 } from "./SchemaTableNode";
 import styles from "./SchemaGraphCanvas.module.css";
 
-const LS_KEY = "db-visualizer-schema-map-positions";
+/** Bumped when layout logic changes — avoids stale or invalid cached coordinates hiding the graph. */
+const LS_KEY = "db-visualizer-schema-map-positions-v4";
+
+/**
+ * React Flow uses ids in DOM/querySelector paths; dots in `auth.users` can break rendering.
+ * Postgres `schema.table` stays on `node.data.table` for display; flow id is URL-safe ascii.
+ */
+const flowNodeId = (table: SchemaGraphTable) => {
+  const payload = `${table.schema}\x1e${table.name}`;
+  return `sg_${encodeURIComponent(payload).replace(/%/g, "_")}`;
+};
+
+const flowEdgeId = (edgeId: string) =>
+  `e_${encodeURIComponent(edgeId).replace(/%/g, "_")}`;
 
 const nodeTypes = { schemaTable: SchemaTableNode };
 
@@ -75,10 +88,30 @@ const loadSavedLayout = (
     if (parsed.fingerprint !== fingerprint) {
       return null;
     }
-    return parsed.positions ?? null;
+    return sanitizeSavedPositions(parsed.positions);
   } catch {
     return null;
   }
+};
+
+const sanitizeSavedPositions = (
+  raw: Record<string, { x: number; y: number }> | undefined,
+): Record<string, { x: number; y: number }> | null => {
+  if (!raw || typeof raw !== "object") {
+    return null;
+  }
+  const out: Record<string, { x: number; y: number }> = {};
+  for (const [id, pos] of Object.entries(raw)) {
+    if (!pos || typeof pos !== "object") {
+      continue;
+    }
+    const x = Number(pos.x);
+    const y = Number(pos.y);
+    if (Number.isFinite(x) && Number.isFinite(y)) {
+      out[id] = { x, y };
+    }
+  }
+  return Object.keys(out).length > 0 ? out : null;
 };
 
 const saveLayout = (
@@ -120,11 +153,16 @@ const SchemaGraphFlowInner = ({ data }: FlowInnerProps) => {
       if (!box) {
         continue;
       }
-      const fromDisk = saved?.[table.id];
+      const fid = flowNodeId(table);
+      const fromDisk = saved?.[fid];
+      const position =
+        fromDisk && Number.isFinite(fromDisk.x) && Number.isFinite(fromDisk.y)
+          ? fromDisk
+          : { x: box.x, y: box.y };
       const node: SchemaTableFlowNode = {
-        id: table.id,
+        id: fid,
         type: "schemaTable",
-        position: fromDisk ?? { x: box.x, y: box.y },
+        position,
         width: SCHEMA_GRAPH_NODE_W,
         height: box.h,
         data: {
@@ -136,15 +174,22 @@ const SchemaGraphFlowInner = ({ data }: FlowInnerProps) => {
       nextNodes.push(node);
     }
 
+    const tableByQualifiedId = new Map(data.tables.map((t) => [t.id, t]));
+
     const nextEdges: Edge[] = [];
     for (const edge of data.edges) {
       if (!positions.has(edge.fromTableId) || !positions.has(edge.toTableId)) {
         continue;
       }
+      const fromT = tableByQualifiedId.get(edge.fromTableId);
+      const toT = tableByQualifiedId.get(edge.toTableId);
+      if (!fromT || !toT) {
+        continue;
+      }
       nextEdges.push({
-        id: edge.id,
-        source: edge.fromTableId,
-        target: edge.toTableId,
+        id: flowEdgeId(edge.id),
+        source: flowNodeId(fromT),
+        target: flowNodeId(toT),
         sourceHandle: HANDLE_SOURCE,
         targetHandle: HANDLE_TARGET,
         ...defaultEdgeOptions,
@@ -154,11 +199,12 @@ const SchemaGraphFlowInner = ({ data }: FlowInnerProps) => {
     setNodes(nextNodes);
     setEdges(nextEdges);
 
-    const hasSaved = saved && Object.keys(saved).length > 0;
+    /* Frame the graph whenever data loads. Saved positions only affect node x/y, not viewport;
+       skipping fitView when localStorage existed left many users staring at an empty pane. */
     const t = window.setTimeout(() => {
-      if (!hasSaved) {
-        fitView({ padding: 0.15, maxZoom: 1.25, duration: 200 });
-      }
+      requestAnimationFrame(() => {
+        fitView({ padding: 0.12, maxZoom: 1.35, duration: 220 });
+      });
     }, 0);
     return () => window.clearTimeout(t);
   }, [data, fingerprint, fitView, setEdges, setNodes]);
@@ -208,7 +254,15 @@ export const SchemaGraphCanvas = ({ data }: SchemaGraphCanvasProps) => {
   if (data.tables.length === 0) {
     return (
       <div className={styles.wrap}>
-        <p className={styles.empty}>No tables returned for the allowlisted schemas.</p>
+        <p className={styles.empty}>
+          No tables returned for the allowlisted schemas (auth, curriculum, shared, students,
+          teachers, public). If you expect data, apply migrations to this database and confirm{" "}
+          <code className={styles.emptyCode}>DATABASE_URL</code> /{" "}
+          <code className={styles.emptyCode}>DIRECT_URL</code> in{" "}
+          <code className={styles.emptyCode}>packages/database/.env</code> match the instance you
+          migrated. The <code className={styles.emptyCode}>/api/schema-graph</code> response in the
+          Network tab should show the same table count as this page.
+        </p>
       </div>
     );
   }
@@ -217,8 +271,8 @@ export const SchemaGraphCanvas = ({ data }: SchemaGraphCanvasProps) => {
     <div className={styles.wrap}>
       <div className={styles.toolbar}>
         <div>
-          <strong>Schema map</strong> — {data.tables.length} tables · {data.edges.length} foreign
-          keys (Postgres metadata)
+          <strong>Live graph</strong> — {data.tables.length} tables · {data.edges.length} foreign keys
+          (Postgres metadata)
         </div>
         <span>
           Wheel or trackpad to zoom · drag the background to pan · drag tables · positions persist
@@ -226,7 +280,11 @@ export const SchemaGraphCanvas = ({ data }: SchemaGraphCanvasProps) => {
         </span>
       </div>
 
-      <div className={styles.flowRoot}>
+      <div
+        className={styles.flowRoot}
+        role="application"
+        aria-label="Database schema graph. Use the mouse wheel to zoom, drag the background to pan, and drag table nodes to rearrange."
+      >
         <ReactFlowProvider>
           <SchemaGraphFlowInner data={data} />
         </ReactFlowProvider>

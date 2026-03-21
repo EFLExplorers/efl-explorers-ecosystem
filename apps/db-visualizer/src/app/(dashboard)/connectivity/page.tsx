@@ -1,3 +1,4 @@
+import { DashboardPageHeader } from "@/components/layout/DashboardPageHeader";
 import { ConnectivityPanel } from "@/components/phases/ConnectivityPanel";
 import { RouteWarning } from "@/components/layout/RouteWarning";
 import { fetchFromApi } from "@/server/api-client";
@@ -23,6 +24,10 @@ export const ConnectivityRoutePage = async () => {
 
   return (
     <>
+      <DashboardPageHeader
+        title="Global connectivity"
+        description="Cross-schema level alignment between students and curriculum (read-only string matches, not FK guarantees)."
+      />
       {warning ? <RouteWarning message={`Global connectivity unavailable: ${warning}`} /> : null}
       <ConnectivityPanel data={data} />
     </>

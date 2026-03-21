@@ -37,31 +37,44 @@ export const DashboardShellLayout = async ({
 
   return (
     <main className={styles.shell}>
-      <header className={styles.header}>
+      <a href="#main-content" className={styles.skipLink}>
+        Skip to main content
+      </a>
+      <header className={styles.header} role="banner">
         <div className={styles.headerMain}>
           <div className={styles.titleRow}>
-            <h1>EFL Ecosystem DB Visualizer</h1>
-            <div className={styles.opsBadges}>
+            <p className={styles.productName}>EFL Ecosystem DB Visualizer</p>
+            <div className={styles.opsBadges} aria-label="Deployment metadata">
               <span className={styles.badge}>env: {runtimeEnvironment}</span>
               <span className={styles.badge}>region: {deploymentRegion}</span>
               <span className={styles.badge}>commit: {shortCommitSha}</span>
             </div>
           </div>
           <p className={styles.tagline}>
-            Route-based read-only inspector for shared, auth, teachers, students, and
-            curriculum schemas.
+            Read-only route inspector — shared, auth, teachers, students, curriculum.
           </p>
         </div>
       </header>
 
       <div className={styles.body}>
-        <aside className={styles.sidebar}>
+        <aside className={styles.sidebar} aria-label="Visualizer navigation and schema health">
           <AppSidebarNav />
-          {healthWarning ? <p className={styles.healthWarning}>{healthWarning}</p> : null}
+          {healthWarning ? (
+            <p className={styles.healthWarning} role="status">
+              {healthWarning}
+            </p>
+          ) : null}
           <SchemaHealthPanel data={healthData} />
         </aside>
 
-        <section className={styles.content}>{children}</section>
+        <section
+          id="main-content"
+          className={styles.content}
+          tabIndex={-1}
+          aria-label="Main content"
+        >
+          {children}
+        </section>
       </div>
     </main>
   );

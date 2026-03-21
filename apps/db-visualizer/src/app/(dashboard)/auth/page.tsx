@@ -1,3 +1,4 @@
+import { DashboardPageHeader } from "@/components/layout/DashboardPageHeader";
 import { AuthMappingPanel } from "@/components/phases/AuthMappingPanel";
 import { RouteWarning } from "@/components/layout/RouteWarning";
 import { fetchFromApi } from "@/server/api-client";
@@ -40,6 +41,10 @@ export const AuthRoutePage = async ({ searchParams }: AuthRoutePageProps) => {
 
   return (
     <>
+      <DashboardPageHeader
+        title="Auth & identity mapping"
+        description="Inspect auth users, student/teacher bridges, and documented Prisma coverage gaps."
+      />
       {warning ? <RouteWarning message={`Auth mapping data unavailable: ${warning}`} /> : null}
       <AuthMappingPanel data={data} activeUserId={data.selectedUser?.id} />
     </>

@@ -30,6 +30,10 @@ That is **connection exhaustion** on the server, not a broken schema-graph query
 - **Schema health:** Evolve checks in `health.ts` as schemas change.
 - **Schema graph:** Improve composite-FK accuracy in SQL separately from the interactive map UI.
 
+## UI system
+
+Global design tokens live in `src/app/globals.css` (surfaces, accent, semantic success/danger/warn, radii, focus ring). Shared dashboard patterns (cards, callouts, forms) are in `src/components/layout/dashboardUi.module.css` and composed from feature modules. Each route uses `DashboardPageHeader` for a single page `<h1>`; the shell brand line is not a heading.
+
 ## Development
 
 ```bash

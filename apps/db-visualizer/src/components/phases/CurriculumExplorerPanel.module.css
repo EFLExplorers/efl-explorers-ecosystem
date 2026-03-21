@@ -1,13 +1,5 @@
-.panel {
-  display: grid;
-  gap: 1rem;
-}
-
-.programCard,
-.levelCard,
-.unitCard {
-  border-top: 1px solid var(--line-strong);
-  padding: 0.85rem 0;
+.programCard {
+  padding: 1rem 1.05rem;
 }
 
 .programHeader,
@@ -16,46 +8,76 @@
   display: flex;
   justify-content: space-between;
   gap: 0.8rem;
-  align-items: center;
+  align-items: flex-start;
 }
 
-.programHeader h3,
-.levelHeader h4 {
-  margin: 0;
+.programTitle {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--text-main);
+}
+
+.levelTitle {
+  margin: 0 0 0.2rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-main);
+}
+
+.unitTitle {
+  font-size: 0.84rem;
+  font-weight: 600;
 }
 
 .slug {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
   color: var(--text-muted);
-  font-size: 0.76rem;
+  font-size: 0.74rem;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
 }
 
 .levelList,
 .unitList {
   display: grid;
   gap: 0.75rem;
-  margin-top: 0.7rem;
+  margin-top: 0.75rem;
+}
+
+.levelCard {
+  padding: 0.85rem 0.9rem;
+}
+
+.unitCard {
+  padding: 0.75rem 0.85rem;
 }
 
 .statusBadge {
-  border-radius: 0;
-  padding: 0.2rem 0.6rem;
-  background: #1d1d1d;
+  border-radius: var(--radius-md);
+  padding: 0.2rem 0.55rem;
+  background: var(--bg-main);
   border: 1px solid var(--line-strong);
-  font-size: 0.76rem;
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
 }
 
 .liveSnapshot {
-  margin: 0.7rem 0 0.35rem;
+  margin: 0.65rem 0 0.3rem;
   color: var(--text-muted);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
+  line-height: 1.4;
 }
 
 .summary {
-  margin: 0.45rem 0 0.75rem;
-  font-size: 0.84rem;
+  margin: 0.4rem 0 0.65rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
+  line-height: 1.45;
 }
 
 .jsonGrid {
@@ -66,13 +88,9 @@
 
 .label {
   margin: 0 0 0.38rem;
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   color: var(--text-muted);
-}
-
-.emptyState {
-  margin: 0;
-  color: var(--text-muted);
+  font-weight: 500;
 }
 
 @media (max-width: 1000px) {

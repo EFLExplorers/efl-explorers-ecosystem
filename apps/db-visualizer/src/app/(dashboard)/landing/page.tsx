@@ -1,3 +1,4 @@
+import { DashboardPageHeader } from "@/components/layout/DashboardPageHeader";
 import { LandingLogicPanel } from "@/components/phases/LandingLogicPanel";
 import { RouteWarning } from "@/components/layout/RouteWarning";
 import { fetchFromApi } from "@/server/api-client";
@@ -24,6 +25,10 @@ export const LandingRoutePage = async () => {
 
   return (
     <>
+      <DashboardPageHeader
+        title="Landing logic"
+        description="Marketing pages, sections, content tree edges, and shared media assets wired to the same database."
+      />
       {warning ? <RouteWarning message={`Landing data unavailable: ${warning}`} /> : null}
       <LandingLogicPanel data={data} />
     </>

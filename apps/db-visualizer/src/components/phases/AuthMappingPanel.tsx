@@ -1,3 +1,5 @@
+import ui from "@/components/layout/dashboardUi.module.css";
+
 import styles from "./AuthMappingPanel.module.css";
 
 import type { IdentityBridgeData } from "@/types/db-visualizer";
@@ -13,10 +15,10 @@ const getBadgeClass = (exists: boolean) => {
 
 export const AuthMappingPanel = ({ data, activeUserId }: AuthMappingPanelProps) => {
   return (
-    <section className={styles.panel}>
-      <article className={styles.selectorCard}>
-        <h3>User Identity Inspector</h3>
-        <form method="get" className={styles.selectorForm}>
+    <section className={ui.pageStack}>
+      <article className={ui.card}>
+        <h2 className={ui.cardTitle}>User identity inspector</h2>
+        <form method="get" className={ui.formStack}>
           <label htmlFor="userId">Select auth.User</label>
           <select id="userId" name="userId" defaultValue={activeUserId ?? data.selectedUser?.id}>
             {data.users.map((user) => (
@@ -31,9 +33,9 @@ export const AuthMappingPanel = ({ data, activeUserId }: AuthMappingPanelProps) 
 
       {data.selectedUser ? (
         <div className={styles.grid}>
-          <article className={styles.card}>
-            <h4>Auth User</h4>
-            <dl>
+          <article className={ui.card}>
+            <h3 className={ui.cardTitle}>Auth user</h3>
+            <dl className={styles.detailList}>
               <dt>ID</dt>
               <dd>{data.selectedUser.id}</dd>
               <dt>Email</dt>
@@ -45,8 +47,8 @@ export const AuthMappingPanel = ({ data, activeUserId }: AuthMappingPanelProps) 
             </dl>
           </article>
 
-          <article className={styles.card}>
-            <h4>Mapping Bridge</h4>
+          <article className={ui.card}>
+            <h3 className={ui.cardTitle}>Mapping bridge</h3>
             <p className={`${styles.badge} ${getBadgeClass(Boolean(data.studentMapping))}`}>
               Student Mapping: {data.studentMapping ? "Found" : "Missing"}
             </p>
@@ -55,8 +57,8 @@ export const AuthMappingPanel = ({ data, activeUserId }: AuthMappingPanelProps) 
             </p>
           </article>
 
-          <article className={styles.card}>
-            <h4>Linked teachers.Student Profiles</h4>
+          <article className={ui.card}>
+            <h3 className={ui.cardTitle}>Linked teachers.Student profiles</h3>
             {data.linkedStudents.length === 0 ? (
               <p className={styles.note}>No student profile could be discovered via email correlation.</p>
             ) : (
@@ -70,8 +72,8 @@ export const AuthMappingPanel = ({ data, activeUserId }: AuthMappingPanelProps) 
             )}
           </article>
 
-          <article className={styles.card}>
-            <h4>Teacher Profile Model</h4>
+          <article className={ui.card}>
+            <h3 className={ui.cardTitle}>Teacher profile model</h3>
             <p className={styles.note}>
               `teachers.Teacher` is not available in the current Prisma schema. This panel is intentionally a
               placeholder to surface that schema gap.
@@ -79,8 +81,8 @@ export const AuthMappingPanel = ({ data, activeUserId }: AuthMappingPanelProps) 
           </article>
         </div>
       ) : (
-        <article className={styles.card}>
-          <p className={styles.note}>No users available to inspect.</p>
+        <article className={ui.card}>
+          <p className={ui.empty}>No users available to inspect.</p>
         </article>
       )}
     </section>
