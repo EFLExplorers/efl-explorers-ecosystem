@@ -17,7 +17,6 @@ export const AuthMappingPanel = ({ data, activeUserId }: AuthMappingPanelProps) 
       <article className={styles.selectorCard}>
         <h3>User Identity Inspector</h3>
         <form method="get" className={styles.selectorForm}>
-          <input type="hidden" name="tab" value="auth" />
           <label htmlFor="userId">Select auth.User</label>
           <select id="userId" name="userId" defaultValue={activeUserId ?? data.selectedUser?.id}>
             {data.users.map((user) => (

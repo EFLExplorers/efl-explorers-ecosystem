@@ -2,6 +2,10 @@
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "tui",
   "globalEnv": [
+    "NODE_ENV",
+    "VERCEL_ENV",
+    "VERCEL_REGION",
+    "VERCEL_GIT_COMMIT_SHA",
     "AUTH_SECRET",
     "DATABASE_URL",
     "DIRECT_URL",

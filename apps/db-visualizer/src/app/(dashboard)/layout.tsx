@@ -1,0 +1,65 @@
+import type { ReactNode } from "react";
+
+import { AppSidebarNav } from "@/components/layout/AppSidebarNav";
+import { SchemaHealthPanel } from "@/components/dashboard/SchemaHealthPanel";
+import { getSchemaHealthData } from "@/server/queries/health";
+import type { SchemaHealthData } from "@/types/db-visualizer";
+
+import styles from "./layout.module.css";
+
+const EMPTY_SCHEMA_HEALTH_DATA: SchemaHealthData = {
+  checks: [],
+  summary: {
+    ok: 0,
+    error: 0,
+  },
+};
+
+const runtimeEnvironment = process.env.VERCEL_ENV ?? process.env.NODE_ENV ?? "unknown";
+const deploymentRegion = process.env.VERCEL_REGION ?? "n/a";
+const commitSha = process.env.VERCEL_GIT_COMMIT_SHA ?? "local";
+const shortCommitSha = commitSha.slice(0, 8);
+
+export const DashboardShellLayout = async ({
+  children,
+}: Readonly<{ children: ReactNode }>) => {
+  let healthData = EMPTY_SCHEMA_HEALTH_DATA;
+  let healthWarning = "";
+
+  try {
+    healthData = await getSchemaHealthData();
+  } catch (error) {
+    healthWarning =
+      error instanceof Error ? error.message : "Schema health check unavailable.";
+  }
+
+  return (
+    <main className={styles.shell}>
+      <header className={styles.header}>
+        <div>
+          <h1>EFL Ecosystem DB Visualizer</h1>
+          <p>
+            Route-based read-only inspector for shared, auth, teachers, students, and curriculum schemas.
+          </p>
+        </div>
+        <div className={styles.opsBadges}>
+          <span className={styles.badge}>env: {runtimeEnvironment}</span>
+          <span className={styles.badge}>region: {deploymentRegion}</span>
+          <span className={styles.badge}>commit: {shortCommitSha}</span>
+        </div>
+      </header>
+
+      <div className={styles.body}>
+        <aside className={styles.sidebar}>
+          <AppSidebarNav />
+          {healthWarning ? <p className={styles.healthWarning}>{healthWarning}</p> : null}
+          <SchemaHealthPanel data={healthData} />
+        </aside>
+
+        <section className={styles.content}>{children}</section>
+      </div>
+    </main>
+  );
+};
+
+export default DashboardShellLayout;

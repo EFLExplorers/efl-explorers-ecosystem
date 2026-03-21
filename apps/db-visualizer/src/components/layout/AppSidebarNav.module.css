@@ -1,0 +1,28 @@
+.nav {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(162, 180, 255, 0.22);
+  background: rgba(255, 255, 255, 0.08);
+  color: #dbe7ff;
+  text-decoration: none;
+  padding: 0.62rem 0.7rem;
+  font-size: 0.86rem;
+  backdrop-filter: blur(10px);
+}
+
+.navLinkActive {
+  background: linear-gradient(
+    135deg,
+    rgba(111, 143, 255, 0.36),
+    rgba(157, 104, 255, 0.28)
+  );
+  border-color: rgba(194, 208, 255, 0.75);
+  color: #f3f7ff;
+}
