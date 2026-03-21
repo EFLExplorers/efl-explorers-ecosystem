@@ -1,6 +1,6 @@
 import { AuthContainer } from "@/components/auth/layout";
 import { LoginForm } from "@/components/auth/forms";
-import type { GetStaticProps } from "next";
+import type { GetServerSideProps } from "next";
 import type { HeaderContent } from "@/components/layout/Header-Footer/Header";
 import type { FooterContent } from "@/components/layout/Header-Footer/Footer";
 import { getGlobalLayoutContent } from "@/utils/globalSections";
@@ -23,7 +23,9 @@ export const StudentLoginPage = (_props: StudentLoginPageProps) => {
 
 export default StudentLoginPage;
 
-export const getStaticProps: GetStaticProps<StudentLoginPageProps> = async () => {
+export const getServerSideProps: GetServerSideProps<
+  StudentLoginPageProps
+> = async () => {
   const { headerContent, footerContent } = await getGlobalLayoutContent();
-  return { props: { headerContent, footerContent }, revalidate: 300 };
+  return { props: { headerContent, footerContent } };
 };

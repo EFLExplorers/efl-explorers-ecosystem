@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import {
   PricingTable,
   type PricingPlan,
@@ -57,7 +57,8 @@ export const Pricing: NextPage<PricingPageProps> = ({
   );
 };
 
-export const getStaticProps: GetStaticProps<PricingPageProps> = async () => {
+export const getServerSideProps: GetServerSideProps<PricingPageProps> =
+  async () => {
   const { headerContent, footerContent } = await getGlobalLayoutContent();
 
   // Fetch page content

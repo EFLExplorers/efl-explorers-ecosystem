@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import type { GetStaticProps } from "next";
+import type { GetServerSideProps } from "next";
 import { PasswordInput } from "../../../components/auth/shared/PasswordInput";
 import { AuthContainer } from "../../../components/auth/layout/AuthContainer";
 import sharedStyles from "../../../components/auth/styles/shared.module.css";
@@ -165,7 +165,7 @@ export const ResetPasswordPage = ({
 
 export default ResetPasswordPage;
 
-export const getStaticProps: GetStaticProps<ResetPasswordPageProps> =
+export const getServerSideProps: GetServerSideProps<ResetPasswordPageProps> =
   async () => {
     const { headerContent, footerContent } = await getGlobalLayoutContent();
 
@@ -250,7 +250,6 @@ export const getStaticProps: GetStaticProps<ResetPasswordPageProps> =
         successGoToLoginText: successContent.go_to_login_text,
         successGoToLoginHref: successContent.go_to_login_href,
       },
-      revalidate: 300,
     };
   };
 

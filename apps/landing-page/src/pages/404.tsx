@@ -31,34 +31,50 @@ export default function Custom404({
 }
 
 export const getStaticProps: GetStaticProps<Custom404Props> = async () => {
-  const { headerContent, footerContent } = await getGlobalLayoutContent();
+  try {
+    const { headerContent, footerContent } = await getGlobalLayoutContent();
 
-  // Fetch 404 page content from site_sections
-  const sectionData = await prisma.siteSection.findFirst({
-    where: { sectionKey: "404", active: true },
-    select: { content: true },
-  });
+    const sectionData = await prisma.siteSection.findFirst({
+      where: { sectionKey: "404", active: true },
+      select: { content: true },
+    });
 
-  if (!sectionData) {
-    throw new Error(
-      "[404] Missing site_sections row for section_key '404': no data"
-    );
+    if (!sectionData) {
+      throw new Error(
+        "[404] Missing site_sections row for section_key '404': no data"
+      );
+    }
+
+    const content = parsePrismaJson<Record<string, any>>(sectionData.content);
+    if (
+      !content ||
+      !content.title ||
+      !content.message ||
+      !content.home_link_text
+    ) {
+      throw new Error(
+        "[404] Missing required content fields in 404 site_section (title, message, home_link_text)"
+      );
+    }
+
+    return {
+      props: {
+        headerContent,
+        footerContent,
+        title: content.title,
+        message: content.message,
+        homeLinkText: content.home_link_text,
+      },
+    };
+  } catch {
+    return {
+      props: {
+        headerContent: null,
+        footerContent: null,
+        title: "Page not found",
+        message: "The page you are looking for does not exist.",
+        homeLinkText: "Back to home",
+      },
+    };
   }
-
-  const content = parsePrismaJson<Record<string, any>>(sectionData.content);
-  if (!content || !content.title || !content.message || !content.home_link_text) {
-    throw new Error(
-      "[404] Missing required content fields in 404 site_section (title, message, home_link_text)"
-    );
-  }
-
-  return {
-    props: {
-      headerContent,
-      footerContent,
-      title: content.title,
-      message: content.message,
-      homeLinkText: content.home_link_text,
-    },
-  };
 };

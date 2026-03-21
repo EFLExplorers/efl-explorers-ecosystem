@@ -6,7 +6,7 @@ import {
   TeacherCTASection,
 } from "@/components/layout/TeacherPlatform";
 import styles from "./teacher.module.css";
-import type { GetStaticProps } from "next";
+import type { GetServerSideProps } from "next";
 import type { HeaderContent } from "@/components/layout/Header-Footer/Header";
 import type { FooterContent } from "@/components/layout/Header-Footer/Footer";
 import { getGlobalLayoutContent } from "@/utils/globalSections";
@@ -58,7 +58,7 @@ export default function TeacherPlatform(props: TeacherPlatformPageProps) {
   );
 }
 
-export const getStaticProps: GetStaticProps<
+export const getServerSideProps: GetServerSideProps<
   TeacherPlatformPageProps
 > = async () => {
   const { headerContent, footerContent } = await getGlobalLayoutContent();

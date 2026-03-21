@@ -1,4 +1,4 @@
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import { PageLayout } from "../components/layout/PageLayout";
 import HeroSection from "../components/layout/Home/HeroSection";
 import TaglineSection from "../components/layout/Home/TaglineSection";
@@ -60,7 +60,8 @@ export const HomePage = ({
   );
 };
 
-export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
+export const getServerSideProps: GetServerSideProps<HomePageProps> =
+  async () => {
   const { headerContent, footerContent } = await getGlobalLayoutContent();
 
   // Fetch page content

@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import { PageLayout } from "../components/layout/PageLayout";
 import { ContactHeroSection } from "../components/layout/Contact/ContactHeroSection";
 import { ContactFormSection } from "../components/layout/Contact/ContactFormSection";
@@ -56,7 +56,8 @@ export const ContactPage: NextPage<ContactPageProps> = ({
   );
 };
 
-export const getStaticProps: GetStaticProps<ContactPageProps> = async () => {
+export const getServerSideProps: GetServerSideProps<ContactPageProps> =
+  async () => {
   const { headerContent, footerContent } = await getGlobalLayoutContent();
 
   const pageData = await prisma.page.findUnique({

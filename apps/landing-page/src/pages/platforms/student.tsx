@@ -5,7 +5,7 @@ import {
   StudentPlanetsSection,
 } from "@/components/layout/StudentPlatform";
 import styles from "./student.module.css";
-import type { GetStaticProps } from "next";
+import type { GetServerSideProps } from "next";
 import type { PageSection } from "@/pages/api/page-content";
 import type { StudentCharacter } from "@/components/layout/StudentPlatform/sections/CharactersSection";
 import type { StudentPlanet } from "@/components/layout/StudentPlatform/sections/PlanetsSection";
@@ -55,7 +55,7 @@ export default function StudentPlatform(props: StudentPlatformPageProps) {
   );
 }
 
-export const getStaticProps: GetStaticProps<
+export const getServerSideProps: GetServerSideProps<
   StudentPlatformPageProps
 > = async () => {
   const { headerContent, footerContent } = await getGlobalLayoutContent();

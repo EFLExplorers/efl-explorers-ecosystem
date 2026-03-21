@@ -1,6 +1,6 @@
 import { AuthContainer } from "@/components/auth/layout";
 import { RegistrationForm } from "@/components/auth/forms";
-import type { GetStaticProps } from "next";
+import type { GetServerSideProps } from "next";
 import type { HeaderContent } from "@/components/layout/Header-Footer/Header";
 import type { FooterContent } from "@/components/layout/Header-Footer/Footer";
 import { getGlobalLayoutContent } from "@/utils/globalSections";
@@ -23,7 +23,9 @@ export const TeacherRegistrationPage = (_props: TeacherRegistrationPageProps) =>
 
 export default TeacherRegistrationPage;
 
-export const getStaticProps: GetStaticProps<TeacherRegistrationPageProps> = async () => {
+export const getServerSideProps: GetServerSideProps<
+  TeacherRegistrationPageProps
+> = async () => {
   const { headerContent, footerContent } = await getGlobalLayoutContent();
-  return { props: { headerContent, footerContent }, revalidate: 300 };
+  return { props: { headerContent, footerContent } };
 };

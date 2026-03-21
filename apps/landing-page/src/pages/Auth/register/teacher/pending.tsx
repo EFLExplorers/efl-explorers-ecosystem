@@ -1,6 +1,6 @@
 import Link from "next/link";
 import styles from "@/styles/Auth.module.css";
-import type { GetStaticProps } from "next";
+import type { GetServerSideProps } from "next";
 import type { HeaderContent } from "@/components/layout/Header-Footer/Header";
 import type { FooterContent } from "@/components/layout/Header-Footer/Footer";
 import { getGlobalLayoutContent } from "@/utils/globalSections";
@@ -42,7 +42,9 @@ export const TeacherPendingPage = ({
 
 export default TeacherPendingPage;
 
-export const getStaticProps: GetStaticProps<TeacherPendingPageProps> = async () => {
+export const getServerSideProps: GetServerSideProps<
+  TeacherPendingPageProps
+> = async () => {
   const { headerContent, footerContent } = await getGlobalLayoutContent();
 
   const pageData = await prisma.page.findUnique({
@@ -94,6 +96,5 @@ export const getStaticProps: GetStaticProps<TeacherPendingPageProps> = async () 
       buttonLabel: content.button_label,
       buttonHref: content.button_href,
     },
-    revalidate: 300,
   };
 };

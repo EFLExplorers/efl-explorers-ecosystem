@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
-import type { GetStaticProps } from "next";
+import type { GetServerSideProps } from "next";
 import { FormInput } from "../../../components/auth/shared/FormInput";
 import { AuthContainer } from "../../../components/auth/layout/AuthContainer";
 import sharedStyles from "../../../components/auth/styles/shared.module.css";
@@ -129,7 +129,7 @@ export const ForgotPasswordPage = ({
 
 export default ForgotPasswordPage;
 
-export const getStaticProps: GetStaticProps<ForgotPasswordPageProps> =
+export const getServerSideProps: GetServerSideProps<ForgotPasswordPageProps> =
   async () => {
     const { headerContent, footerContent } = await getGlobalLayoutContent();
 
@@ -214,7 +214,6 @@ export const getStaticProps: GetStaticProps<ForgotPasswordPageProps> =
         successReturnText: successContent.return_text,
         successReturnHref: successContent.return_href,
       },
-      revalidate: 300,
     };
   };
 

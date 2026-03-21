@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import {
   AboutUsSection,
   TeamMember,
@@ -82,7 +82,8 @@ export const AboutPage: NextPage<AboutPageProps> = ({
   );
 };
 
-export const getStaticProps: GetStaticProps<AboutPageProps> = async () => {
+export const getServerSideProps: GetServerSideProps<AboutPageProps> =
+  async () => {
   const { headerContent, footerContent } = await getGlobalLayoutContent();
 
   // Fetch page content

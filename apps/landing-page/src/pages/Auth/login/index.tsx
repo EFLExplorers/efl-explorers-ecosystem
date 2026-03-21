@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
 import styles from "@/styles/Auth.module.css";
-import type { GetStaticProps } from "next";
+import type { GetServerSideProps } from "next";
 import type { HeaderContent } from "@/components/layout/Header-Footer/Header";
 import type { FooterContent } from "@/components/layout/Header-Footer/Footer";
 import { getGlobalLayoutContent } from "@/utils/globalSections";
@@ -86,7 +86,8 @@ export const LoginPage = ({
 
 export default LoginPage;
 
-export const getStaticProps: GetStaticProps<LoginPageProps> = async () => {
+export const getServerSideProps: GetServerSideProps<LoginPageProps> =
+  async () => {
   const { headerContent, footerContent } = await getGlobalLayoutContent();
 
   const pageData = await prisma.page.findUnique({
@@ -142,6 +143,5 @@ export const getStaticProps: GetStaticProps<LoginPageProps> = async () => {
       registerLinkText: content.register_link_text,
       registerHref: content.register_href,
     },
-    revalidate: 300,
   };
 };

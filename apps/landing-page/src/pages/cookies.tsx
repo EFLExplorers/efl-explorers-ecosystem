@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import { PageLayout } from "../components/layout/PageLayout";
 import type { HeaderContent } from "../components/layout/Header-Footer/Header";
 import type { FooterContent } from "../components/layout/Header-Footer/Footer";
@@ -83,15 +83,16 @@ export const CookiePolicyPage: NextPage<LegalPageProps> = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps<LegalPageProps> = async () => {
-  const { headerContent, footerContent } = await getGlobalLayoutContent();
+export const getServerSideProps: GetServerSideProps<LegalPageProps> =
+  async () => {
+    const { headerContent, footerContent } = await getGlobalLayoutContent();
 
-  return {
-    props: {
-      headerContent,
-      footerContent,
-    },
+    return {
+      props: {
+        headerContent,
+        footerContent,
+      },
+    };
   };
-};
 
 export default CookiePolicyPage;
