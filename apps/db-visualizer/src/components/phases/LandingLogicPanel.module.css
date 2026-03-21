@@ -1,0 +1,123 @@
+.panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.overviewRow {
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.statCard,
+.treeCard,
+.assetCard {
+  border: 1px solid rgba(168, 190, 255, 0.24);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(14px);
+  padding: 1rem;
+}
+
+.statCard h3 {
+  margin: 0;
+  font-size: 0.84rem;
+  color: #bdd0ff;
+}
+
+.statCard p {
+  margin: 0.35rem 0 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.treeCard h3,
+.assetCard h3 {
+  margin: 0 0 0.8rem;
+}
+
+.treeList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.treeRow {
+  display: grid;
+  grid-template-columns: auto 1fr auto 1fr;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.52rem 0.65rem;
+  border-radius: 0.7rem;
+  background: rgba(11, 17, 32, 0.48);
+}
+
+.relationshipType {
+  border-radius: 99px;
+  font-size: 0.72rem;
+  padding: 0.2rem 0.5rem;
+  background: rgba(138, 160, 255, 0.23);
+  border: 1px solid rgba(187, 201, 255, 0.42);
+}
+
+.nodeLabel {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+  font-size: 0.78rem;
+  color: #dfe8ff;
+}
+
+.arrow {
+  color: #98afff;
+}
+
+.assetGrid {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.assetItem {
+  display: grid;
+  gap: 0.35rem;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 0.8rem;
+  border: 1px solid rgba(177, 195, 255, 0.24);
+  background: rgba(10, 16, 30, 0.46);
+  padding: 0.7rem;
+}
+
+.assetHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.4rem;
+  font-size: 0.77rem;
+}
+
+.assetItem p {
+  margin: 0;
+  color: #c2d2ff;
+  font-size: 0.79rem;
+}
+
+.emptyState {
+  color: #bdcbef;
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .overviewRow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .assetGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .treeRow {
+    grid-template-columns: 1fr;
+  }
+}

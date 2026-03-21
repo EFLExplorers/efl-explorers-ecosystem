@@ -1,0 +1,107 @@
+.panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.selectorCard,
+.card {
+  border: 1px solid rgba(168, 190, 255, 0.24);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(14px);
+  padding: 1rem;
+}
+
+.selectorCard h3 {
+  margin: 0 0 0.7rem;
+}
+
+.selectorForm {
+  display: grid;
+  gap: 0.5rem;
+  max-width: 560px;
+}
+
+.selectorForm label {
+  color: #c6d7ff;
+  font-size: 0.84rem;
+}
+
+.selectorForm select,
+.selectorForm button {
+  border-radius: 0.65rem;
+  border: 1px solid rgba(169, 189, 255, 0.35);
+  background: rgba(9, 14, 27, 0.63);
+  color: #e4ecff;
+  padding: 0.6rem 0.7rem;
+}
+
+.selectorForm button {
+  width: fit-content;
+  cursor: pointer;
+}
+
+.grid {
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.card h4 {
+  margin: 0 0 0.65rem;
+}
+
+.card dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.4rem 0.6rem;
+  font-size: 0.83rem;
+}
+
+.card dt {
+  color: #baceff;
+}
+
+.card dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.badge {
+  border-radius: 999px;
+  width: fit-content;
+  padding: 0.24rem 0.6rem;
+  border: 1px solid transparent;
+  font-size: 0.78rem;
+}
+
+.badgeOk {
+  background: rgba(77, 188, 129, 0.18);
+  border-color: rgba(108, 226, 163, 0.48);
+}
+
+.badgeMissing {
+  background: rgba(255, 122, 122, 0.18);
+  border-color: rgba(255, 162, 162, 0.48);
+}
+
+.studentList {
+  margin: 0;
+  padding-left: 1rem;
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.84rem;
+}
+
+.note {
+  margin: 0;
+  color: #c6d6ff;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
