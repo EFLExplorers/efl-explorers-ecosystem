@@ -1,0 +1,11 @@
+.codeBlock {
+  margin: 0;
+  padding: 0.9rem;
+  border-radius: 0.8rem;
+  background: rgba(11, 17, 32, 0.72);
+  border: 1px solid rgba(162, 180, 255, 0.2);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  overflow-x: auto;
+  color: #dae5ff;
+}

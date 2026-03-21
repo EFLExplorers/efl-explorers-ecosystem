@@ -1,0 +1,85 @@
+.panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.programCard,
+.levelCard,
+.unitCard {
+  border: 1px solid rgba(168, 190, 255, 0.24);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(14px);
+  padding: 1rem;
+}
+
+.programHeader,
+.levelHeader,
+.unitHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+  align-items: center;
+}
+
+.programHeader h3,
+.levelHeader h4 {
+  margin: 0;
+}
+
+.slug {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+  color: #bed0ff;
+  font-size: 0.76rem;
+}
+
+.levelList,
+.unitList {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.7rem;
+}
+
+.statusBadge {
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  background: rgba(122, 145, 241, 0.25);
+  border: 1px solid rgba(183, 199, 255, 0.55);
+  font-size: 0.76rem;
+}
+
+.liveSnapshot {
+  margin: 0.7rem 0 0.35rem;
+  color: #c8d8ff;
+  font-size: 0.82rem;
+}
+
+.summary {
+  margin: 0.45rem 0 0.75rem;
+  font-size: 0.84rem;
+  color: #ccdbff;
+}
+
+.jsonGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.label {
+  margin: 0 0 0.38rem;
+  font-size: 0.76rem;
+  color: #b8cdff;
+}
+
+.emptyState {
+  margin: 0;
+  color: #c7d5f8;
+}
+
+@media (max-width: 1000px) {
+  .jsonGrid {
+    grid-template-columns: 1fr;
+  }
+}

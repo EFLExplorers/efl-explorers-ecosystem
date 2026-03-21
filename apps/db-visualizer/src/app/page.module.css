@@ -1,0 +1,36 @@
+.page {
+  min-height: 100vh;
+  padding: 1.4rem;
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  gap: 1rem;
+}
+
+.hero {
+  border: 1px solid rgba(178, 196, 255, 0.3);
+  border-radius: 1rem;
+  padding: 1.1rem 1.2rem;
+  background: linear-gradient(
+    130deg,
+    rgba(102, 136, 255, 0.2),
+    rgba(69, 98, 211, 0.14),
+    rgba(135, 72, 223, 0.16)
+  );
+  backdrop-filter: blur(16px);
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: 1.38rem;
+}
+
+.hero p {
+  margin: 0.5rem 0 0;
+  max-width: 72ch;
+  color: #cad8ff;
+}
+
+.panelArea {
+  display: grid;
+}
