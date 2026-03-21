@@ -2,7 +2,8 @@ import type { ReactNode } from "react";
 
 import { AppSidebarNav } from "@/components/layout/AppSidebarNav";
 import { SchemaHealthPanel } from "@/components/dashboard/SchemaHealthPanel";
-import { getSchemaHealthData } from "@/server/queries/health";
+import { fetchFromApi } from "@/server/api-client";
+import { normalizeSchemaHealthData } from "@/server/normalize-api-data";
 import type { SchemaHealthData } from "@/types/db-visualizer";
 
 import styles from "./layout.module.css";
@@ -27,7 +28,8 @@ export const DashboardShellLayout = async ({
   let healthWarning = "";
 
   try {
-    healthData = await getSchemaHealthData();
+    const rawHealthData = await fetchFromApi<unknown>("/api/health");
+    healthData = normalizeSchemaHealthData(rawHealthData);
   } catch (error) {
     healthWarning =
       error instanceof Error ? error.message : "Schema health check unavailable.";

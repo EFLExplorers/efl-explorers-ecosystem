@@ -1,6 +1,7 @@
 import { CurriculumExplorerPanel } from "@/components/phases/CurriculumExplorerPanel";
 import { RouteWarning } from "@/components/layout/RouteWarning";
-import { getCurriculumExplorerData } from "@/server/queries/curriculum";
+import { fetchFromApi } from "@/server/api-client";
+import { normalizeCurriculumData } from "@/server/normalize-api-data";
 import type { CurriculumExplorerData } from "@/types/db-visualizer";
 
 const EMPTY_CURRICULUM_DATA: CurriculumExplorerData = {
@@ -13,7 +14,8 @@ export const CurriculumRoutePage = async () => {
   let data = EMPTY_CURRICULUM_DATA;
 
   try {
-    data = await getCurriculumExplorerData();
+    const rawCurriculumData = await fetchFromApi<unknown>("/api/curriculum");
+    data = normalizeCurriculumData(rawCurriculumData);
   } catch (error) {
     warning = error instanceof Error ? error.message : "Curriculum explorer data unavailable.";
   }

@@ -1,6 +1,7 @@
 import { ConnectivityPanel } from "@/components/phases/ConnectivityPanel";
 import { RouteWarning } from "@/components/layout/RouteWarning";
-import { getConnectivityData } from "@/server/queries/connectivity";
+import { fetchFromApi } from "@/server/api-client";
+import { normalizeConnectivityData } from "@/server/normalize-api-data";
 import type { ConnectivityData } from "@/types/db-visualizer";
 
 const EMPTY_CONNECTIVITY_DATA: ConnectivityData = {
@@ -14,7 +15,8 @@ export const ConnectivityRoutePage = async () => {
   let data = EMPTY_CONNECTIVITY_DATA;
 
   try {
-    data = await getConnectivityData();
+    const rawConnectivityData = await fetchFromApi<unknown>("/api/connectivity");
+    data = normalizeConnectivityData(rawConnectivityData);
   } catch (error) {
     warning = error instanceof Error ? error.message : "Global connectivity data unavailable.";
   }

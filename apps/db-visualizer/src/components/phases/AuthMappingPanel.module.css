@@ -5,11 +5,8 @@
 
 .selectorCard,
 .card {
-  border: 1px solid rgba(168, 190, 255, 0.24);
-  border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.07);
-  backdrop-filter: blur(14px);
-  padding: 1rem;
+  border-top: 1px solid var(--line-strong);
+  padding: 0.85rem 0;
 }
 
 .selectorCard h3 {
@@ -23,16 +20,15 @@
 }
 
 .selectorForm label {
-  color: #c6d7ff;
+  color: var(--text-muted);
   font-size: 0.84rem;
 }
 
 .selectorForm select,
 .selectorForm button {
-  border-radius: 0.65rem;
-  border: 1px solid rgba(169, 189, 255, 0.35);
-  background: rgba(9, 14, 27, 0.63);
-  color: #e4ecff;
+  border: 1px solid var(--line-strong);
+  background: #151515;
+  color: var(--text-main);
   padding: 0.6rem 0.7rem;
 }
 
@@ -60,7 +56,7 @@
 }
 
 .card dt {
-  color: #baceff;
+  color: var(--text-muted);
 }
 
 .card dd {
@@ -69,7 +65,7 @@
 }
 
 .badge {
-  border-radius: 999px;
+  border-radius: 0;
   width: fit-content;
   padding: 0.24rem 0.6rem;
   border: 1px solid transparent;
@@ -77,13 +73,13 @@
 }
 
 .badgeOk {
-  background: rgba(77, 188, 129, 0.18);
-  border-color: rgba(108, 226, 163, 0.48);
+  background: #163320;
+  border-color: #2f6d46;
 }
 
 .badgeMissing {
-  background: rgba(255, 122, 122, 0.18);
-  border-color: rgba(255, 162, 162, 0.48);
+  background: #351919;
+  border-color: #6f3737;
 }
 
 .studentList {
@@ -96,7 +92,7 @@
 
 .note {
   margin: 0;
-  color: #c6d6ff;
+  color: var(--text-muted);
   font-size: 0.85rem;
 }
 

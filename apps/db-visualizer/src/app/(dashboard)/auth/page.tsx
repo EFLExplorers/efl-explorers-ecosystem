@@ -1,6 +1,7 @@
 import { AuthMappingPanel } from "@/components/phases/AuthMappingPanel";
 import { RouteWarning } from "@/components/layout/RouteWarning";
-import { getIdentityBridgeData } from "@/server/queries/auth-mapping";
+import { fetchFromApi } from "@/server/api-client";
+import { normalizeIdentityData } from "@/server/normalize-api-data";
 import type { IdentityBridgeData } from "@/types/db-visualizer";
 
 type AuthRoutePageProps = {
@@ -30,7 +31,9 @@ export const AuthRoutePage = async ({ searchParams }: AuthRoutePageProps) => {
   let data = EMPTY_IDENTITY_DATA;
 
   try {
-    data = await getIdentityBridgeData(selectedUserId);
+    const querySuffix = selectedUserId ? `?userId=${encodeURIComponent(selectedUserId)}` : "";
+    const rawIdentityData = await fetchFromApi<unknown>(`/api/auth${querySuffix}`);
+    data = normalizeIdentityData(rawIdentityData);
   } catch (error) {
     warning = error instanceof Error ? error.message : "Auth mapping data unavailable.";
   }

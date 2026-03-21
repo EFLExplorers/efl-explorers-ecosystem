@@ -4,11 +4,11 @@
 }
 
 .notice {
-  border-radius: 0.85rem;
-  border: 1px solid rgba(255, 205, 137, 0.42);
-  background: rgba(255, 183, 76, 0.12);
+  border-left: 2px solid #6a5b31;
+  border: 1px solid #6a5b31;
+  background: #2c2614;
   padding: 0.75rem 0.9rem;
-  color: #ffe2b3;
+  color: #e7d8ac;
 }
 
 .grid {
@@ -18,11 +18,8 @@
 }
 
 .card {
-  border: 1px solid rgba(168, 190, 255, 0.24);
-  border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.07);
-  backdrop-filter: blur(14px);
-  padding: 1rem;
+  border-top: 1px solid var(--line-strong);
+  padding: 0.85rem 0;
 }
 
 .card h3 {
@@ -39,7 +36,7 @@
 
 .emptyState {
   margin: 0;
-  color: #c6d6ff;
+  color: var(--text-muted);
 }
 
 @media (max-width: 900px) {

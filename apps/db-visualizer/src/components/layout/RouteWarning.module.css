@@ -1,9 +1,8 @@
 .warning {
   margin: 0 0 0.7rem;
-  border-radius: 0.85rem;
-  border: 1px solid rgba(255, 163, 163, 0.45);
-  background: rgba(255, 98, 98, 0.12);
+  border: 1px solid #6f3737;
+  background: #2a1616;
   padding: 0.7rem 0.85rem;
-  color: #ffd6d6;
+  color: #f3c8c8;
   font-size: 0.84rem;
 }
