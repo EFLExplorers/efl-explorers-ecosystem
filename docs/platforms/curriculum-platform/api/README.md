@@ -7,7 +7,7 @@ All API routes live in `apps/curriculum-platform/src/pages/api`.
 - `POST /api/auth/register` - Invite-only registration (or bootstrap allowlist for first manager).
 - `GET /api/auth/invites` - List invites (manager auth required).
 - `POST /api/auth/invites` - Create/update invite (manager auth required).
-- `POST /api/auth/[...nextauth]` - NextAuth credential sign-in endpoint.
+- `GET|POST /api/auth/[...nextauth]` - NextAuth route handler (`src/app/api/auth/[...nextauth]/route.ts`); credentials validate `curriculum.managers` (`prisma.curriculumManager`).
 
 ## Authoring Routes
 

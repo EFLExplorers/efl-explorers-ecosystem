@@ -1,9 +1,8 @@
 import type { GetServerSideProps } from "next";
-import { getServerSession } from "next-auth/next";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { authOptions } from "@/lib/authOptions";
+import { requireActiveCurriculumManager } from "@/lib/curriculumDashboardGuard";
 import styles from "@/pages/dashboard/workspace.module.css";
 
 type Program = {
@@ -11,6 +10,7 @@ type Program = {
   title: string;
   slug: string;
   description: string | null;
+  isArchived?: boolean;
   _count?: { levels: number };
 };
 
@@ -132,14 +132,9 @@ const assignmentDraftFromUnit = (unit: Unit): AssignmentDraft => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getServerSession(context.req, context.res, authOptions);
-  if (!session?.user?.id) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
+  const access = await requireActiveCurriculumManager(context);
+  if ("redirect" in access) {
+    return access;
   }
   return { props: {} };
 };
@@ -152,6 +147,11 @@ export const ProgramsPage = () => {
   const [selectedLevelId, setSelectedLevelId] = useState<number | null>(null);
   const [selectedUnitId, setSelectedUnitId] = useState<number | null>(null);
   const [programTitle, setProgramTitle] = useState("");
+  const [newProgramSlug, setNewProgramSlug] = useState("");
+  const [newProgramDescription, setNewProgramDescription] = useState("");
+  const [editProgramTitle, setEditProgramTitle] = useState("");
+  const [editProgramSlug, setEditProgramSlug] = useState("");
+  const [editProgramDescription, setEditProgramDescription] = useState("");
   const [levelTitle, setLevelTitle] = useState("");
   const [unitTitle, setUnitTitle] = useState("");
   const [createAssignmentDraft, setCreateAssignmentDraft] = useState<AssignmentDraft>(
@@ -169,6 +169,8 @@ export const ProgramsPage = () => {
   const [creatingLevel, setCreatingLevel] = useState(false);
   const [creatingUnit, setCreatingUnit] = useState(false);
   const [savingUnitConfig, setSavingUnitConfig] = useState(false);
+  const [savingProgram, setSavingProgram] = useState(false);
+  const [archivingProgram, setArchivingProgram] = useState(false);
 
   const currentProgram = useMemo(
     () => programs.find((item) => item.id === selectedProgramId) ?? null,
@@ -266,15 +268,29 @@ export const ProgramsPage = () => {
     }
   }, [selectedUnit]);
 
+  useEffect(() => {
+    if (currentProgram) {
+      setEditProgramTitle(currentProgram.title);
+      setEditProgramSlug(currentProgram.slug);
+      setEditProgramDescription(currentProgram.description ?? "");
+    }
+  }, [currentProgram]);
+
   const createProgram = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
     setSuccess(null);
     setCreatingProgram(true);
+    const slugTrim = newProgramSlug.trim();
+    const descTrim = newProgramDescription.trim();
     const response = await fetch("/api/programs", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: programTitle }),
+      body: JSON.stringify({
+        title: programTitle.trim(),
+        ...(slugTrim ? { slug: slugTrim } : {}),
+        ...(descTrim ? { description: descTrim } : {}),
+      }),
     });
     const data = (await response.json()) as { program?: Program; error?: string };
     if (!response.ok || !data.program) {
@@ -283,10 +299,76 @@ export const ProgramsPage = () => {
       return;
     }
     setProgramTitle("");
+    setNewProgramSlug("");
+    setNewProgramDescription("");
     await loadPrograms();
     setSelectedProgramId(data.program.id);
     setSuccess(`Program "${data.program.title}" created.`);
     setCreatingProgram(false);
+  };
+
+  const saveProgramDetails = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!selectedProgramId || !currentProgram) {
+      return;
+    }
+
+    setError(null);
+    setSuccess(null);
+    setSavingProgram(true);
+    const response = await fetch(`/api/programs/${selectedProgramId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: editProgramTitle.trim(),
+        slug: editProgramSlug.trim(),
+        description:
+          editProgramDescription.trim() === "" ? null : editProgramDescription.trim(),
+      }),
+    });
+    const data = (await response.json()) as { program?: Program; error?: string };
+    if (!response.ok || !data.program) {
+      setError(data.error ?? "Failed to update program");
+      setSavingProgram(false);
+      return;
+    }
+    await loadPrograms();
+    setSuccess(`Program "${data.program.title}" updated.`);
+    setSavingProgram(false);
+  };
+
+  const archiveSelectedProgram = async () => {
+    if (!selectedProgramId || !currentProgram) {
+      return;
+    }
+    if (
+      !window.confirm(
+        `Archive program "${currentProgram.title}"? It will be hidden from default lists.`
+      )
+    ) {
+      return;
+    }
+
+    setError(null);
+    setSuccess(null);
+    setArchivingProgram(true);
+    const response = await fetch(`/api/programs/${selectedProgramId}`, {
+      method: "DELETE",
+    });
+    const data = (await response.json()) as { success?: boolean; error?: string };
+    if (!response.ok || !data.success) {
+      setError(data.error ?? "Failed to archive program");
+      setArchivingProgram(false);
+      return;
+    }
+    setSelectedProgramId(null);
+    setSelectedLevelId(null);
+    setLevels([]);
+    setUnits([]);
+    setSelectedUnitId(null);
+    await loadPrograms();
+    setSuccess(`Program "${currentProgram.title}" archived.`);
+    setArchivingProgram(false);
   };
 
   const createLevel = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -398,6 +480,26 @@ export const ProgramsPage = () => {
               required
             />
           </label>
+          <label className={styles.field}>
+            URL slug <span className={styles.meta}>(optional)</span>
+            <input
+              className={styles.input}
+              value={newProgramSlug}
+              onChange={(event) => setNewProgramSlug(event.target.value)}
+              placeholder="Leave blank to derive from title"
+              autoComplete="off"
+            />
+          </label>
+          <label className={styles.field}>
+            Description <span className={styles.meta}>(optional)</span>
+            <textarea
+              className={styles.textarea}
+              value={newProgramDescription}
+              onChange={(event) => setNewProgramDescription(event.target.value)}
+              rows={3}
+              placeholder="Short summary for authors"
+            />
+          </label>
           <button
             className={`${styles.button} ${styles.buttonPrimary}`}
             type="submit"
@@ -408,6 +510,62 @@ export const ProgramsPage = () => {
         </form>
         {error ? <p className={styles.error}>{error}</p> : null}
         {success ? <p className={styles.success}>{success}</p> : null}
+      </section>
+
+      <section className={styles.card}>
+        <h2>Edit selected program</h2>
+        {!currentProgram ? (
+          <p className={styles.meta}>Select a program in the workspace below.</p>
+        ) : (
+          <form onSubmit={saveProgramDetails}>
+            <label className={styles.field}>
+              Title
+              <input
+                className={styles.input}
+                value={editProgramTitle}
+                onChange={(event) => setEditProgramTitle(event.target.value)}
+                required
+              />
+            </label>
+            <label className={styles.field}>
+              URL slug
+              <input
+                className={styles.input}
+                value={editProgramSlug}
+                onChange={(event) => setEditProgramSlug(event.target.value)}
+                required
+                autoComplete="off"
+              />
+            </label>
+            <label className={styles.field}>
+              Description
+              <textarea
+                className={styles.textarea}
+                value={editProgramDescription}
+                onChange={(event) => setEditProgramDescription(event.target.value)}
+                rows={3}
+                placeholder="Optional"
+              />
+            </label>
+            <div className={styles.actions}>
+              <button
+                className={`${styles.button} ${styles.buttonPrimary}`}
+                type="submit"
+                disabled={savingProgram}
+              >
+                {savingProgram ? "Saving…" : "Save program"}
+              </button>
+              <button
+                className={`${styles.button} ${styles.buttonDanger}`}
+                type="button"
+                disabled={archivingProgram || savingProgram}
+                onClick={() => void archiveSelectedProgram()}
+              >
+                {archivingProgram ? "Archiving…" : "Archive program"}
+              </button>
+            </div>
+          </form>
+        )}
       </section>
 
       <section className={styles.grid}>

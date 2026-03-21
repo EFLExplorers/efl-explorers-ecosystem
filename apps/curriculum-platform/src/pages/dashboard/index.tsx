@@ -1,9 +1,8 @@
 import type { GetServerSideProps } from "next";
 import Link from "next/link";
-import { getServerSession } from "next-auth/next";
 import { signOut } from "next-auth/react";
 
-import { authOptions } from "@/lib/authOptions";
+import { requireActiveCurriculumManager } from "@/lib/curriculumDashboardGuard";
 import styles from "@/pages/dashboard/index.module.css";
 
 type DashboardPageProps = {
@@ -13,20 +12,14 @@ type DashboardPageProps = {
 export const getServerSideProps: GetServerSideProps<DashboardPageProps> = async (
   context
 ) => {
-  const session = await getServerSession(context.req, context.res, authOptions);
-
-  if (!session?.user?.id) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
+  const access = await requireActiveCurriculumManager(context);
+  if ("redirect" in access) {
+    return access;
   }
 
   return {
     props: {
-      userEmail: session.user.email ?? "Unknown user",
+      userEmail: access.userEmail ?? "Unknown user",
     },
   };
 };
@@ -70,6 +63,14 @@ export const DashboardPage = ({ userEmail }: DashboardPageProps) => {
           <p>Create and monitor invite-only manager registrations.</p>
           <Link className={styles.link} href="/dashboard/invites">
             Manage invites
+          </Link>
+        </article>
+
+        <article className={styles.card}>
+          <h2>Your profile</h2>
+          <p>View your manager account details.</p>
+          <Link className={styles.link} href="/settings">
+            Open settings
           </Link>
         </article>
       </section>
