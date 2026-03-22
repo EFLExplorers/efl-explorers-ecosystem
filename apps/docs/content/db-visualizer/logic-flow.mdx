@@ -1,0 +1,19 @@
+# DB Visualizer logic flow
+
+High-level request path for a typical diagnostics view.
+
+```mermaid
+flowchart LR
+  User[Operator browser]
+  App[DB visualizer route]
+  Queries[Server query modules]
+  Prisma[Prisma client]
+  Db[(Postgres)]
+
+  User --> App
+  App --> Queries
+  Queries --> Prisma
+  Prisma --> Db
+```
+
+For the **schema graph**, the app may use `$queryRaw` against catalog tables to list columns and foreign-key metadata, then render a graph in the UI.

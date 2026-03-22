@@ -1,0 +1,18 @@
+# Curriculum platform connections
+
+## Inbound
+
+| Source | Purpose |
+|--------|---------|
+| **Curriculum managers** | Dashboard and CRUD APIs under `/api/programs`, `/api/levels`, `/api/units`, `/api/publish/...`. |
+| **Student platform (HTTP)** | GET `/api/public/levels/{programSlug}/{levelSlug}` — returns payload built from the current published snapshot for a level with `status: "published"`. Optional shared-secret header when both sides configure it. |
+
+## Outbound
+
+| Target | Purpose |
+|--------|---------|
+| **Postgres via `@repo/database`** | All authoring and publish transactions. |
+
+## Contract note
+
+The public route is the stable integration surface for “published level” data. Internal draft rows on `CurriculumUnit` are copied into `CurriculumPublishSnapshot` / `CurriculumPublishSnapshotUnit` on publish.

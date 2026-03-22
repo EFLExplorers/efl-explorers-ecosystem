@@ -1,0 +1,7 @@
+# DB Visualizer manifest
+
+- **Role:** Internal tool to inspect schema health, connectivity, and relationships across the shared database.
+- **Tech stack:** Next.js App Router, Prisma client via `@repo/database`, visualization (including graph-style views where implemented).
+- **Prisma models:** Reads across the full schema as needed for dashboards (examples used in server queries include `User`, `Page`, `ContentItem`, `ContentRelationship`, `MediaAsset`, `StudentUserMapping`, `TeacherUserMapping`, `Student`, `CurriculumProgram`, `CurriculumLevel`, `CurriculumPublishSnapshot`, and raw catalog queries via `$queryRaw` for the schema graph).
+
+Schemas touched include `auth`, `shared`, `students`, `teachers`, and `curriculum` depending on the page.

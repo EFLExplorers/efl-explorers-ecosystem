@@ -1,0 +1,9 @@
+# Teacher platform manifest
+
+- **Role:** Classroom operations: roster (`Student`), schedule (`Lesson`, `Event`), comms (`Message`, `Announcement`), tasks (`Task`), materials (`Material`, `LessonMaterial`, `Bookmark`), and legacy curriculum rows in the **`teachers.Curriculum`** model (SQL table `curriculum` in schema `teachers` — not the same as the **`curriculum` schema** used by the curriculum platform).
+- **Tech stack:** Next.js Pages Router, `@repo/database`, NextAuth with SSO token consumption from the landing app.
+- **Prisma models (typical):**
+  - **`teachers` schema:** `TeacherUserMapping`, `Student`, `Lesson`, `Curriculum`, `Event`, `Message`, `Announcement`, `Task`, `Material`, `Bookmark`, `LessonMaterial`.
+  - **`auth` schema:** `SsoToken` for landing-issued SSO handoff (`apps/teacher-platform/src/auth.ts`).
+
+Pedagogical framing (presentation / practice / production) may appear in UI copy; it is not a named code module in the repo.

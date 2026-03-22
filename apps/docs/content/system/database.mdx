@@ -1,0 +1,31 @@
+# Database: Prisma and Postgres
+
+The shared data layer is defined in `@repo/database` and consumed through the Prisma client. The checked-in datasource uses **PostgreSQL** with multiple Postgres schemas (`auth`, `teachers`, `students`, `shared`, `curriculum`) mapped in `packages/database/prisma/schema.prisma`.
+
+## Indexes on relations
+
+For every foreign-key-style relation field, ensure an `@@index` (or `@unique` where appropriate) exists on the scalar columns used in queries. This keeps join and filter paths predictable at scale.
+
+When you add a new relation, update the schema and run:
+
+```bash
+pnpm --filter @repo/database exec prisma validate
+```
+
+## `relationMode` and FK-less hosts
+
+Prisma’s `relationMode = "prisma"` is for deployments **without** database-level foreign keys (for example some Vitess / PlanetScale-style workflows). The current schema uses PostgreSQL relation metadata typical of FK-capable Postgres.
+
+**Rule:** If you target an FK-less host, set `relationMode` in the datasource to match Prisma’s docs for that provider and re-audit every relation for indexes and referential behavior. Until then, keep the datasource consistent with the actual database capabilities.
+
+## Operational alignment
+
+- Schema edits happen only in `packages/database/prisma/schema.prisma` (see `.cursor/rules/monorepo.mdc`).
+- Use **db-visualizer** to sanity-check connectivity and model coverage against real data.
+- Prefer `prisma db push` or your team’s approved migration workflow for the environment you use; do not assume `migrate dev` is enabled everywhere.
+
+## Verification
+
+```bash
+pnpm --filter @repo/database exec prisma validate
+```

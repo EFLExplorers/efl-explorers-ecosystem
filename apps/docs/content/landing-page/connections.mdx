@@ -1,0 +1,21 @@
+# Landing page connections
+
+## Outbound
+
+| Target | Purpose |
+|--------|---------|
+| **Postgres via `@repo/database`** | Load marketing pages (`Page`, `PageSection`, `ContentItem`, …), auth tables, password reset tokens, SSO tokens. |
+| **Student platform** | `NEXT_PUBLIC_STUDENT_URL` — SSO redirect target from `/api/auth/sso-token` when `platform: "student"`. |
+| **Teacher platform** | `NEXT_PUBLIC_TEACHER_URL` — SSO redirect target when `platform: "teacher"`. |
+
+## Inbound
+
+| Source | Purpose |
+|--------|---------|
+| **Browsers** | Public marketing, registration, login. |
+| **Student / teacher apps** | Users complete SSO by opening the landing-issued redirect URL with a one-time token (stored as hash in `SsoToken`). |
+
+## Shared package
+
+- **`@repo/ui`** — Buttons and other shared UI where imported.
+- **`@repo/database`** — Single Prisma client for all server-side data access.

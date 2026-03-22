@@ -1,0 +1,10 @@
+# Student platform manifest
+
+- **Role:** Signed-in student portal: dashboard, lessons, assignments, progress, and read-only access to published curriculum levels via the curriculum app API.
+- **Tech stack:** Next.js Pages Router, React Query, `@repo/database` on API routes, session guard utilities for student APIs.
+- **Prisma models (typical):**
+  - **`students` schema:** `StudentUserMapping` (link auth user to student domain).
+  - **`teachers` schema (read paths in APIs):** `Lesson`, `Task`, and related aggregates used by student-facing DTO mappers (e.g. dashboard and lessons handlers).
+  - **`auth` schema:** Session resolves to `User` through NextAuth / app session code paths.
+
+Published curriculum content is **not** loaded only from Prisma in the student app: see the curriculum proxy route under `apps/student-platform/src/pages/api/student/curriculum/`.

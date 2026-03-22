@@ -1,0 +1,19 @@
+# Teacher platform connections
+
+## Outbound
+
+| Target | Purpose |
+|--------|---------|
+| **Postgres via `@repo/database`** | CRUD and dashboards for `teachers` schema entities through `DatabaseStorage` in `apps/teacher-platform/src/lib/storage.ts` and API routes. |
+| **`auth.SsoToken`** | Validate one-time SSO tokens created on the landing app and mark them used. |
+
+## Inbound
+
+| Source | Purpose |
+|--------|---------|
+| **Landing page** | Redirect to `/sso?token=…` after `/api/auth/sso-token` when role is `teacher`. |
+| **Browser** | Authenticated teacher UI and `/api/*` routes. |
+
+## Relationship to student platform
+
+Teachers and students are different products on different origins. They share **identity** (auth user, SSO) and **data** where both sides read appropriate rows in the shared database (for example lessons/tasks surfaced to students). There is no dedicated teacher→student HTTP integration documented beyond that shared layer.

@@ -1,10 +1,17 @@
 {
   "index": {
-    "title": "Overview",
-    "display": "hidden"
+    "title": "Ecosystem hub"
   },
-  "design-system": "Design System",
+  "personality": "Personality",
+  "system": "System",
+  "db-visualizer": "DB Visualizer",
+  "landing-page": "Landing Page",
+  "student-platform": "Student Platform",
+  "teacher-platform": "Teacher Platform",
+  "curriculum-platform": "Curriculum Platform",
+  "ecosystem-docs": "Ecosystem Docs",
   "getting-started": "Getting Started",
+  "design-system": "Design System",
   "teacher-guide": "Teacher Guide",
   "api-reference": "API Reference"
 }

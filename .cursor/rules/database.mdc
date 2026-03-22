@@ -1,0 +1,37 @@
+---
+description: Rules for Prisma, schema edits, and database operations in this monorepo.
+globs:
+  - "packages/database/prisma/schema.prisma"
+  - "packages/database/src/**/*.ts"
+  - "apps/**/src/**/*db*.ts"
+---
+
+# DATABASE CONVENTIONS
+
+## 1. Referential integrity and indexes
+
+- Add an `@@index` on **every relation scalar** used for lookups and joins (and `@unique` where the domain requires it). Audit existing models when touching related code; common gaps include `Account.userId`, `Session.userId`, and similar high-cardinality FK columns.
+- **`relationMode = "prisma"`** applies when the deployment **does not enforce foreign keys at the database** (FK-less / Vitess-style setups). The checked-in datasource is PostgreSQL with normal relation metadata; **do not add `relationMode` unless** the team standardizes on an FK-less host and updates `schema.prisma` accordingly. Always match the datasource block to the real database.
+
+## 2. Migration and sync workflow
+
+- Do not suggest `prisma migrate dev` unless the repo explicitly adopts that workflow.
+- For local sync from the package root, prefer `pnpm --filter @repo/database exec prisma db push` (or your approved branch workflow). Adjust commands if a root script is added later.
+
+## 3. Safety
+
+- Avoid `$executeRaw` / unchecked raw SQL unless there is a documented, reviewed need. Prefer Prisma query APIs.
+
+## 4. Schema health
+
+- Use the **db-visualizer** app to verify connectivity and model coverage against real data.
+
+## 5. Single source of truth
+
+- Edit `packages/database/prisma/schema.prisma` only (see `.cursor/rules/monorepo.mdc` and `.cursor/rules/ecosystem.mdc`).
+
+## Verification
+
+```bash
+pnpm --filter @repo/database exec prisma validate
+```

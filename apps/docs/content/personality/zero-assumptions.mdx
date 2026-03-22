@@ -1,0 +1,25 @@
+# Zero-assumptions doctrine
+
+Operational rules for humans and coding agents working in this monorepo.
+
+## 1. No assumptions
+
+If you do not see the file, path, variable, API route, or Prisma model in your current context, you **must** search the repo or **ask** before acting. Do not invent endpoints, env var names, or schema fields.
+
+## 2. Planning first
+
+Before generating or refactoring code, provide a `<PLANNING>` block: goal, files to touch, and explicit assumptions. Wait for alignment when risk is high (auth, payments, schema migrations).
+
+## 3. Strict types
+
+- Do not use `any`. Prefer precise types from Prisma, shared DTO modules, and framework types.
+- Use **Zod** (or the project’s existing validation library in that app) for form and request validation so runtime shape matches TypeScript.
+
+## 4. Schema and docs alignment
+
+- Treat `packages/database/prisma/schema.prisma` as the naming authority for models.
+- When describing integrations, cite real routes (for example `apps/student-platform/src/pages/api/student/curriculum/[programSlug]/[levelSlug].ts`) instead of generic placeholders.
+
+## 5. Where this is enforced in tooling
+
+Cursor rules under `.cursor/rules/` mirror this document for day-to-day edits. The [Ecosystem hub](/) diagrams summarize how apps connect.

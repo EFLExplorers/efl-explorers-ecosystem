@@ -1,0 +1,19 @@
+# Teacher platform logic flow (session + storage)
+
+Representative path: authenticated API handler resolves the teacher’s numeric user id from `TeacherUserMapping`, then reads or mutates `teachers` schema rows through the shared Prisma client.
+
+```mermaid
+flowchart TD
+  Req[API request]
+  Session[requireTeacherApiSession]
+  Map[TeacherUserMapping by auth user]
+  Storage[Prisma queries CRUD]
+  Db[(Postgres teachers schema)]
+
+  Req --> Session
+  Session --> Map
+  Map --> Storage
+  Storage --> Db
+```
+
+SSO path: `auth.ts` looks up `SsoToken` by hashed token, ties it to `User`, updates `usedAt`, then establishes the app session.

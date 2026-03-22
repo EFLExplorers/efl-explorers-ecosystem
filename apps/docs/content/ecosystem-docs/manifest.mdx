@@ -1,0 +1,5 @@
+# Ecosystem docs manifest (this site)
+
+- **Role:** Human-readable source of truth for architecture, platform boundaries, and contributor rules. Lived in `apps/ecosystem-docs/pages` during early drafts; **canonical content now lives here** under `apps/docs/content/`.
+- **Tech stack:** Next.js App Router, Nextra 4 (`nextra`, `nextra-theme-docs`), `@repo/typescript-config`, `@repo/ui` for MDX components where used.
+- **Database:** No runtime Prisma usage; documentation references `packages/database/prisma/schema.prisma` as the schema source of truth.

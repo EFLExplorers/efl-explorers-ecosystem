@@ -1,0 +1,19 @@
+# Student platform logic flow (curriculum proxy)
+
+Published level payload is fetched from the curriculum app, not assembled purely inside the student API from local Prisma models.
+
+```mermaid
+flowchart LR
+  UI[Student UI]
+  Api[GET api/student/curriculum/program/level]
+  Curriculum[Curriculum public API]
+  Secret[Optional shared secret header]
+
+  UI --> Api
+  Api --> Secret
+  Api -->|"fetch"| Curriculum
+  Curriculum --> Api
+  Api --> UI
+```
+
+Configuration: `CURRICULUM_PLATFORM_URL` and `CURRICULUM_API_SHARED_SECRET` (student `env` module). Handler: `apps/student-platform/src/pages/api/student/curriculum/[programSlug]/[levelSlug].ts`.

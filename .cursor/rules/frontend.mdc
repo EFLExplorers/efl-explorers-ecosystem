@@ -1,0 +1,12 @@
+---
+description: Next.js App Router and UI standards.
+globs: ["app/**/*.tsx", "components/**/*.tsx"]
+---
+
+# FRONTEND STANDARDS
+
+- **Stack:** Web surfaces are **Next.js App Router + React** only. Authoritative list and non-goals (including **no Astro**): `.cursor/rules/ecosystem.mdc` → **Canonical ecosystem stack**.
+- **Server First:** Default to React Server Components. Only use `'use client'` if hooks are required.
+- **Type Safety:** No `any`. Use Zod for all form and API validation (especially Subscription forms).
+- **Paths:** Use `@/` for project roots and `@efl/` for workspace packages.
+- **Loading/Errors:** Every new route MUST have a corresponding `loading.tsx` and `error.tsx`.

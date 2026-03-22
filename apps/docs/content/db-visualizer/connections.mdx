@@ -1,0 +1,16 @@
+# DB Visualizer connections
+
+## How this app talks to others
+
+| Partner | Relationship |
+|---------|----------------|
+| **All Prisma apps** | Uses the same `@repo/database` client and `DATABASE_URL` as the rest of the monorepo. It does not own schema changes. |
+| **Operators** | Humans use it to validate that production-like data matches expectations before or after releases. |
+
+## Outbound
+
+- **Postgres** — Read-heavy Prisma queries and introspection (`schema-graph`, `health`, `connectivity`, domain-specific query modules under `apps/db-visualizer/src/server/queries`).
+
+## Inbound
+
+- None required from other apps at runtime. Authentication may gate access locally (see app’s auth routes).

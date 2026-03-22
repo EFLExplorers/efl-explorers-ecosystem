@@ -1,0 +1,33 @@
+---
+description: Turborepo + pnpm monorepo boundaries and shared packages.
+globs:
+  - "package.json"
+  - "pnpm-workspace.yaml"
+  - "turbo.json"
+  - "apps/**/*"
+  - "packages/**/*"
+---
+
+# MONOREPO CONVENTIONS
+
+See also `.cursor/rules/ecosystem.mdc` for the **canonical ecosystem stack** (single source of truth), the six product apps, and the `@repo/docs` hub.
+
+## Source of truth (Prisma)
+
+The `@repo/database` package is the **ONLY** place where `schema.prisma` should be modified. Any changes here must be followed by `pnpm -w db:push` (or your specific workspace command) to sync across all 6 platforms.
+
+**Concrete sync (today):** The root `package.json` does not define `db:push`. After editing `packages/database/prisma/schema.prisma`, run Prisma from that package, for example:
+
+`pnpm --filter @repo/database exec prisma db push`
+
+(Add a root `db:push` script when you want a single `pnpm -w` entrypoint.)
+
+## Cross-app consistency
+
+- **Prisma client and schema:** `@repo/database` only.
+- **Shared UI:** Prefer `@repo/ui` for cross-platform components so apps stay consistent.
+
+## Verification
+
+- After schema edits: `pnpm --filter @repo/database exec prisma validate`
+- After adding a root script: confirm it delegates to `@repo/database` and matches your PlanetScale branch workflow.

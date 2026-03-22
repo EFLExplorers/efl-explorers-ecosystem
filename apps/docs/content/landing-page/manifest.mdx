@@ -1,0 +1,7 @@
+# Landing page manifest
+
+- **Role:** Marketing site, registration, NextAuth session, and SSO handoff into the student and teacher apps.
+- **Tech stack:** Next.js Pages Router, NextAuth (Prisma adapter), `@repo/database`, `@repo/ui`, Zod on forms where used.
+- **Prisma models (typical):**
+  - **`auth` schema:** `User`, `PasswordResetToken`, `SsoToken`, plus NextAuth tables `Account`, `Session`, `VerificationToken` as configured.
+  - **`shared` schema:** `Page`, `PageSection`, `ContentItem`, `SiteSection`, and related content for CMS-style pages.

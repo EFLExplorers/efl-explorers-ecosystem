@@ -1,0 +1,18 @@
+# Ecosystem docs connections
+
+## How this site relates to the monorepo
+
+| Artifact | Relationship |
+|----------|----------------|
+| **`packages/database/prisma/schema.prisma`** | Documented as authoritative for model names; manifests must not invent models. |
+| **Each app under `apps/`** | Described in sibling folders (`student-platform`, `teacher-platform`, …). |
+| **`.cursor/rules/*.mdc`** | Machine-enforceable companion to [Personality](/personality/zero-assumptions). |
+
+## Outbound
+
+- **Readers** — engineers and agents consuming MDX.
+- **CI / Vercel** — `pnpm --filter @repo/docs build` produces static output; `postbuild` runs Pagefind for search.
+
+## Inbound
+
+- **Repository changes** — documentation PRs update MDX; no API callbacks from other apps.

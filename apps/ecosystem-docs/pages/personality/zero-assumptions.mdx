@@ -1,0 +1,16 @@
+# The "No Assumptions" Doctrine
+
+This document outlines the strict operational doctrine for the EFL Explorers monorepo.
+
+## 1. No Assumptions
+
+If you do not see the file, path, variable, or logic flow in your current context, you **MUST** ask. Do not invent boilerplate or guess at implementation details.
+
+## 2. Planning First
+
+Before generating code, provide a `<PLANNING>` block. List your assumptions there for approval.
+
+## 3. Strict Types
+
+- Do not use `any`.
+- Use **Zod** for all form validation (including subscription and lead flows).

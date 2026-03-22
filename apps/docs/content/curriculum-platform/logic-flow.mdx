@@ -1,0 +1,25 @@
+# Curriculum platform logic flow (publish level)
+
+Implements `POST` publish for a level: validates units, bumps snapshot version, marks prior snapshots non-current, writes snapshot rows, sets level to `published`. Source: `apps/curriculum-platform/src/pages/api/publish/levels/[levelId].ts`.
+
+```mermaid
+flowchart TD
+  Post[POST publish levels levelId]
+  Auth[requireCurriculumApiSession]
+  Load[Load CurriculumLevel and units]
+  Validate[validateAssignmentConfig per unit]
+  Tx[Transaction]
+  Clear[Set isCurrent false on old snapshots]
+  Snap[Create CurriculumPublishSnapshot]
+  Units[createMany CurriculumPublishSnapshotUnit]
+  Level[Update CurriculumLevel published]
+
+  Post --> Auth
+  Auth --> Load
+  Load --> Validate
+  Validate --> Tx
+  Tx --> Clear
+  Clear --> Snap
+  Snap --> Units
+  Units --> Level
+```

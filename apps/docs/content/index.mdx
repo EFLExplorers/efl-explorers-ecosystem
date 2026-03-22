@@ -1,24 +1,62 @@
-# EFL Explorers Documentation
+# EFL Explorers ecosystem hub
 
-Welcome to the central documentation hub for the EFL Explorers ecosystem.
+Connection-first map of the six product surfaces, shared packages, and the database layer. Use the sidebar to open each platform’s **Manifest**, **Connections**, and **Logic flow**.
 
-This docs app is built with Nextra 4, App Router, and shared workspace packages so guides and UI component docs stay close to production code.
+**Canonical stack:** Approved frameworks and explicit non-goals (including that this ecosystem is **Next.js + React**, not Astro) live in `.cursor/rules/ecosystem.mdc` under **Canonical ecosystem stack**. A short pointer page is [Ecosystem stack](/system/stack).
 
-## Start Here
+## Platform spider
 
-- [Getting Started](/getting-started) for setup and local workflow
-- [Teacher Guide](/teacher-guide) for classroom operations
-- [API Reference](/api-reference) for integration conventions
+Solid lines show primary data or HTTP integration paths. The student app reaches published curriculum through an **HTTP proxy** to the curriculum platform (not Prisma alone).
 
-## What This Site Covers
+```mermaid
+flowchart TB
+  subgraph apps [Next.js apps]
+    LandingPage[Landing page]
+    StudentPlatform[Student platform]
+    TeacherPlatform[Teacher platform]
+    CurriculumPlatform[Curriculum platform]
+    DbVisualizer[DB visualizer]
+    EcosystemDocs[Ecosystem docs]
+  end
 
-- Monorepo workflows with pnpm + Turborepo
-- Shared UI components from `@repo/ui`
-- Platform operating guidance for teachers
-- API request, response, and error formatting standards
+  SharedSchema["@repo/database Prisma client"]
+  Postgres[(Managed Postgres)]
 
-## Recommended Path
+  LandingPage --> SharedSchema
+  StudentPlatform --> SharedSchema
+  TeacherPlatform --> SharedSchema
+  CurriculumPlatform --> SharedSchema
+  DbVisualizer --> SharedSchema
 
-1. Read **Getting Started** and run the local stack
-2. Review **UI Components** before writing new docs pages
-3. Use **API Reference** as the source of truth for contract style
+  StudentPlatform -->|"HTTP proxy CURRICULUM_PLATFORM_URL"| CurriculumPlatform
+  TeacherPlatform -.->|"SSO handoff via landing"| LandingPage
+  LandingPage -.->|"redirect /sso"| StudentPlatform
+  LandingPage -.->|"redirect /sso"| TeacherPlatform
+
+  EcosystemDocs -.-> LandingPage
+  EcosystemDocs -.-> StudentPlatform
+  EcosystemDocs -.-> TeacherPlatform
+  EcosystemDocs -.-> CurriculumPlatform
+  EcosystemDocs -.-> DbVisualizer
+
+  SharedSchema --> Postgres
+```
+
+## Flow summaries
+
+| Flow | Mechanism |
+|------|-----------|
+| Student consumes lessons / published levels | Browser and API routes call the curriculum app’s public API (`/api/public/levels/...`) via `CURRICULUM_PLATFORM_URL` and optional `x-curriculum-shared-secret`. |
+| Teacher tracks progress vs student experience | Operational coupling: shared auth user in `auth.users`, teacher-side `teachers` schema data, student-side APIs; SSO from landing issues tokens consumed on each platform. |
+| All Prisma apps | Single schema in `packages/database/prisma/schema.prisma`; runtime connects through `@repo/database` to Postgres. |
+
+## Shared packages
+
+- **`@repo/database`** — Prisma schema, generated client, and pooling helpers. Consumed by landing, student, teacher, curriculum, and db-visualizer apps.
+- **`@repo/ui`** — Shared React primitives. Consumed by `@repo/docs` and `landing-page` today.
+
+## Next steps
+
+- [Personality](/personality/zero-assumptions) for agent and contributor rules.
+- [Database](/system/database) for schema and deployment notes.
+- Each **platform** folder in the sidebar for manifests and integration detail.

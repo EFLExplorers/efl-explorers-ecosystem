@@ -1,0 +1,54 @@
+---
+description: Six-app map, docs hub, and integration boundaries for the EFL Explorers monorepo.
+globs:
+  - "apps/**/*"
+  - "packages/**/*"
+  - "apps/docs/content/**/*.mdx"
+---
+
+# ECOSYSTEM MAP
+
+## Canonical ecosystem stack (single source of truth)
+
+This section is the **authoritative** list of runtime, framework, and data-store choices for the monorepo. If something is not listed here as approved, treat it as **out of scope** until this file is updated (team decision / ADR). Agents and contributors should **not** assume parallel stacks (for example **Astro is not part of this ecosystem**).
+
+| Layer | Approved choice | Where it shows up |
+|-------|-----------------|-------------------|
+| Monorepo | **pnpm** workspaces + **Turborepo** | Root `pnpm-workspace.yaml`, `turbo.json`, root `package.json` scripts |
+| Product web apps | **Next.js** (App Router) + **React** | `apps/db-visualizer`, `apps/landing-page`, `apps/student-platform`, `apps/teacher-platform`, `apps/curriculum-platform` |
+| Documentation site | **Next.js** + **Nextra 4** + **React** | `apps/docs` (`@repo/docs`), content root `apps/docs/content/` |
+| Shared UI | **React** components in **`@repo/ui`** | `packages/ui`; consumed per-app `package.json` (do not assume all apps import it) |
+| Data access | **Prisma** | `packages/database` only; single `schema.prisma` |
+| Database | **PostgreSQL** (per Prisma datasource) | `packages/database/prisma/schema.prisma` `datasource db` |
+
+**Explicit non-goals (do not add without updating this file):** Astro, a second meta-framework alongside Next for product or docs surfaces, or duplicate schema locations outside `@repo/database`.
+
+## Product apps (six pillars)
+
+Folder names under `apps/`:
+
+- `db-visualizer` — schema / connectivity diagnostics
+- `landing-page` — marketing, auth, SSO issuance
+- `student-platform` — student portal; curriculum via HTTP to curriculum app
+- `teacher-platform` — teacher operations on `teachers` schema models
+- `curriculum-platform` — curriculum authoring and public published-level API
+- `ecosystem-docs` — **deprecated content tree**; live docs are in `docs` app
+
+## Documentation app
+
+- **`apps/docs`** — package name `@repo/docs`. Nextra 4 content root: `apps/docs/content/`.
+- **Architecture hub:** `apps/docs/content/index.mdx` (connection-first diagrams and links).
+
+## Shared packages
+
+- **`@repo/database`** — only place for `schema.prisma` edits; Prisma client export. Consumed by all five Prisma-backed product apps above (not `@repo/docs`).
+- **`@repo/ui`** — shared React UI. Consumed by `@repo/docs` and `landing-page` today; check `package.json` before assuming other apps import it.
+
+## Zero-invention rule
+
+Do not invent Prisma models, REST paths, or env vars. Confirm against `packages/database/prisma/schema.prisma` and the relevant `apps/<app>/src` tree.
+
+## Verification
+
+- Docs site: `pnpm --filter @repo/docs build`
+- Schema: `pnpm --filter @repo/database exec prisma validate`

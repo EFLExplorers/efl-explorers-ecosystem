@@ -1,0 +1,21 @@
+# Landing page logic flow (SSO token)
+
+Flow for issuing a short-lived SSO token and redirecting into a child platform. Implementation reference: `apps/landing-page/src/pages/api/auth/sso-token.ts`.
+
+```mermaid
+flowchart TD
+  Browser[Browser POST sso-token]
+  Session[NextAuth session]
+  Validate[Validate role matches platform]
+  Hash[Hash token store SsoToken]
+  Response[Return token and redirectUrl]
+
+  Browser --> Session
+  Session --> Validate
+  Validate --> Hash
+  Hash --> Response
+  Response --> Browser
+  Browser -->|"GET /sso?token="| Platform[Student or teacher app]
+```
+
+The plain token is returned once to the client; only a SHA-256 hash is stored in `SsoToken` with `expiresAt` (TTL minutes defined in that route).

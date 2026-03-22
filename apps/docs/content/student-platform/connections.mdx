@@ -1,0 +1,19 @@
+# Student platform connections
+
+## Outbound
+
+| Target | Purpose |
+|--------|---------|
+| **Postgres via `@repo/database`** | Student API routes query `Lesson`, `Task`, and other `teachers` schema models for portal views; mapping tables in `students`. |
+| **Curriculum platform (HTTP)** | `CURRICULUM_PLATFORM_URL` — GET proxy to `/api/public/levels/{programSlug}/{levelSlug}` with optional `x-curriculum-shared-secret` header when configured. |
+
+## Inbound
+
+| Source | Purpose |
+|--------|---------|
+| **Landing page** | SSO: user arrives with token at `/sso` (consumed by student app auth flow). |
+| **Browser** | Authenticated fetches to `/api/student/*`. |
+
+## Distinction
+
+- **Operational “teacher tracks student”** is a product relationship: teachers use the teacher app; students use the student app. There is no separate server-to-server integration documented here beyond shared identity and shared database models where both apps read/write appropriate rows.
