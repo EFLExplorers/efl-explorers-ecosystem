@@ -10,7 +10,8 @@
    - `apps/teacher-platform/.env.local.example` ➜ `apps/teacher-platform/.env.local`
    - `apps/student-platform/.env.local.example` ➜ `apps/student-platform/.env.local`
 3. Generate Prisma client:
-   - `pnpm --filter @repo/database build`
+   - `pnpm --filter @repo/database build`  
+   - Or: `pnpm --filter @repo/database exec prisma generate` (use this if you do not want a full package build; the Prisma CLI is **not** on your global `PATH` unless you install it globally).
 4. Apply SQL migrations (non-destructive, tracked by filename/checksum):
    - `pnpm --filter @repo/database db:apply-sql-migrations`
 5. Copy env for curriculum (if you use it):
@@ -35,8 +36,8 @@ These points are the source of truth for how this repo expects the database to w
 
 | Variable | Typical use | Notes |
 |----------|-------------|--------|
-| **`DATABASE_URL`** | Runtime in apps and `@repo/database` | If the value starts with **`prisma://`**, Prisma Client is created with **`accelerateUrl`** (Prisma Accelerate). If it is **`postgres://`** or **`postgresql://`**, the client uses the **`pg`** driver via **`PrismaPg`** (`packages/database/src/index.ts`). |
-| **`DIRECT_URL`** | Migrations, `db:apply-sql-migrations`, and DB scripts | Must be a **direct Postgres** URL (`postgresql://…`) with credentials that can run DDL and seeds. If the provider gives **direct** and **pooler** URLs, put **direct** here and often use the **pooler** (or provider recommendation) for **`DATABASE_URL`** in serverless. |
+| **`DATABASE_URL`** | Runtime in apps and `@repo/database` | If the value starts with **`prisma://`** or **`prisma+postgres://`**, Prisma Client is created with **`accelerateUrl`** (Prisma Accelerate). If it is **`postgres://`** or **`postgresql://`**, the client uses the **`pg`** driver via **`PrismaPg`** (`packages/database/src/index.ts`). **Do not** put Accelerate URLs in `DIRECT_URL`. |
+| **`DIRECT_URL`** | Migrations, `db:apply-sql-migrations`, Prisma CLI against Postgres, db-visualizer **schema map** when `DATABASE_URL` is Accelerate | Must be a **real Postgres** URL (`postgresql://…` / `postgres://…`) — e.g. **PlanetScale Postgres** direct. Not an Accelerate string. If the provider gives **direct** and **pooler** URLs, put **direct** here; use **pooler or Accelerate** on `DATABASE_URL` for serverless runtime. |
 
 For local Docker or a single Postgres instance, **`DATABASE_URL`** and **`DIRECT_URL`** are commonly **identical**.
 
@@ -54,7 +55,8 @@ If APIs return **500** with Postgres **`53300`** or text like **“remaining con
 
 1. Switch runtime **`DATABASE_URL`** to the provider’s **pooled** / transaction-pooler URL (keep **`DIRECT_URL`** on a direct URL for migrations).
 2. Set **`DATABASE_POOL_MAX`** (read by `@repo/database` when using the `pg` adapter) to a **small** integer **per running Node process** — often **`1`–`5`** on Vercel/serverless alongside a pooler. If the pooler allows only **two** client connections total, use **`DATABASE_POOL_MAX=1`** and run at most **two** app processes against that URL (or one process with **`2`** and nothing else). When unset, the client also tightens the default if the runtime URL includes **`pgbouncer=true`** or **`connection_limit=N`**.
-3. Upgrade the database plan or raise **`max_connections`** only if the provider allows it (still prefer pooling for serverless).
+3. **db-visualizer** batches introspection and health checks: schema map uses **`$transaction`** for three `information_schema` queries (one session per request when using Prisma + Postgres); health uses **`$transaction`** for five probes. This reduces per-request connection churn but does not replace pooler/Accelerate for many concurrent Lambdas.
+4. Upgrade the database plan or raise **`max_connections`** only if the provider allows it (still prefer pooling for serverless).
 
 ### SQL migrations (not Prisma Migrate folders)
 
@@ -65,6 +67,15 @@ If APIs return **500** with Postgres **`53300`** or text like **“remaining con
 ### Prisma Client generation
 
 - `pnpm --filter @repo/database build` runs **`prisma generate`**. Turbo builds **`@repo/database`** before dependent apps, so deployed apps should ship a client generated from the **same commit** as the SQL migrations you applied.
+- **Do not** run bare `prisma` in a shell unless Prisma is installed globally; prefer **`pnpm --filter @repo/database exec prisma <command>`** (e.g. `validate`, `generate`, `db pull`).
+
+### Introspection (`db pull`) caution
+
+- **`pnpm --filter @repo/database exec prisma db pull`** rewrites **`packages/database/prisma/schema.prisma`** from the live database. Review **`git diff`** before committing; use **`validate`** + **`generate`** after intentional schema edits.
+
+### Production URL smoke (optional)
+
+- From repo root, set **`SMOKE_*_URL`** env vars to deployed origins and run **`pnpm smoke:prod`** (see **`scripts/production-smoke.mjs`**). This checks **`GET /`** per host only; it does not read Vercel secrets.
 
 ### TLS query params (`sslrootcert=system`)
 

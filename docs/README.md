@@ -27,7 +27,8 @@ Everything else (`platforms/`, `StudentDevelopmentPlan/`, `Scale/`, …) is stil
 
 ## Observability / internal tools
 
-- `db-visualizer/scaling-and-operating-model.md` — Operating model for `apps/db-visualizer`.
+- `db-visualizer/scaling-and-operating-model.md` — Operating model for `apps/db-visualizer` (includes **`/deployment`** env diagnostics and **`/api/deployment-env`**).
+- `database-connection-inventory.md` — Every process that opens DB connections; **`53300`** playbook; Accelerate + pooling notes.
 
 ## Platforms
 

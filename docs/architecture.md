@@ -28,7 +28,7 @@
 ### Prisma (Shared Client)
 `packages/database` exports a shared Prisma client via `@repo/database` and
 handles `.env` loading, PostgreSQL pool configuration, and optional Prisma
-Accelerate URLs.
+Accelerate URLs (`prisma://…` or `prisma+postgres://…` on `DATABASE_URL`; `DIRECT_URL` stays Postgres for CLI and direct introspection).
 
 ### Multi-Schema Layout
 PostgreSQL uses multiple schemas (full list in Prisma). Primary domains:

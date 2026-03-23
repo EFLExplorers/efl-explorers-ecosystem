@@ -21,8 +21,9 @@ Prisma’s `relationMode = "prisma"` is for deployments **without** database-lev
 ## Operational alignment
 
 - Schema edits happen only in `packages/database/prisma/schema.prisma` (see `.cursor/rules/monorepo.mdc`).
-- Use **db-visualizer** to sanity-check connectivity and model coverage against real data.
-- Prefer `prisma db push` or your team’s approved migration workflow for the environment you use; do not assume `migrate dev` is enabled everywhere.
+- Use **db-visualizer** to sanity-check connectivity and model coverage against real data. **`/deployment`** in db-visualizer summarizes **`DATABASE_URL` / `DIRECT_URL` / `DATABASE_POOL_MAX`** presence and safe URL shapes (values never displayed).
+- **`DATABASE_URL`** may be **Postgres** (`postgresql://…`) or **Prisma Accelerate** (`prisma://…` or `prisma+postgres://…`). **`DIRECT_URL`** must remain a **Postgres** URL for migrations, `db pull`, and tools that need direct SQL (including db-visualizer schema map when Accelerate is on `DATABASE_URL`).
+- Prefer `pnpm --filter @repo/database exec prisma validate` after edits. Use **`db push`**, **`db:apply-sql-migrations`**, or your team’s approved workflow; do not assume `migrate dev` is enabled everywhere.
 
 ## Verification
 

@@ -1,45 +1,69 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardHeader, CardContent } from "@/components/ui/Card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select";
-import { 
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
-  ResponsiveContainer 
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
 } from "recharts";
+import type { Student } from "@shared/schema";
 import { classNames } from "@/utils/classNames";
 import styles from './PerformanceCard.module.css';
 
-// Performance data (would come from API in a real app)
-const performanceData = [
-  { name: "Week 1", average: 70, top: 90, improvement: 0 },
-  { name: "Week 2", average: 72, top: 92, improvement: 2 },
-  { name: "Week 3", average: 75, top: 93, improvement: 3 },
-  { name: "Week 4", average: 78, top: 94, improvement: 3 },
-];
-
 type TimeRange = "30days" | "3months" | "6months";
+
+function bucketPerformanceLevel(raw: string | null | undefined): string {
+  const s = raw?.trim();
+  return s && s.length > 0 ? s : "Unspecified";
+}
 
 export function PerformanceCard() {
   const [timeRange, setTimeRange] = useState<TimeRange>("30days");
-  
-  // This would fetch different data based on the time range in a real app
-  const data = performanceData;
-  
-  // Calculate current stats
-  const currentAverage = data[data.length - 1].average;
-  const topPerformer = data[data.length - 1].top;
-  const totalImprovement = data.reduce((sum, item) => sum + item.improvement, 0);
+
+  const { data: students, isLoading, isError } = useQuery<Student[]>({
+    queryKey: ["/api/students"],
+  });
+
+  const chartData = useMemo(() => {
+    if (!students?.length) {
+      return [];
+    }
+    const counts = new Map<string, number>();
+    for (const s of students) {
+      const key = bucketPerformanceLevel(s.performanceLevel);
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+    return [...counts.entries()]
+      .map(([name, count]) => ({ name, students: count }))
+      .sort((a, b) => b.students - a.students);
+  }, [students]);
+
+  const avgAttendance = useMemo(() => {
+    if (!students?.length) {
+      return null;
+    }
+    const withRate = students.filter(
+      (s) => typeof s.attendanceRate === "number" && Number.isFinite(s.attendanceRate)
+    );
+    if (withRate.length === 0) {
+      return null;
+    }
+    const sum = withRate.reduce((acc, s) => acc + (s.attendanceRate as number), 0);
+    return Math.round((sum / withRate.length) * 10) / 10;
+  }, [students]);
+
+  const rosterSize = students?.length ?? 0;
 
   return (
     <Card className={styles.card}>
       <CardHeader className={styles.header}>
-        <h2 className={styles.title}>Class Performance</h2>
-        <Select 
+        <h2 className={styles.title}>Class performance</h2>
+        <Select
           defaultValue={timeRange}
           onValueChange={(value) => setTimeRange(value as TimeRange)}
         >
@@ -53,55 +77,61 @@ export function PerformanceCard() {
           </SelectContent>
         </Select>
       </CardHeader>
-      
+
       <CardContent className={styles.content}>
-        <div className={styles.chartContainer}>
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis dataKey="name" stroke="#6b7280" fontSize={12} />
-              <YAxis stroke="#6b7280" fontSize={12} />
-              <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: '#ffffff', 
-                  border: '1px solid #e5e7eb',
-                  color: '#111827'
-                }} 
-              />
-              <Legend 
-                wrapperStyle={{ color: '#111827' }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="average" 
-                stroke="var(--primary)" 
-                activeDot={{ r: 8 }} 
-                strokeWidth={2}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="top" 
-                stroke="var(--secondary)" 
-                strokeWidth={2} 
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-        
-        <div className={styles.stats}>
-          <div className={styles.statItem}>
-            <p className={styles.statLabel}>Average Score</p>
-            <p className={styles.statValue}>{currentAverage}%</p>
+        <p className={styles.rangeHint}>
+          Historical trends by week are not stored yet; this chart reflects current roster labels from your students API.
+          {timeRange !== "30days" ? " (Time range filter reserved for future reporting.)" : ""}
+        </p>
+
+        {isLoading ? (
+          <div className={styles.emptyState}>Loading roster…</div>
+        ) : isError ? (
+          <div className={styles.emptyState}>Could not load students for this chart.</div>
+        ) : rosterSize === 0 ? (
+          <div className={styles.emptyState}>
+            Add students to see performance level distribution.
           </div>
-          <div className={styles.statItem}>
-            <p className={styles.statLabel}>Top Performer</p>
-            <p className={styles.statValue}>{topPerformer}%</p>
-          </div>
-          <div className={styles.statItem}>
-            <p className={styles.statLabel}>Improvement</p>
-            <p className={classNames(styles.statValue, styles.statValueGreen)}>+{totalImprovement}%</p>
-          </div>
-        </div>
+        ) : (
+          <>
+            <div className={styles.chartContainer}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData} margin={{ top: 10, right: 16, left: 0, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis dataKey="name" stroke="#6b7280" fontSize={12} interval={0} angle={-18} textAnchor="end" height={56} />
+                  <YAxis allowDecimals={false} stroke="#6b7280" fontSize={12} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "#ffffff",
+                      border: "1px solid #e5e7eb",
+                      color: "#111827",
+                    }}
+                  />
+                  <Bar dataKey="students" fill="var(--primary)" radius={[4, 4, 0, 0]} name="Students" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className={styles.stats}>
+              <div className={styles.statItem}>
+                <p className={styles.statLabel}>Roster size</p>
+                <p className={styles.statValue}>{rosterSize}</p>
+              </div>
+              <div className={styles.statItem}>
+                <p className={styles.statLabel}>Avg. attendance</p>
+                <p className={styles.statValue}>
+                  {avgAttendance !== null ? `${avgAttendance}%` : "—"}
+                </p>
+              </div>
+              <div className={styles.statItem}>
+                <p className={styles.statLabel}>Performance labels</p>
+                <p className={classNames(styles.statValue, styles.statValueGreen)}>
+                  {chartData.length} groups
+                </p>
+              </div>
+            </div>
+          </>
+        )}
       </CardContent>
     </Card>
   );

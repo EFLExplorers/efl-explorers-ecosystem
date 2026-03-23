@@ -29,6 +29,22 @@
   padding: var(--spacing-md) var(--spacing-lg) var(--spacing-md);
 }
 
+.rangeHint {
+  font-size: var(--font-xs);
+  color: var(--text-muted);
+  margin-bottom: var(--spacing-md);
+  line-height: 1.4;
+}
+
+.emptyState {
+  padding: var(--spacing-lg);
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--font-sm);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
+}
+
 .chartContainer {
   height: 16rem;
   background-color: var(--card);

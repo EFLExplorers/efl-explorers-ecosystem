@@ -44,7 +44,7 @@ cp apps/curriculum-platform/.env.local.example apps/curriculum-platform/.env.loc
 At minimum, configure these before running Prisma/app auth flows:
 
 - `DATABASE_URL`
-- `DIRECT_URL` (can match `DATABASE_URL`)
+- `DIRECT_URL` — real **`postgresql://…`**; must match `DATABASE_URL` when not using Accelerate, or stay on Postgres when **`DATABASE_URL`** is **`prisma://…`** / **`prisma+postgres://…`**
 - `NEXTAUTH_SECRET`
 - `NEXTAUTH_URL`
 - `NEXT_PUBLIC_LANDING_PAGE_URL`
@@ -55,18 +55,28 @@ Teacher platform also accepts `AUTH_SECRET` as a compatibility alias, but `NEXTA
 
 ## 3) Prisma setup
 
-This repo uses Prisma from `packages/database`.
+This repo uses Prisma from `packages/database`. Use **`pnpm --filter @repo/database exec prisma …`** (the `prisma` CLI is not assumed to be global).
 
 Generate Prisma client:
 
 ```bash
 pnpm --filter @repo/database build
+# or
+pnpm --filter @repo/database exec prisma generate
 ```
 
-Create/apply migrations (after DB is reachable):
+Schema and migrations (after DB is reachable — see **`docs/operations.md`** for SQL migration workflow and hosted DB behavior):
 
 ```bash
-pnpm --filter @repo/database exec prisma migrate dev
+pnpm --filter @repo/database exec prisma validate
+# Introspection (rewrites schema — review git diff):
+# pnpm --filter @repo/database exec prisma db pull
+```
+
+Optional production smoke (set `SMOKE_*_URL` env vars to deployed origins):
+
+```bash
+pnpm smoke:prod
 ```
 
 Optional seed commands:

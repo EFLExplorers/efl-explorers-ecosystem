@@ -81,8 +81,9 @@ flowchart TB
 
 ### User-facing routes (App Router)
 
-- Dashboard shell: [`apps/db-visualizer/src/app/(dashboard)/layout.tsx`](../../apps/db-visualizer/src/app/(dashboard)/layout.tsx)
-- Sections: `/landing`, `/auth`, `/curriculum`, `/connectivity` under [`apps/db-visualizer/src/app/(dashboard)/`](../../apps/db-visualizer/src/app/(dashboard)/)
+- Dashboard shell: [`apps/db-visualizer/src/app/(dashboard)/layout.tsx`](../../apps/db-visualizer/src/app/(dashboard)/layout.tsx) — in-process schema health; **env warning banner** when required URL shapes are missing (`getCriticalEnvIssues` from [`envDiagnostics.ts`](../../apps/db-visualizer/src/lib/envDiagnostics.ts)).
+- Sections: `/landing`, `/auth`, `/curriculum`, `/connectivity`, `/schema-map` under [`apps/db-visualizer/src/app/(dashboard)/`](../../apps/db-visualizer/src/app/(dashboard)/)
+- **`/deployment`** — standalone layout (no dashboard shell) so operators can open env diagnostics even when Prisma health fails: variable **presence/shape** only (no values), runtime context badges, **`SELECT 1`** probe.
 - Legacy query redirect: [`apps/db-visualizer/src/app/page.tsx`](../../apps/db-visualizer/src/app/page.tsx) (`?tab=`, `userId=`)
 
 ### HTTP API (live, uncached)
@@ -93,6 +94,7 @@ flowchart TB
   - `GET /api/curriculum` — programs / levels / units + snapshot summary
   - `GET /api/connectivity` — exact level slug matches
   - `GET /api/health` — per-schema smoke checks
+  - `GET /api/deployment-env` — JSON: env report + `databaseReachable` (for monitors; **no secrets** in body)
 
 Route handlers use **`dynamic = "force-dynamic"`** and responses should carry **`Cache-Control: no-store`** so dashboards stay live.
 

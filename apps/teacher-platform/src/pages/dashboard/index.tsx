@@ -1,6 +1,7 @@
 'use client';
 
 import { useQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import { StatsCard } from "@/components/dashboard/StatsCard";
 import { UpcomingClassesCard } from "@/components/dashboard/UpcomingClassesCard";
 import { PerformanceCard } from "@/components/dashboard/PerformanceCard";
@@ -19,6 +20,12 @@ import { classNames } from "@/utils/classNames";
 import styles from './dashboard.module.css';
 
 export default function DashboardPage() {
+  const { data: session } = useSession();
+  const displayName =
+    session?.user?.firstName?.trim() ||
+    session?.user?.name?.trim() ||
+    "there";
+
   // Queries for dashboard stats
   const { data: students } = useQuery<Student[]>({
     queryKey: ["/api/students"]
@@ -50,7 +57,9 @@ export default function DashboardPage() {
       <div className={styles.header}>
         <div className={styles.headerContent}>
           <h1 className={styles.title}>ESL Teacher Dashboard</h1>
-          <p className={styles.subtitle}>Welcome back, John! Here's what's happening in your language classes today.</p>
+          <p className={styles.subtitle}>
+            Welcome back, {displayName}. Here&apos;s what&apos;s on your schedule today.
+          </p>
         </div>
         <div className={styles.headerAction}>
           <Button className={styles.createButton}>
@@ -66,9 +75,9 @@ export default function DashboardPage() {
           title="ESL Students" 
           value={students?.length || 0}
           icon={<UserRound className={styles.iconPrimary} />}
-          change={{ 
-            value: "4.6% from last month", 
-            type: "increase"
+          change={{
+            value: "From your live roster",
+            type: "neutral"
           }}
           iconClassName={styles.iconBgPrimary}
         />
@@ -77,8 +86,8 @@ export default function DashboardPage() {
           title="Language Levels" 
           value={activeCourses || 0}
           icon={<BookOpen className={styles.iconSecondary} />}
-          change={{ 
-            value: "From Pre A1 to C2", 
+          change={{
+            value: "Distinct subjects in lessons",
             type: "neutral"
           }}
           iconClassName={styles.iconBgSecondary}
@@ -99,9 +108,9 @@ export default function DashboardPage() {
           title="Language Teaching Hours" 
           value={teachingHours}
           icon={<Clock className={styles.iconGreen} />}
-          change={{ 
-            value: "2.1 more than average", 
-            type: "increase"
+          change={{
+            value: "Sum of scheduled lesson hours",
+            type: "neutral"
           }}
           iconClassName={styles.iconBgGreen}
         />

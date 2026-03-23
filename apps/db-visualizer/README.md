@@ -11,7 +11,8 @@ Read-only Next.js dashboard for exploring EFL database structure and cross-schem
 | Auth & mapping | `(dashboard)/auth` | `/api/auth` | `AuthMappingPanel` | Users + student/teacher mappings; Prisma has no `teachers.Teacher` model (called out in-panel) |
 | Curriculum | `(dashboard)/curriculum` | `/api/curriculum` | `CurriculumExplorerPanel` | Tree-shaped; empty when no programs |
 | Connectivity | `(dashboard)/connectivity` | `/api/connectivity` | `ConnectivityPanel` | Cross-schema links |
-| Schema map | `(dashboard)/schema-map` | `/api/schema-graph` | `SchemaGraphCanvas` | Postgres `information_schema` via **direct `DIRECT_URL`** when `DATABASE_URL` is **Prisma Accelerate** (`prisma://…`); otherwise Prisma raw SQL |
+| Schema map | `(dashboard)/schema-map` | `/api/schema-graph` | `SchemaGraphCanvas` | Postgres `information_schema` via **direct `DIRECT_URL`** when `DATABASE_URL` is **Prisma Accelerate** (`prisma://…` or `prisma+postgres://…`); otherwise Prisma **`$transaction`** + raw SQL (one session per request) |
+| Deployment / env | `/deployment` (outside dashboard shell) | `/api/deployment-env` | — | **Presence/shape** checks for `DATABASE_URL`, `DIRECT_URL`, `DATABASE_POOL_MAX` (values never shown); optional **`SELECT 1`** probe. Sidebar **banner** when critical env shapes are wrong. |
 
 **Presentational-only (no fetch):** `RouteWarning`, `JsonCodeBlock`, `AppSidebarNav`.
 
@@ -19,11 +20,11 @@ Failures surface as `RouteWarning` when `fetchFromApi` throws (e.g. missing `DAT
 
 ### Prisma Accelerate and the schema map
 
-Accelerate does not reliably run the schema map’s `information_schema` introspection. If **`DATABASE_URL`** is **`prisma://…`**, you **must** set **`DIRECT_URL=postgresql://…`** (PlanetScale direct or pooler URL). The map opens **one short-lived direct session** per load, then disconnects — it counts toward your **direct** connection limit only while that request runs.
+Accelerate does not reliably run the schema map’s `information_schema` introspection. If **`DATABASE_URL`** is **`prisma://…`** or **`prisma+postgres://…`**, you **must** set **`DIRECT_URL=postgresql://…`** to real Postgres (e.g. **PlanetScale Postgres**). **Never** put the Accelerate string in **`DIRECT_URL`**. The map opens **one short-lived `pg.Client` session** per load, then disconnects.
 
 ### Schema map / API shows Postgres `53300` or “connection slots”
 
-That is **connection exhaustion** on the server, not a broken schema-graph query. Use a **pooled** `DATABASE_URL` when your host provides one, set **`DATABASE_POOL_MAX`** to **`1`–`3`** in `packages/database/.env` (or per app) if you still see `53300`, stop extra local dev servers that share the same DB, and see `docs/operations.md`. `@repo/database` already uses a **smaller default pool in development** (2) than in production (10).
+That is **connection exhaustion** on the server. Mitigations: **Accelerate or a pooled Postgres URL** on `DATABASE_URL`, **`DATABASE_POOL_MAX`** (**`1`–`3`**) per app/Vercel project, fewer concurrent dev servers. Schema map (Prisma path) and sidebar health use **`$transaction`** to hold **one** backend session per request where applicable. See **`docs/operations.md`** and **`docs/database-connection-inventory.md`**. `@repo/database` uses a **smaller default pool in development** (2) than in production (10) when using the `pg` adapter.
 
 ## Scaling (when data or UI grows)
 

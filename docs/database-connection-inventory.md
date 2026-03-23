@@ -15,7 +15,7 @@ Each **runtime** below is a **separate Node process** (local `next dev`) or a **
 To share capacity across platforms you need an **external** layer:
 
 - **PgBouncer / host pooler** on `DATABASE_URL` (many app TCP sessions → fewer Postgres sessions).
-- **Prisma Accelerate** (`prisma://…` on `DATABASE_URL`) — app talks to Prisma; Prisma’s infrastructure pools toward your DB.
+- **Prisma Accelerate** (`prisma://…` or **`prisma+postgres://…`** on `DATABASE_URL`) — app talks to Prisma; Prisma’s infrastructure pools toward your DB.
 
 ### Can: one pool per process
 
@@ -37,7 +37,7 @@ Serverless: **each concurrent invocation** may be a cold or warm isolate — tre
 
 | Item | Location | Behavior |
 |------|----------|----------|
-| Shared Prisma + optional `pg` pool | `packages/database/src/index.ts` | Chooses **Accelerate** (`DATABASE_URL` = `prisma://…`) **first**, else **Postgres `DATABASE_URL`**, else **`DIRECT_URL`**. One global client per process. |
+| Shared Prisma + optional `pg` pool | `packages/database/src/index.ts` | Chooses **Accelerate** (`DATABASE_URL` = `prisma://…` or `prisma+postgres://…`) **first**, else **Postgres `DATABASE_URL`**, else **`DIRECT_URL`**. One global client per process. |
 | Env loading | Same file | Loads `packages/database/.env` when present (paths relative to `process.cwd()`). |
 | Pool size | `DATABASE_POOL_MAX`, URL hints | See `index.ts`: prod/dev defaults, `pgbouncer=true`, `connection_limit=`. |
 
@@ -73,8 +73,8 @@ All use **`import { prisma } from "@repo/database"`** (or `db.ts` re-export in t
 
 | Module | Role |
 |--------|------|
-| `src/server/queries/health.ts` | Schema health checks (`findFirst` per domain table) — **sequential** to limit concurrent checkouts. |
-| `src/server/queries/schema-graph.ts` | If **`DATABASE_URL`** is **Prisma Accelerate** (`prisma://…`), uses **`pg.Client`** + **`DIRECT_URL`** (sequential queries, then `end()`). Otherwise three sequential **`prisma.$queryRaw`** calls (no interactive transaction). |
+| `src/server/queries/health.ts` | Schema health checks — five **`findFirst`** probes inside **one** **`prisma.$transaction`** (one backend session per layout load). |
+| `src/server/queries/schema-graph.ts` | If **`DATABASE_URL`** is **Accelerate** (`prisma://…` or `prisma+postgres://…`), uses **`pg.Client`** + **`DIRECT_URL`** (three sequential queries, then `end()`). Otherwise three **`prisma.$queryRaw`** calls inside **one** **`$transaction`** (one session per schema-map request). |
 | `src/server/queries/landing.ts` | Landing-related read models. |
 | `src/server/queries/curriculum.ts` | Curriculum graph reads. |
 | `src/server/queries/connectivity.ts` | Cross-app connectivity sample queries. |
@@ -84,6 +84,7 @@ All use **`import { prisma } from "@repo/database"`** (or `db.ts` re-export in t
 
 - `src/app/api/health/route.ts` → `getSchemaHealthData`
 - `src/app/api/schema-graph/route.ts` → `getSchemaGraphData`
+- `src/app/api/deployment-env/route.ts` → deployment env report + DB probe JSON (no secret values)
 - `src/app/api/landing/route.ts` → landing query module
 - `src/app/api/curriculum/route.ts` → curriculum query module
 - `src/app/api/connectivity/route.ts` → connectivity module
@@ -91,7 +92,8 @@ All use **`import { prisma } from "@repo/database"`** (or `db.ts` re-export in t
 
 ### App Router layout / pages
 
-- `(dashboard)/layout.tsx` loads health **in-process** via `getSchemaHealthData` (no self-HTTP to `/api/health`).
+- `(dashboard)/layout.tsx` loads health **in-process** via `getSchemaHealthData` (no self-HTTP to `/api/health`). Shows an **env warning banner** when `getCriticalEnvIssues()` reports missing/invalid URL shapes (sync `process.env` only).
+- **`/deployment`** (outside `(dashboard)`) — full deployment / env report page + DB `SELECT 1` probe (`src/app/deployment/`).
 - Individual dashboard pages call query functions directly where refactored (e.g. schema map).
 
 ---
@@ -150,7 +152,7 @@ Use this as a checklist; stop when `53300` disappears and latency is acceptable.
    - Do not run five `next dev` apps against one tiny Postgres tier unless necessary.
 
 4. **Reduce parallel Prisma work per request**  
-   - Prefer **sequential** `await` or **`$transaction`** where you already batch reads (db-visualizer health + schema graph done).  
+   - Prefer **sequential** `await` or **`$transaction`** where you batch reads (**db-visualizer** health + schema-graph Prisma path use **`$transaction`**).  
    - Audit **landing** / **curriculum** for `Promise.all` over many `prisma` calls.
 
 5. **Scripts**  
@@ -194,4 +196,4 @@ rg "from [\"']@repo/database[\"']" apps --glob "*.{ts,tsx}"
 
 ---
 
-*Last reviewed with codebase grep for `@repo/database`, `new PrismaClient`, `new Pool`. Update this doc when adding new apps, scripts, or DB entry points.*
+*Last reviewed with codebase grep for `@repo/database`, `new PrismaClient`, `new Pool`. Update this doc when adding new apps, scripts, or DB entry points. Accelerate URL schemes: `prisma://` and `prisma+postgres://`.*

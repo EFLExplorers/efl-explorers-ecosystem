@@ -4,12 +4,12 @@
 
 | Partner | Relationship |
 |---------|----------------|
-| **All Prisma apps** | Uses the same `@repo/database` client and `DATABASE_URL` as the rest of the monorepo. It does not own schema changes. |
+| **All Prisma apps** | Uses the same `@repo/database` client and env vars as the rest of the monorepo. With **Prisma Accelerate** on `DATABASE_URL` (`prisma://` or `prisma+postgres://`), **`DIRECT_URL`** must still be a real **`postgresql://`** string for schema map introspection and CLI. It does not own schema changes. |
 | **Operators** | Humans use it to validate that production-like data matches expectations before or after releases. |
 
 ## Outbound
 
-- **Postgres** — Read-heavy Prisma queries and introspection (`schema-graph`, `health`, `connectivity`, domain-specific query modules under `apps/db-visualizer/src/server/queries`).
+- **Postgres / Accelerate** — Read-heavy Prisma queries; **`information_schema`** via **`DIRECT_URL`** when runtime uses Accelerate. Operator page **`/deployment`** and **`GET /api/deployment-env`** report env shape and DB reachability without exposing secrets.
 
 ## Inbound
 

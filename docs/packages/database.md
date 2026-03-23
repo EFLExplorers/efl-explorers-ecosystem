@@ -49,8 +49,11 @@ The schema uses PostgreSQL with multiple schemas:
 `packages/database/src/index.ts`:
 
 - Loads `.env` from `packages/database/.env` if present.
-- Chooses connection via **`DATABASE_URL` first** when it is a Postgres URL (so a provider **pooler** URL is honored), then `DIRECT_URL`, then Prisma Accelerate.
-- Reuses one shared **`pg` pool** per Node process (connections are not opened per query).
+- Chooses the client in this **order** (first match wins):
+  1. **Prisma Accelerate** — `DATABASE_URL` starts with **`prisma://`** or **`prisma+postgres://`** → `PrismaClient` with **`accelerateUrl`** (no in-process `pg` pool for queries).
+  2. **Postgres URL on `DATABASE_URL`** — `postgres://` or `postgresql://` → **`PrismaPg`** + shared **`pg` pool**.
+  3. **Fallback** — `DIRECT_URL` as a Postgres URL → same adapter + pool.
+- Reuses one shared **`pg` pool** per Node process when using the adapter (not when using Accelerate alone).
 
 ## Scripts
 
