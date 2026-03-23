@@ -1,3 +1,4 @@
+import { DashboardPageHeader } from "@/components/layout/DashboardPageHeader";
 import {
   getDeploymentEnvReport,
   probeDatabaseReachability,
@@ -44,6 +45,11 @@ export const DeploymentRoutePage = async () => {
 
   return (
     <>
+      <DashboardPageHeader
+        title="Deployment / environment"
+        description="Presence and shape checks only — secret values are never shown or logged."
+      />
+
       {report.criticalIssues.length > 0 ? (
         <div className={styles.criticalBanner} role="alert">
           <strong>Configuration issues</strong>
@@ -60,22 +66,14 @@ export const DeploymentRoutePage = async () => {
           Runtime context
         </h2>
         <div className={styles.contextGrid}>
-          <span className={styles.contextItem}>
-            NODE_ENV={report.context.nodeEnv}
-          </span>
+          <span className={styles.contextItem}>NODE_ENV={report.context.nodeEnv}</span>
           {report.context.vercelEnv ? (
-            <span className={styles.contextItem}>
-              VERCEL_ENV={report.context.vercelEnv}
-            </span>
+            <span className={styles.contextItem}>VERCEL_ENV={report.context.vercelEnv}</span>
           ) : null}
           {report.context.vercelRegion ? (
-            <span className={styles.contextItem}>
-              VERCEL_REGION={report.context.vercelRegion}
-            </span>
+            <span className={styles.contextItem}>VERCEL_REGION={report.context.vercelRegion}</span>
           ) : null}
-          <span className={styles.contextItem}>
-            commit={report.context.commitShort}
-          </span>
+          <span className={styles.contextItem}>commit={report.context.commitShort}</span>
         </div>
       </section>
 
@@ -99,9 +97,7 @@ export const DeploymentRoutePage = async () => {
                   <td className={`${styles.td} ${styles.mono}`}>{row.key}</td>
                   <td className={styles.td}>{row.importance}</td>
                   <td className={styles.td}>
-                    <span className={statusBadgeClass(row.status)}>
-                      {statusLabel(row.status)}
-                    </span>
+                    <span className={statusBadgeClass(row.status)}>{statusLabel(row.status)}</span>
                   </td>
                   <td className={styles.td}>
                     {row.hint ? (
@@ -124,9 +120,7 @@ export const DeploymentRoutePage = async () => {
         <div
           className={`${styles.probeCard} ${probe.ok ? styles.probeOk : styles.probeFail}`}
         >
-          <p className={styles.probeLabel}>
-            {probe.ok ? "Probe succeeded" : "Probe failed"}
-          </p>
+          <p className={styles.probeLabel}>{probe.ok ? "Probe succeeded" : "Probe failed"}</p>
           <p className={styles.probeMessage}>{probe.message}</p>
         </div>
       </section>

@@ -11,7 +11,8 @@ import {
   useReactFlow,
   type Edge,
 } from "@xyflow/react";
-import { useCallback, useEffect, useMemo } from "react";
+import { Maximize2, Minimize2 } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import {
   SCHEMA_GRAPH_NODE_W,
@@ -127,9 +128,40 @@ const saveLayout = (
 
 type FlowInnerProps = {
   data: SchemaGraphData;
+  /** Increment to refit the viewport after the graph container changes size (e.g. maximize). */
+  recenterSignal: number;
 };
 
-const SchemaGraphFlowInner = ({ data }: FlowInnerProps) => {
+const requestElementFullscreen = (el: HTMLElement) => {
+  if (el.requestFullscreen) {
+    return el.requestFullscreen();
+  }
+  const wk = (el as HTMLElement & { webkitRequestFullscreen?: () => void }).webkitRequestFullscreen;
+  if (wk) {
+    wk.call(el);
+    return Promise.resolve();
+  }
+  return Promise.reject(new Error("Fullscreen API not supported"));
+};
+
+const exitDocumentFullscreen = () => {
+  if (document.exitFullscreen) {
+    return document.exitFullscreen();
+  }
+  const wk = (document as Document & { webkitExitFullscreen?: () => void }).webkitExitFullscreen;
+  if (wk) {
+    wk.call(document);
+    return Promise.resolve();
+  }
+  return Promise.resolve();
+};
+
+const getFullscreenElement = () =>
+  document.fullscreenElement ??
+  (document as unknown as { webkitFullscreenElement?: Element | null }).webkitFullscreenElement ??
+  null;
+
+const SchemaGraphFlowInner = ({ data, recenterSignal }: FlowInnerProps) => {
   const { fitView, getNodes } = useReactFlow();
   const fingerprint = useMemo(() => tableFingerprint(data.tables), [data.tables]);
 
@@ -209,6 +241,16 @@ const SchemaGraphFlowInner = ({ data }: FlowInnerProps) => {
     return () => window.clearTimeout(t);
   }, [data, fingerprint, fitView, setEdges, setNodes]);
 
+  useEffect(() => {
+    if (recenterSignal <= 0) {
+      return;
+    }
+    const id = window.requestAnimationFrame(() => {
+      fitView({ padding: 0.12, maxZoom: 1.35, duration: 200 });
+    });
+    return () => window.cancelAnimationFrame(id);
+  }, [recenterSignal, fitView]);
+
   const persistPositions = useCallback(() => {
     const list = getNodes();
     const positions: Record<string, { x: number; y: number }> = {};
@@ -251,6 +293,85 @@ export type SchemaGraphCanvasProps = {
 };
 
 export const SchemaGraphCanvas = ({ data }: SchemaGraphCanvasProps) => {
+  const shellRef = useRef<HTMLDivElement>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [recenterSignal, setRecenterSignal] = useState(0);
+  const [nativeFs, setNativeFs] = useState(false);
+
+  const bumpRecenter = useCallback(() => {
+    setRecenterSignal((n) => n + 1);
+  }, []);
+
+  const toggleExpanded = useCallback(() => {
+    setIsExpanded((v) => {
+      if (v && getFullscreenElement()) {
+        void exitDocumentFullscreen();
+      }
+      return !v;
+    });
+    bumpRecenter();
+  }, [bumpRecenter]);
+
+  useEffect(() => {
+    if (!isExpanded) {
+      return;
+    }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") {
+        return;
+      }
+      /* Let the browser exit native fullscreen first; do not also tear down the expanded shell. */
+      if (getFullscreenElement()) {
+        return;
+      }
+      setIsExpanded(false);
+      bumpRecenter();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isExpanded, bumpRecenter]);
+
+  useEffect(() => {
+    if (!isExpanded) {
+      return;
+    }
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [isExpanded]);
+
+  useEffect(() => {
+    const onFs = () => {
+      setNativeFs(Boolean(getFullscreenElement()));
+      bumpRecenter();
+    };
+    document.addEventListener("fullscreenchange", onFs);
+    document.addEventListener("webkitfullscreenchange", onFs as EventListener);
+    return () => {
+      document.removeEventListener("fullscreenchange", onFs);
+      document.removeEventListener("webkitfullscreenchange", onFs as EventListener);
+    };
+  }, [bumpRecenter]);
+
+  const onTrueFullscreen = useCallback(async () => {
+    const el = shellRef.current;
+    if (!el) {
+      return;
+    }
+    try {
+      if (getFullscreenElement()) {
+        await exitDocumentFullscreen();
+      } else {
+        await requestElementFullscreen(el);
+      }
+    } catch {
+      /* user denied or unsupported */
+    }
+    bumpRecenter();
+  }, [bumpRecenter]);
+
   if (data.tables.length === 0) {
     return (
       <div className={styles.wrap}>
@@ -268,16 +389,54 @@ export const SchemaGraphCanvas = ({ data }: SchemaGraphCanvasProps) => {
   }
 
   return (
-    <div className={styles.wrap}>
+    <div
+      ref={shellRef}
+      className={`${styles.wrap} ${isExpanded ? styles.wrapExpanded : ""}`}
+    >
       <div className={styles.toolbar}>
         <div>
           <strong>Live graph</strong> — {data.tables.length} tables · {data.edges.length} foreign keys
           (Postgres metadata)
         </div>
-        <span>
-          Wheel or trackpad to zoom · drag the background to pan · drag tables · positions persist
-          locally when the table set matches
-        </span>
+        <div className={styles.toolbarRight}>
+          <span className={styles.toolbarHint}>
+            Wheel zoom · drag pan · drag tables · positions saved locally
+          </span>
+          <div className={styles.toolbarActions}>
+            {isExpanded ? (
+              <button
+                type="button"
+                className={styles.toolBtn}
+                onClick={onTrueFullscreen}
+                aria-pressed={nativeFs}
+                aria-label={
+                  nativeFs ? "Exit browser fullscreen" : "Browser fullscreen (hide browser UI)"
+                }
+              >
+                {nativeFs ? "Exit F11 fullscreen" : "Browser fullscreen"}
+              </button>
+            ) : null}
+            <button
+              type="button"
+              className={styles.toolBtn}
+              onClick={toggleExpanded}
+              aria-expanded={isExpanded}
+              aria-label={isExpanded ? "Restore map size" : "Maximize map to fill the window"}
+            >
+              {isExpanded ? (
+                <>
+                  <Minimize2 size={14} aria-hidden />
+                  Restore
+                </>
+              ) : (
+                <>
+                  <Maximize2 size={14} aria-hidden />
+                  Maximize map
+                </>
+              )}
+            </button>
+          </div>
+        </div>
       </div>
 
       <div
@@ -286,7 +445,7 @@ export const SchemaGraphCanvas = ({ data }: SchemaGraphCanvasProps) => {
         aria-label="Database schema graph. Use the mouse wheel to zoom, drag the background to pan, and drag table nodes to rearrange."
       >
         <ReactFlowProvider>
-          <SchemaGraphFlowInner data={data} />
+          <SchemaGraphFlowInner data={data} recenterSignal={recenterSignal} />
         </ReactFlowProvider>
       </div>
     </div>

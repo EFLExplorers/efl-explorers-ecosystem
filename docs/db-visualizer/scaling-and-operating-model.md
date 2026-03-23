@@ -82,8 +82,7 @@ flowchart TB
 ### User-facing routes (App Router)
 
 - Dashboard shell: [`apps/db-visualizer/src/app/(dashboard)/layout.tsx`](../../apps/db-visualizer/src/app/(dashboard)/layout.tsx) — in-process schema health; **env warning banner** when required URL shapes are missing (`getCriticalEnvIssues` from [`envDiagnostics.ts`](../../apps/db-visualizer/src/lib/envDiagnostics.ts)).
-- Sections: `/landing`, `/auth`, `/curriculum`, `/connectivity`, `/schema-map` under [`apps/db-visualizer/src/app/(dashboard)/`](../../apps/db-visualizer/src/app/(dashboard)/)
-- **`/deployment`** — standalone layout (no dashboard shell) so operators can open env diagnostics even when Prisma health fails: variable **presence/shape** only (no values), runtime context badges, **`SELECT 1`** probe.
+- Sections: `/landing`, `/auth`, `/curriculum`, `/connectivity`, `/schema-map`, **`/deployment`** under [`apps/db-visualizer/src/app/(dashboard)/`](../../apps/db-visualizer/src/app/(dashboard)/) — same shell (header, sidebar, sync rail, row preview). The deployment page still runs its own env report and **`SELECT 1`** probe (variable **presence/shape** only; no secret values) independent of sync snapshot payload quality.
 - Legacy query redirect: [`apps/db-visualizer/src/app/page.tsx`](../../apps/db-visualizer/src/app/page.tsx) (`?tab=`, `userId=`)
 
 ### HTTP API (live, uncached)

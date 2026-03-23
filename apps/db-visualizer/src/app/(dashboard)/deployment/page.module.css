@@ -72,7 +72,7 @@
 }
 
 .mono {
-  font-family: ui-monospace, monospace;
+  font-family: var(--font-data-mono, ui-monospace, monospace);
   font-size: 0.68rem;
 }
 

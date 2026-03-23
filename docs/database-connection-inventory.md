@@ -93,7 +93,7 @@ All use **`import { prisma } from "@repo/database"`** (or `db.ts` re-export in t
 ### App Router layout / pages
 
 - `(dashboard)/layout.tsx` loads health **in-process** via `getSchemaHealthData` (no self-HTTP to `/api/health`). Shows an **env warning banner** when `getCriticalEnvIssues()` reports missing/invalid URL shapes (sync `process.env` only).
-- **`/deployment`** (outside `(dashboard)`) — full deployment / env report page + DB `SELECT 1` probe (`src/app/deployment/`).
+- **`/deployment`** (under `(dashboard)`) — deployment / env report + DB `SELECT 1` probe (`src/app/(dashboard)/deployment/`).
 - Individual dashboard pages call query functions directly where refactored (e.g. schema map).
 
 ---
