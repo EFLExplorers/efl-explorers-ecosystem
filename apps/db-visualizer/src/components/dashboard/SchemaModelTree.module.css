@@ -1,0 +1,85 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.65rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid var(--line);
+  max-height: min(42vh, 480px);
+  overflow: auto;
+}
+
+.heading {
+  margin: 0;
+  font-size: 0.58rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+}
+
+.schemaList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.schemaItem {
+  margin: 0;
+}
+
+.schemaName {
+  display: block;
+  font-family: var(--font-data-mono, ui-monospace, monospace);
+  font-size: 0.62rem;
+  color: var(--accent);
+  margin-bottom: 0.12rem;
+}
+
+.tableList {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 0.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.08rem;
+}
+
+.tableBtn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+  width: 100%;
+  margin: 0;
+  padding: 0.22rem 0.35rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-data-mono, ui-monospace, monospace);
+  font-size: 0.6rem;
+  text-align: left;
+  cursor: pointer;
+  line-height: 1.2;
+}
+
+.tableBtn:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-main);
+}
+
+.tableBtnActive {
+  border-color: var(--line-strong);
+  background: rgba(110, 184, 255, 0.08);
+  color: var(--text-main);
+}
+
+.colCount {
+  flex-shrink: 0;
+  font-size: 0.52rem;
+  color: var(--text-faint);
+}

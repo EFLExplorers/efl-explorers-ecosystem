@@ -1,13 +1,17 @@
 import { prisma } from "@repo/database";
+import type { Prisma } from "@repo/database";
 
 import type { IdentityBridgeData } from "@/types/db-visualizer";
 
 const USERS_LIMIT = 150;
 
+type AuthDb = Prisma.TransactionClient | typeof prisma;
+
 export const getIdentityBridgeData = async (
-  selectedUserId?: string
+  selectedUserId?: string,
+  db: AuthDb = prisma,
 ): Promise<IdentityBridgeData> => {
-  const users = await prisma.user.findMany({
+  const users = await db.user.findMany({
     orderBy: [{ updatedAt: "desc" }, { createdAt: "desc" }],
     take: USERS_LIMIT,
     select: {
@@ -56,7 +60,7 @@ export const getIdentityBridgeData = async (
   }
 
   const [studentMapping, teacherMapping, linkedStudents] = await Promise.all([
-    prisma.studentUserMapping.findUnique({
+    db.studentUserMapping.findUnique({
       where: { authUserId: selectedUser.id },
       select: {
         id: true,
@@ -64,7 +68,7 @@ export const getIdentityBridgeData = async (
         createdAt: true,
       },
     }),
-    prisma.teacherUserMapping.findUnique({
+    db.teacherUserMapping.findUnique({
       where: { authUserId: selectedUser.id },
       select: {
         id: true,
@@ -73,7 +77,7 @@ export const getIdentityBridgeData = async (
       },
     }),
     selectedUser.email
-      ? prisma.student.findMany({
+      ? db.student.findMany({
           where: { email: selectedUser.email },
           select: {
             id: true,

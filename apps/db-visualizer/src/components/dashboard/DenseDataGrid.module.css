@@ -1,0 +1,80 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-height: 0;
+  flex: 1;
+}
+
+.hint,
+.hintBanner {
+  margin: 0;
+  font-family: var(--font-data-mono, ui-monospace, monospace);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
+.hintBanner {
+  color: var(--warning-amber-text, var(--warn-text));
+}
+
+.scroll {
+  overflow: auto;
+  max-height: min(62vh, 720px);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  background: var(--bg-elevated);
+}
+
+.stickyHeader {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--bg-soft);
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.headerRow,
+.dataRow {
+  display: grid;
+  align-items: center;
+  min-height: 28px;
+}
+
+.headerCell {
+  padding: 0.35rem 0.5rem;
+  font-family: var(--font-data-mono, ui-monospace, monospace);
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.virtualBody {
+  position: relative;
+}
+
+.dataRow {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-elevated);
+}
+
+.dataRowAlt {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.dataCell {
+  padding: 0.28rem 0.5rem;
+  font-family: var(--font-data-mono, ui-monospace, monospace);
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

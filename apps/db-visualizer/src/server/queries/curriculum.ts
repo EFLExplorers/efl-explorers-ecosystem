@@ -1,9 +1,15 @@
 import { prisma } from "@repo/database";
+import type { Prisma } from "@repo/database";
 
 import type {
   CurriculumExplorerData,
   LevelLiveSnapshot,
 } from "@/types/db-visualizer";
+
+type CurriculumDb = Prisma.TransactionClient | typeof prisma;
+
+/** Caps sync-all curriculum tree payload. */
+export const CURRICULUM_PROGRAMS_MAX = 200;
 
 const getMostRelevantSnapshot = (snapshots: LevelLiveSnapshot[]) => {
   const current = snapshots.find((snapshot) => snapshot.isCurrent);
@@ -16,9 +22,12 @@ const getMostRelevantSnapshot = (snapshots: LevelLiveSnapshot[]) => {
   )[0];
 };
 
-export const getCurriculumExplorerData = async (): Promise<CurriculumExplorerData> => {
-  const programs = await prisma.curriculumProgram.findMany({
+export const getCurriculumExplorerData = async (
+  db: CurriculumDb = prisma,
+): Promise<CurriculumExplorerData> => {
+  const programs = await db.curriculumProgram.findMany({
     orderBy: { title: "asc" },
+    take: CURRICULUM_PROGRAMS_MAX,
     select: {
       id: true,
       slug: true,
@@ -52,7 +61,7 @@ export const getCurriculumExplorerData = async (): Promise<CurriculumExplorerDat
 
   const levelIds = programs.flatMap((program) => program.levels.map((level) => level.id));
   const snapshots = levelIds.length
-    ? await prisma.curriculumPublishSnapshot.findMany({
+    ? await db.curriculumPublishSnapshot.findMany({
         where: { levelId: { in: levelIds } },
         orderBy: [{ levelId: "asc" }, { publishedAt: "desc" }],
         select: {

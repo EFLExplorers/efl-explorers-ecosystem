@@ -1,0 +1,237 @@
+.shell {
+  min-height: 100vh;
+  width: 100%;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: var(--bg-main);
+}
+
+.skipLink {
+  position: absolute;
+  left: 0.5rem;
+  top: 0.5rem;
+  z-index: 100;
+  padding: 0.45rem 0.75rem;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  transform: translateY(-160%);
+  transition: transform var(--transition-fast);
+}
+
+.skipLink:focus-visible {
+  transform: translateY(0);
+  box-shadow: var(--focus-ring-shadow);
+}
+
+.header {
+  border-bottom: 1px solid var(--line-strong);
+  padding: 0.08rem 0.65rem 0.1rem;
+  background: var(--bg-soft);
+  box-shadow: var(--shadow-header);
+  flex-shrink: 0;
+}
+
+.headerMain {
+  display: grid;
+  gap: 0.04rem;
+  max-width: 100%;
+}
+
+.titleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.15rem 0.5rem;
+}
+
+.productName {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.12;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+
+.tagline {
+  margin: 0;
+  max-width: min(78ch, 100%);
+  color: var(--text-muted);
+  font-size: 0.58rem;
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+.opsBadges {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.22rem;
+  align-items: center;
+}
+
+.badge {
+  border: 1px solid var(--line);
+  background: transparent;
+  padding: 0.04rem 0.28rem;
+  font-size: 0.56rem;
+  color: var(--text-muted);
+  line-height: 1.12;
+}
+
+.body {
+  display: grid;
+  grid-template-columns: minmax(200px, 260px) minmax(0, 1fr) minmax(168px, 208px);
+  gap: 0;
+  flex: 1;
+  min-height: 0;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  min-width: 0;
+  border-right: 1px solid var(--line-strong);
+  padding: 0.65rem 0.75rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: var(--bg-sidebar);
+}
+
+.content {
+  background: transparent;
+  padding: 1rem 1.2rem;
+  overflow-x: auto;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-height: 0;
+  scroll-margin-top: 0.5rem;
+}
+
+.content:focus {
+  outline: none;
+}
+
+.content:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--accent-muted);
+}
+
+.pageArea {
+  flex-shrink: 0;
+}
+
+.gridPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-height: 200px;
+  flex: 1;
+  min-width: 0;
+}
+
+.gridHeading {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.gridTableId {
+  font-family: var(--font-data-mono, ui-monospace, monospace);
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.envBanner {
+  margin: 0.65rem 0;
+  border: 1px solid var(--warn-border);
+  background: var(--warn-bg);
+  padding: 0.55rem 0.7rem;
+  color: var(--warn-text);
+  font-size: 0.72rem;
+  border-radius: var(--radius-md);
+  line-height: 1.4;
+}
+
+.envBanner ul {
+  margin: 0.35rem 0 0.45rem;
+  padding-left: 1.1rem;
+}
+
+.envBannerLink {
+  display: inline-block;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.72rem;
+}
+
+.envBannerLink:hover {
+  text-decoration: underline;
+}
+
+.footer {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1.2rem;
+  align-items: center;
+  padding: 0.45rem 1rem;
+  border-top: 1px solid var(--line-strong);
+  background: var(--bg-soft);
+  font-family: var(--font-data-mono, ui-monospace, monospace);
+  font-size: 0.62rem;
+}
+
+.footerOk {
+  color: var(--status-green-text, var(--success-text));
+}
+
+.footerWarn {
+  color: var(--warning-amber-text, var(--warn-text));
+}
+
+.footerDrift {
+  color: var(--warning-amber-text, var(--warn-text));
+}
+
+.footerMuted {
+  color: var(--text-faint);
+}
+
+.metricsSlot {
+  min-width: 0;
+  min-height: 0;
+}
+
+@media (max-width: 1180px) {
+  .body {
+    grid-template-columns: minmax(200px, 260px) minmax(0, 1fr);
+    grid-template-rows: auto auto;
+  }
+
+  .metricsSlot {
+    grid-column: 1 / -1;
+    border-top: 1px solid var(--line-strong);
+  }
+}
+
+@media (max-width: 900px) {
+  .body {
+    grid-template-columns: 1fr;
+  }
+}

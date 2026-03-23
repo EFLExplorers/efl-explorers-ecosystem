@@ -11,12 +11,15 @@
   },
   "dependencies": {
     "@repo/database": "workspace:*",
+    "@tanstack/react-table": "^8.21.3",
+    "@tanstack/react-virtual": "^3.13.12",
     "pg": "^8.18.0",
     "@xyflow/react": "^12.10.1",
     "lucide-react": "^0.574.0",
     "next": "^16.1.6",
     "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "react-dom": "^19.2.4",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

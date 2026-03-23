@@ -1,43 +1,17 @@
+"use client";
+
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+
 import { DashboardPageHeader } from "@/components/layout/DashboardPageHeader";
-import { AuthMappingPanel } from "@/components/phases/AuthMappingPanel";
 import { RouteWarning } from "@/components/layout/RouteWarning";
-import { fetchFromApi } from "@/server/api-client";
-import { normalizeIdentityData } from "@/server/normalize-api-data";
-import type { IdentityBridgeData } from "@/types/db-visualizer";
+import { AuthMappingPanel } from "@/components/phases/AuthMappingPanel";
+import { useDatabaseSnapshot } from "@/context/DatabaseSnapshotProvider";
 
-type AuthRoutePageProps = {
-  searchParams?: Promise<Record<string, string | string[] | undefined>>;
-};
-
-const parseUserId = (value: string | string[] | undefined) => {
-  if (Array.isArray(value)) {
-    return value[0];
-  }
-  return value;
-};
-
-const EMPTY_IDENTITY_DATA: IdentityBridgeData = {
-  users: [],
-  selectedUser: null,
-  studentMapping: null,
-  teacherMapping: null,
-  linkedStudents: [],
-};
-
-export const AuthRoutePage = async ({ searchParams }: AuthRoutePageProps) => {
-  const params = (await searchParams) ?? {};
-  const selectedUserId = parseUserId(params.userId);
-
-  let warning = "";
-  let data = EMPTY_IDENTITY_DATA;
-
-  try {
-    const querySuffix = selectedUserId ? `?userId=${encodeURIComponent(selectedUserId)}` : "";
-    const rawIdentityData = await fetchFromApi<unknown>(`/api/auth${querySuffix}`);
-    data = normalizeIdentityData(rawIdentityData);
-  } catch (error) {
-    warning = error instanceof Error ? error.message : "Auth mapping data unavailable.";
-  }
+const AuthRoutePageInner = () => {
+  const searchParams = useSearchParams();
+  const userId = searchParams.get("userId") ?? undefined;
+  const { snapshot, lastError } = useDatabaseSnapshot();
 
   return (
     <>
@@ -45,10 +19,16 @@ export const AuthRoutePage = async ({ searchParams }: AuthRoutePageProps) => {
         title="Auth & identity mapping"
         description="Inspect auth users, student/teacher bridges, and documented Prisma coverage gaps."
       />
-      {warning ? <RouteWarning message={`Auth mapping data unavailable: ${warning}`} /> : null}
-      <AuthMappingPanel data={data} activeUserId={data.selectedUser?.id} />
+      {lastError ? <RouteWarning message={`Sync: ${lastError}`} /> : null}
+      <AuthMappingPanel data={snapshot.auth} activeUserId={userId ?? snapshot.auth.selectedUser?.id} />
     </>
   );
 };
+
+export const AuthRoutePage = () => (
+  <Suspense fallback={<p style={{ color: "var(--text-muted)", fontSize: "0.75rem" }}>Loading auth…</p>}>
+    <AuthRoutePageInner />
+  </Suspense>
+);
 
 export default AuthRoutePage;

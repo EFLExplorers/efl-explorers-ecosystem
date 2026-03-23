@@ -32,6 +32,8 @@
   --warn-bg: #241f10;
   --warn-border: #6a5b31;
   --warn-text: #e8d9a8;
+  --status-green-text: #b8e6c4;
+  --warning-amber-text: #e8c98a;
 
   /* Code blocks */
   --code-bg: rgba(12, 18, 32, 0.88);

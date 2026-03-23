@@ -38,39 +38,43 @@ const runCheck = async (
 
 type HealthTx = Prisma.TransactionClient;
 
+export const getSchemaHealthDataWithClient = async (
+  tx: HealthTx,
+): Promise<SchemaHealthData> => {
+  const checks = [
+    await runCheck("shared-page", "shared", "pages", () =>
+      tx.page.findFirst({ select: { id: true } }),
+    ),
+    await runCheck("auth-user", "auth", "users", () =>
+      tx.user.findFirst({ select: { id: true } }),
+    ),
+    await runCheck("students-mapping", "students", "student_user_mappings", () =>
+      tx.studentUserMapping.findFirst({ select: { id: true } }),
+    ),
+    await runCheck("teachers-student", "teachers", "students", () =>
+      tx.student.findFirst({ select: { id: true } }),
+    ),
+    await runCheck("curriculum-level", "curriculum", "levels", () =>
+      tx.curriculumLevel.findFirst({ select: { id: true } }),
+    ),
+  ];
+
+  const summary = checks.reduce(
+    (accumulator, check) => {
+      if (check.status === "ok") {
+        accumulator.ok += 1;
+      } else {
+        accumulator.error += 1;
+      }
+      return accumulator;
+    },
+    { ok: 0, error: 0 },
+  );
+
+  return { checks, summary };
+};
+
 export const getSchemaHealthData = async (): Promise<SchemaHealthData> => {
   /* One transaction = one backend session for all checks (reduces 53300 pressure on tiny pools). */
-  return prisma.$transaction(async (tx: HealthTx) => {
-    const checks = [
-      await runCheck("shared-page", "shared", "pages", () =>
-        tx.page.findFirst({ select: { id: true } }),
-      ),
-      await runCheck("auth-user", "auth", "users", () =>
-        tx.user.findFirst({ select: { id: true } }),
-      ),
-      await runCheck("students-mapping", "students", "student_user_mappings", () =>
-        tx.studentUserMapping.findFirst({ select: { id: true } }),
-      ),
-      await runCheck("teachers-student", "teachers", "students", () =>
-        tx.student.findFirst({ select: { id: true } }),
-      ),
-      await runCheck("curriculum-level", "curriculum", "levels", () =>
-        tx.curriculumLevel.findFirst({ select: { id: true } }),
-      ),
-    ];
-
-    const summary = checks.reduce(
-      (accumulator, check) => {
-        if (check.status === "ok") {
-          accumulator.ok += 1;
-        } else {
-          accumulator.error += 1;
-        }
-        return accumulator;
-      },
-      { ok: 0, error: 0 },
-    );
-
-    return { checks, summary };
-  });
+  return prisma.$transaction(async (tx: HealthTx) => getSchemaHealthDataWithClient(tx));
 };
