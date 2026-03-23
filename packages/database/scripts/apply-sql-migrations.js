@@ -32,6 +32,10 @@ const sanitizePostgresConnectionString = (connectionString) => {
 const getChecksum = (contents) =>
   crypto.createHash("sha256").update(contents).digest("hex");
 
+/** LF-normalized SQL so checksums match across Windows (CRLF) and Unix (LF) checkouts. */
+const normalizeSql = (contents) =>
+  contents.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+
 const ensureMigrationTable = async (client) => {
   await client.query(`
     CREATE TABLE IF NOT EXISTS public.manual_sql_migrations (
@@ -78,7 +82,8 @@ const run = async () => {
 
     for (const fileName of files) {
       const fullPath = path.join(dbDir, fileName);
-      const sql = await fs.readFile(fullPath, "utf-8");
+      const raw = await fs.readFile(fullPath, "utf-8");
+      const sql = normalizeSql(raw);
       const checksum = getChecksum(sql);
 
       await client.query("BEGIN");

@@ -7,6 +7,9 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
+    "db:validate": "pnpm --filter @repo/database exec prisma validate",
+    "db:generate": "pnpm --filter @repo/database exec prisma generate",
+    "db:apply-sql-migrations": "pnpm --filter @repo/database db:apply-sql-migrations",
     "check:teacher-runtime-integrity": "node ./scripts/check-teacher-runtime-integrity.js",
     "smoke:prod": "node ./scripts/production-smoke.mjs"
   },

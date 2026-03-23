@@ -61,8 +61,15 @@ If APIs return **500** with Postgres **`53300`** or text like **“remaining con
 ### SQL migrations (not Prisma Migrate folders)
 
 - Schema changes ship as **ordered SQL files** in `packages/database/db/` (e.g. `20260318_*.sql`).
-- Apply them with: `pnpm --filter @repo/database db:apply-sql-migrations` (uses `DIRECT_URL` or `DATABASE_URL`).
+- Apply them with: `pnpm --filter @repo/database db:apply-sql-migrations` or **`pnpm db:apply-sql-migrations`** from the repo root (uses `DIRECT_URL` or `DATABASE_URL`).
 - Tracked in the DB in `public.manual_sql_migrations` (filename + checksum). **Production** should run the same script against the same migration set as `main` before or when you promote a release.
+- **Checksum mismatch** (`Checksum mismatch for already-applied migration …`): the script now **normalizes CRLF/LF** before hashing so Windows and Unix agree. Pull latest, then re-run **`pnpm db:apply-sql-migrations`**. If it still fails, the DB row was recorded under old rules or the file changed after apply: confirm the table DDL already matches the migration, then set the stored checksum to the current normalized file hash (print it from the repo root):
+
+```bash
+node -e "const fs=require('fs'),c=require('crypto');const n=s=>s.replace(/\r\n/g,'\n').replace(/\r/g,'\n');const s=n(fs.readFileSync('packages/database/db/20260317_add_teacher_user_mappings.sql','utf8'));console.log(c.createHash('sha256').update(s).digest('hex'));"
+```
+
+Then run: `UPDATE public.manual_sql_migrations SET checksum = '<printed-hex>' WHERE name = '20260317_add_teacher_user_mappings.sql';`
 
 ### Prisma Client generation
 
@@ -89,6 +96,10 @@ If APIs return **500** with Postgres **`53300`** or text like **“remaining con
 ### Sharing connection strings (e.g. with teammates or tools)
 
 - Never commit real passwords or API keys. Share **redacted** URLs (placeholders for user/password) plus **metadata**: provider name, region, `sslmode`, whether you use **direct vs pooler**, and which env var holds which URL.
+
+### Cross-app DB parity (stay on the same schema)
+
+All apps that import **`@repo/database`** expect the **same PostgreSQL database** (same schemas: `auth`, `teachers`, `students`, `curriculum`, `shared`). For **local dev**, use identical **`DATABASE_URL`** / **`DIRECT_URL`** in every copied `.env.local` (templates now use the same localhost defaults). For **Vercel**, set matching vars on **each** project: `landing-page`, `teacher-platform`, `student-platform`, `curriculum-platform`, and **`db-visualizer`** (prefer a **read-only** role there). After changing hosted URLs, redeploy each project (or push a commit) so instances pick up env.
 
 ### Production / preview checklist
 
