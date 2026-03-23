@@ -3,8 +3,7 @@
   flex-direction: column;
   gap: 0.5rem;
   padding: 0.65rem 0.75rem;
-  border-left: 1px solid var(--line-strong);
-  background: var(--bg-sidebar);
+  flex-shrink: 0;
   min-width: 0;
   font-family: var(--font-data-mono, ui-monospace, monospace);
 }

@@ -67,6 +67,67 @@
   line-height: 1.3;
 }
 
+.edgeLegend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem 0.85rem;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--bg-soft);
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.edgeLegendTitle {
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.edgeLegendList {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.edgeLegendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.edgeLegendSwatch {
+  display: inline-block;
+  width: 1.65rem;
+  border-top-style: solid;
+  border-top-width: 1.5px;
+  flex-shrink: 0;
+}
+
+.edgeLegendSwatchThick {
+  border-top-width: 2.35px;
+}
+
+.edgeLegendSwatchDashed {
+  border-top-style: dashed;
+}
+
+.edgeLegendSwatchSame {
+  border-top-color: rgba(124, 168, 255, 0.45);
+}
+
+.edgeLegendSwatchCross {
+  border-top-color: rgba(255, 165, 98, 0.55);
+}
+
 .toolbarActions {
   display: inline-flex;
   flex-wrap: wrap;

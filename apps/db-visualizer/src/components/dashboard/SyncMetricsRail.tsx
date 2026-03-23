@@ -1,6 +1,6 @@
 "use client";
 
-import { REFETCH_INTERVAL_MS } from "@/lib/sync-constants";
+import { formatRefetchIntervalLabel } from "@/lib/sync-constants";
 
 import styles from "./SyncMetricsRail.module.css";
 
@@ -47,7 +47,7 @@ export const SyncMetricsRail = ({
         </div>
         <div className={styles.row}>
           <dt>Interval</dt>
-          <dd className={styles.valueMuted}>{REFETCH_INTERVAL_MS / 1000}s</dd>
+          <dd className={styles.valueMuted}>{formatRefetchIntervalLabel()}</dd>
         </div>
         <div className={styles.row}>
           <dt>Status</dt>

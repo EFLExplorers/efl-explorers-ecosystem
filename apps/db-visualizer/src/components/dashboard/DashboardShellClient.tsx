@@ -80,11 +80,6 @@ const DashboardShellBody = ({
       <div className={styles.body}>
         <aside className={styles.sidebar} aria-label="Visualizer navigation and schema health">
           <AppSidebarNav />
-          <SchemaModelTree
-            tables={snapshot.schemaGraph.tables}
-            selectedTableId={selectedTableId}
-            onSelectTable={(id) => setSelectedTableId(id)}
-          />
           {envIssues.length > 0 ? (
             <div className={styles.envBanner} role="alert">
               <strong>Environment</strong>
@@ -134,6 +129,11 @@ const DashboardShellBody = ({
             lastError={lastError}
             slowServerQuery={slowServerQuery}
             slowClientTtfb={slowClientTtfb}
+          />
+          <SchemaModelTree
+            tables={snapshot.schemaGraph.tables}
+            selectedTableId={selectedTableId}
+            onSelectTable={(id) => setSelectedTableId(id)}
           />
         </div>
       </div>

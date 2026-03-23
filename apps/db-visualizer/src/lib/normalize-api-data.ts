@@ -375,6 +375,8 @@ export const normalizeSchemaGraphData = (raw: unknown): SchemaGraphData => {
       fromColumn: asString(rec.fromColumn),
       toTableId: asString(rec.toTableId),
       toColumn: asString(rec.toColumn),
+      deleteRule: asString(rec.deleteRule, "NO ACTION"),
+      updateRule: asString(rec.updateRule, "NO ACTION"),
     };
   });
 

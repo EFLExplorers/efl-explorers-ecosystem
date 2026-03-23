@@ -200,6 +200,10 @@ export type SchemaGraphEdge = {
   fromColumn: string;
   toTableId: string;
   toColumn: string;
+  /** Postgres `information_schema.referential_constraints.delete_rule` */
+  deleteRule: string;
+  /** Postgres `information_schema.referential_constraints.update_rule` */
+  updateRule: string;
 };
 
 export type SchemaGraphData = {

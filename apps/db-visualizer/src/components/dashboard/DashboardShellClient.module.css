@@ -91,7 +91,7 @@
 
 .body {
   display: grid;
-  grid-template-columns: minmax(200px, 260px) minmax(0, 1fr) minmax(168px, 208px);
+  grid-template-columns: minmax(200px, 260px) minmax(0, 1fr) minmax(200px, 280px);
   gap: 0;
   flex: 1;
   min-height: 0;
@@ -214,8 +214,13 @@
 }
 
 .metricsSlot {
+  display: flex;
+  flex-direction: column;
   min-width: 0;
   min-height: 0;
+  overflow: hidden;
+  border-left: 1px solid var(--line-strong);
+  background: var(--bg-sidebar);
 }
 
 @media (max-width: 1180px) {
@@ -226,6 +231,7 @@
 
   .metricsSlot {
     grid-column: 1 / -1;
+    border-left: none;
     border-top: 1px solid var(--line-strong);
   }
 }

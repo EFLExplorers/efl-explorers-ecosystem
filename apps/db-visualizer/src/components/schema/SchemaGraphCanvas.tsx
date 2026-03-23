@@ -14,6 +14,7 @@ import {
 import { Maximize2, Minimize2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { getSchemaGraphEdgeStrokeStyle } from "@/lib/schema-graph-edge-style";
 import {
   SCHEMA_GRAPH_NODE_W,
   layoutSchemaGraphTables,
@@ -49,7 +50,7 @@ const defaultEdgeOptions = {
   type: "smoothstep" as const,
   style: { stroke: "rgba(200, 200, 200, 0.22)", strokeWidth: 1.5 },
   interactionWidth: 28,
-};
+} as const;
 
 const tableFingerprint = (tables: SchemaGraphTable[]) =>
   tables
@@ -224,7 +225,12 @@ const SchemaGraphFlowInner = ({ data, recenterSignal }: FlowInnerProps) => {
         target: flowNodeId(toT),
         sourceHandle: HANDLE_SOURCE,
         targetHandle: HANDLE_TARGET,
-        ...defaultEdgeOptions,
+        type: defaultEdgeOptions.type,
+        style: {
+          ...defaultEdgeOptions.style,
+          ...getSchemaGraphEdgeStrokeStyle(edge),
+        },
+        interactionWidth: defaultEdgeOptions.interactionWidth,
       });
     }
 
@@ -264,6 +270,8 @@ const SchemaGraphFlowInner = ({ data, recenterSignal }: FlowInnerProps) => {
     persistPositions();
   }, [persistPositions]);
 
+  const onBeforeDelete = useCallback(async () => false, []);
+
   return (
     <ReactFlow
       nodes={nodes}
@@ -272,7 +280,14 @@ const SchemaGraphFlowInner = ({ data, recenterSignal }: FlowInnerProps) => {
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onNodeDragStop={onNodeDragStop}
+      onBeforeDelete={onBeforeDelete}
       defaultEdgeOptions={defaultEdgeOptions}
+      nodesDraggable
+      nodesConnectable={false}
+      edgesReconnectable={false}
+      deleteKeyCode={null}
+      elevateEdgesOnSelect
+      selectNodesOnDrag={false}
       minZoom={0.08}
       maxZoom={2}
       proOptions={{ hideAttribution: true }}
@@ -396,7 +411,8 @@ export const SchemaGraphCanvas = ({ data }: SchemaGraphCanvasProps) => {
       <div className={styles.toolbar}>
         <div>
           <strong>Live graph</strong> — {data.tables.length} tables · {data.edges.length} foreign keys
-          (Postgres metadata)
+          (Postgres metadata). Edges stay anchored while you drag tables; color and weight encode link
+          category (see legend).
         </div>
         <div className={styles.toolbarRight}>
           <span className={styles.toolbarHint}>
@@ -404,39 +420,79 @@ export const SchemaGraphCanvas = ({ data }: SchemaGraphCanvasProps) => {
           </span>
           <div className={styles.toolbarActions}>
             {isExpanded ? (
+              nativeFs ? (
+                <button
+                  type="button"
+                  className={styles.toolBtn}
+                  onClick={onTrueFullscreen}
+                  aria-pressed="true"
+                  aria-label="Exit browser fullscreen"
+                >
+                  Exit F11 fullscreen
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className={styles.toolBtn}
+                  onClick={onTrueFullscreen}
+                  aria-pressed="false"
+                  aria-label="Browser fullscreen (hide browser UI)"
+                >
+                  Browser fullscreen
+                </button>
+              )
+            ) : null}
+            {isExpanded ? (
               <button
                 type="button"
                 className={styles.toolBtn}
-                onClick={onTrueFullscreen}
-                aria-pressed={nativeFs}
-                aria-label={
-                  nativeFs ? "Exit browser fullscreen" : "Browser fullscreen (hide browser UI)"
-                }
+                onClick={toggleExpanded}
+                aria-expanded="true"
+                aria-label="Restore map size"
               >
-                {nativeFs ? "Exit F11 fullscreen" : "Browser fullscreen"}
+                <Minimize2 size={14} aria-hidden />
+                Restore
               </button>
-            ) : null}
-            <button
-              type="button"
-              className={styles.toolBtn}
-              onClick={toggleExpanded}
-              aria-expanded={isExpanded}
-              aria-label={isExpanded ? "Restore map size" : "Maximize map to fill the window"}
-            >
-              {isExpanded ? (
-                <>
-                  <Minimize2 size={14} aria-hidden />
-                  Restore
-                </>
-              ) : (
-                <>
-                  <Maximize2 size={14} aria-hidden />
-                  Maximize map
-                </>
-              )}
-            </button>
+            ) : (
+              <button
+                type="button"
+                className={styles.toolBtn}
+                onClick={toggleExpanded}
+                aria-expanded="false"
+                aria-label="Maximize map to fill the window"
+              >
+                <Maximize2 size={14} aria-hidden />
+                Maximize map
+              </button>
+            )}
           </div>
         </div>
+      </div>
+
+      <div className={styles.edgeLegend} aria-label="Foreign key edge categories">
+        <span className={styles.edgeLegendTitle}>Link categories</span>
+        <ul className={styles.edgeLegendList}>
+          <li className={styles.edgeLegendItem}>
+            <span className={`${styles.edgeLegendSwatch} ${styles.edgeLegendSwatchSame}`} />
+            Same schema
+          </li>
+          <li className={styles.edgeLegendItem}>
+            <span className={`${styles.edgeLegendSwatch} ${styles.edgeLegendSwatchCross}`} />
+            Cross-schema
+          </li>
+          <li className={styles.edgeLegendItem}>
+            <span
+              className={`${styles.edgeLegendSwatch} ${styles.edgeLegendSwatchThick} ${styles.edgeLegendSwatchCross}`}
+            />
+            ON DELETE CASCADE
+          </li>
+          <li className={styles.edgeLegendItem}>
+            <span
+              className={`${styles.edgeLegendSwatch} ${styles.edgeLegendSwatchDashed} ${styles.edgeLegendSwatchSame}`}
+            />
+            ON DELETE SET NULL / SET DEFAULT
+          </li>
+        </ul>
       </div>
 
       <div

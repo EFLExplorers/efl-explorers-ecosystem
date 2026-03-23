@@ -33,6 +33,8 @@ type RawFk = {
   to_table: string;
   to_column: string;
   constraint_name: string;
+  delete_rule: string;
+  update_rule: string;
 };
 
 type MetadataRows = {
@@ -87,8 +89,14 @@ const SQL_FKS = `
     ccu.table_schema AS to_schema,
     ccu.table_name AS to_table,
     ccu.column_name AS to_column,
-    tc.constraint_name AS constraint_name
+    tc.constraint_name AS constraint_name,
+    rc.delete_rule AS delete_rule,
+    rc.update_rule AS update_rule
   FROM information_schema.table_constraints tc
+  JOIN information_schema.referential_constraints rc
+    ON tc.constraint_catalog = rc.constraint_catalog
+    AND tc.constraint_schema = rc.constraint_schema
+    AND tc.constraint_name = rc.constraint_name
   JOIN information_schema.key_column_usage kcu
     ON tc.constraint_schema = kcu.constraint_schema
     AND tc.constraint_name = kcu.constraint_name
@@ -154,8 +162,14 @@ const fetchMetadataViaPrisma = async (): Promise<MetadataRows> => {
         ccu.table_schema AS to_schema,
         ccu.table_name AS to_table,
         ccu.column_name AS to_column,
-        tc.constraint_name AS constraint_name
+        tc.constraint_name AS constraint_name,
+        rc.delete_rule AS delete_rule,
+        rc.update_rule AS update_rule
       FROM information_schema.table_constraints tc
+      JOIN information_schema.referential_constraints rc
+        ON tc.constraint_catalog = rc.constraint_catalog
+        AND tc.constraint_schema = rc.constraint_schema
+        AND tc.constraint_name = rc.constraint_name
       JOIN information_schema.key_column_usage kcu
         ON tc.constraint_schema = kcu.constraint_schema
         AND tc.constraint_name = kcu.constraint_name
@@ -208,6 +222,8 @@ const buildGraph = ({ tables, columns, fkRows }: MetadataRows): SchemaGraphData 
       fromColumn: row.from_column,
       toTableId: toId,
       toColumn: row.to_column,
+      deleteRule: row.delete_rule ?? "NO ACTION",
+      updateRule: row.update_rule ?? "NO ACTION",
     });
   }
 
