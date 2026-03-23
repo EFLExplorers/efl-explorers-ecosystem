@@ -4,42 +4,27 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  schemas = ["auth", "teachers", "students", "shared", "curriculum"]
-}
-
-enum UserRole {
-  student
-  teacher
-
-  @@schema("auth")
-}
-
-enum SubscriptionTier {
-  free
-  premium
-
-  @@schema("auth")
+  schemas  = ["auth", "curriculum", "shared", "students", "teachers"]
 }
 
 model User {
-  id            String    @id @default(uuid()) @db.Uuid
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime? @map("email_verified")
-  image         String?   @db.Text
-  passwordHash  String?   @map("password_hash")
-  role          UserRole  @default(student)
-  approved      Boolean   @default(false)
-  subscriptionTier SubscriptionTier @default(free) @map("subscription_tier")
-  firstName     String?   @map("first_name")
-  lastName      String?   @map("last_name")
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at")
-
-  accounts Account[]
-  sessions Session[]
+  id                  String               @id @default(uuid()) @db.Uuid
+  name                String?
+  email               String?              @unique
+  emailVerified       DateTime?            @map("email_verified")
+  image               String?
+  passwordHash        String?              @map("password_hash")
+  role                UserRole             @default(student)
+  approved            Boolean              @default(false)
+  firstName           String?              @map("first_name")
+  lastName            String?              @map("last_name")
+  createdAt           DateTime             @default(now()) @map("created_at")
+  updatedAt           DateTime             @default(now()) @updatedAt @map("updated_at")
+  subscriptionTier    SubscriptionTier     @default(free) @map("subscription_tier")
+  accounts            Account[]
   passwordResetTokens PasswordResetToken[]
-  ssoTokens SsoToken[]
+  sessions            Session[]
+  ssoTokens           SsoToken[]
 
   @@map("users")
   @@schema("auth")
@@ -51,15 +36,14 @@ model Account {
   type              String
   provider          String
   providerAccountId String  @map("provider_account_id")
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
-  scope             String? @db.Text
-  id_token          String? @db.Text
-  session_state     String? @db.Text
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
@@ -71,8 +55,7 @@ model Session {
   sessionToken String   @unique @map("session_token")
   userId       String   @map("user_id") @db.Uuid
   expires      DateTime
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
   @@schema("auth")
@@ -94,8 +77,7 @@ model PasswordResetToken {
   tokenHash String   @unique @map("token_hash")
   expiresAt DateTime @map("expires_at")
   createdAt DateTime @default(now()) @map("created_at")
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("password_reset_tokens")
@@ -103,15 +85,14 @@ model PasswordResetToken {
 }
 
 model SsoToken {
-  id        String   @id @default(uuid()) @db.Uuid
-  userId    String   @map("user_id") @db.Uuid
-  tokenHash String   @unique @map("token_hash")
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  tokenHash String    @unique @map("token_hash")
   platform  UserRole
-  expiresAt DateTime @map("expires_at")
+  expiresAt DateTime  @map("expires_at")
   usedAt    DateTime? @map("used_at")
-  createdAt DateTime @default(now()) @map("created_at")
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now()) @map("created_at")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([expiresAt])
@@ -120,15 +101,15 @@ model SsoToken {
 }
 
 model Page {
-  id              String        @id @default(uuid()) @db.Uuid
-  route           String        @unique
-  title           String?       @db.Text
-  metaDescription String?       @map("meta_description") @db.Text
-  layout          String        @default("default") @db.VarChar(64)
-  createdAt       DateTime      @default(now()) @map("created_at")
-  updatedAt       DateTime      @default(now()) @updatedAt @map("updated_at")
-  sections        PageSection[]
+  id              String         @id @default(uuid()) @db.Uuid
+  route           String         @unique
+  title           String?
+  metaDescription String?        @map("meta_description")
+  layout          String         @default("default") @db.VarChar(64)
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @default(now()) @updatedAt @map("updated_at")
   contentItems    ContentItem[]
+  sections        PageSection[]
   routeSections   RouteSection[]
 
   @@map("pages")
@@ -136,24 +117,23 @@ model Page {
 }
 
 model ContentItem {
-  id          String     @id @default(uuid()) @db.Uuid
-  pageId      String?    @map("page_id") @db.Uuid
-  sectionKey  String?    @map("section_key") @db.VarChar(128)
-  contentType String     @map("content_type") @db.VarChar(128)
-  slug        String?    @unique
-  title       String?    @db.Text
-  subtitle    String?    @db.Text
-  description String?    @db.Text
-  content     Json?
-  metadata    Json?
-  sortOrder   Int        @default(0) @map("sort_order")
-  active      Boolean    @default(true)
-  createdAt   DateTime   @default(now()) @map("created_at")
-  updatedAt   DateTime   @default(now()) @updatedAt @map("updated_at")
-
-  page               Page?                 @relation(fields: [pageId], references: [id], onDelete: Cascade)
-  parentRelationships ContentRelationship[] @relation("ContentParent")
+  id                  String                @id @default(uuid()) @db.Uuid
+  pageId              String?               @map("page_id") @db.Uuid
+  sectionKey          String?               @map("section_key") @db.VarChar(128)
+  contentType         String                @map("content_type") @db.VarChar(128)
+  slug                String?               @unique
+  title               String?
+  subtitle            String?
+  description         String?
+  content             Json?
+  metadata            Json?
+  sortOrder           Int                   @default(0) @map("sort_order")
+  active              Boolean               @default(true)
+  createdAt           DateTime              @default(now()) @map("created_at")
+  updatedAt           DateTime              @default(now()) @updatedAt @map("updated_at")
+  page                Page?                 @relation(fields: [pageId], references: [id], onDelete: Cascade)
   childRelationships  ContentRelationship[] @relation("ContentChild")
+  parentRelationships ContentRelationship[] @relation("ContentParent")
 
   @@index([contentType, active])
   @@index([slug])
@@ -167,13 +147,13 @@ model PageSection {
   pageId      String?  @map("page_id") @db.Uuid
   sectionKey  String   @map("section_key") @db.VarChar(128)
   sectionType String   @default("content") @map("section_type") @db.VarChar(64)
-  title       String?  @db.Text
-  subtitle    String?  @db.Text
-  heading     String?  @db.Text
-  subheading  String?  @db.Text
-  body        String?  @db.Text
-  ctaLabel    String?  @map("cta_label") @db.Text
-  ctaHref     String?  @map("cta_href") @db.Text
+  title       String?
+  subtitle    String?
+  heading     String?
+  subheading  String?
+  body        String?
+  ctaLabel    String?  @map("cta_label")
+  ctaHref     String?  @map("cta_href")
   content     Json?
   settings    Json?
   data        Json?
@@ -181,8 +161,7 @@ model PageSection {
   active      Boolean  @default(true)
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
-
-  page Page? @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  page        Page?    @relation(fields: [pageId], references: [id], onDelete: Cascade)
 
   @@unique([pageId, sectionKey])
   @@index([pageId, sectionKey])
@@ -213,13 +192,12 @@ model RouteSection {
   sectionKey      String   @map("section_key") @db.VarChar(128)
   sectionType     String   @default("content") @map("section_type") @db.VarChar(64)
   expectedContent Json?    @map("expected_content")
-  notes           String?  @db.Text
+  notes           String?
   sortOrder       Int      @default(0) @map("sort_order")
   active          Boolean  @default(true)
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @default(now()) @updatedAt @map("updated_at")
-
-  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  page            Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
 
   @@unique([pageId, sectionKey])
   @@index([pageId])
@@ -228,15 +206,14 @@ model RouteSection {
 }
 
 model ContentRelationship {
-  id               String   @id @default(uuid()) @db.Uuid
-  parentId         String   @map("parent_id") @db.Uuid
-  childId          String   @map("child_id") @db.Uuid
-  relationshipType String   @map("relationship_type") @db.VarChar(128)
-  sortOrder        Int      @default(0) @map("sort_order")
-  createdAt        DateTime @default(now()) @map("created_at")
-
-  parent ContentItem @relation("ContentParent", fields: [parentId], references: [id], onDelete: Cascade)
-  child  ContentItem @relation("ContentChild", fields: [childId], references: [id], onDelete: Cascade)
+  id               String      @id @default(uuid()) @db.Uuid
+  parentId         String      @map("parent_id") @db.Uuid
+  childId          String      @map("child_id") @db.Uuid
+  relationshipType String      @map("relationship_type") @db.VarChar(128)
+  sortOrder        Int         @default(0) @map("sort_order")
+  createdAt        DateTime    @default(now()) @map("created_at")
+  child            ContentItem @relation("ContentChild", fields: [childId], references: [id], onDelete: Cascade)
+  parent           ContentItem @relation("ContentParent", fields: [parentId], references: [id], onDelete: Cascade)
 
   @@unique([parentId, childId, relationshipType])
   @@map("content_relationships")
@@ -245,12 +222,12 @@ model ContentRelationship {
 
 model MediaAsset {
   id           String   @id @default(uuid()) @db.Uuid
-  filename     String   @db.Text
-  originalName String   @map("original_name") @db.Text
-  url          String   @db.Text
-  altText      String?  @map("alt_text") @db.Text
-  caption      String?  @db.Text
-  mimeType     String   @map("mime_type") @db.Text
+  filename     String
+  originalName String   @map("original_name")
+  url          String
+  altText      String?  @map("alt_text")
+  caption      String?
+  mimeType     String   @map("mime_type")
   sizeBytes    Int?     @map("size_bytes")
   dimensions   Json?
   metadata     Json?
@@ -262,9 +239,9 @@ model MediaAsset {
 
 model Faq {
   id        String   @id @default(uuid()) @db.Uuid
-  category  String?  @db.Text
-  question  String?  @db.Text
-  answer    String?  @db.Text
+  category  String?
+  question  String?
+  answer    String?
   sortOrder Int      @default(0) @map("sort_order")
   active    Boolean  @default(true)
   createdAt DateTime @default(now()) @map("created_at")
@@ -275,11 +252,11 @@ model Faq {
 
 model TeamMember {
   id        String   @id @default(uuid()) @db.Uuid
-  name      String?  @db.Text
-  role      String?  @db.Text
-  title     String?  @db.Text
-  imageUrl  String?  @map("image_url") @db.Text
-  bio       String?  @db.Text
+  name      String?
+  role      String?
+  title     String?
+  imageUrl  String?  @map("image_url")
+  bio       String?
   expertise Json?
   sortOrder Int      @default(0) @map("sort_order")
   active    Boolean  @default(true)
@@ -291,8 +268,8 @@ model TeamMember {
 
 model AboutStat {
   id        String   @id @default(uuid()) @db.Uuid
-  number    String?  @db.Text
-  label     String?  @db.Text
+  number    String?
+  label     String?
   sortOrder Int      @default(0) @map("sort_order")
   active    Boolean  @default(true)
   createdAt DateTime @default(now()) @map("created_at")
@@ -303,9 +280,9 @@ model AboutStat {
 
 model CoreValue {
   id          String   @id @default(uuid()) @db.Uuid
-  icon        String?  @db.Text
-  title       String?  @db.Text
-  description String?  @db.Text
+  icon        String?
+  title       String?
+  description String?
   sortOrder   Int      @default(0) @map("sort_order")
   active      Boolean  @default(true)
   createdAt   DateTime @default(now()) @map("created_at")
@@ -315,16 +292,16 @@ model CoreValue {
 }
 
 model LessonModule {
-  id                 String   @id @default(uuid()) @db.Uuid
-  name               String?  @db.Text
-  colorToken         String?  @map("color_token") @db.Text
-  recommendedStudents String? @map("recommended_students") @db.Text
-  description        String?  @db.Text
-  lessonsSummary     String?  @map("lessons_summary") @db.Text
-  durationSummary    String?  @map("duration_summary") @db.Text
-  sortOrder          Int      @default(0) @map("sort_order")
-  active             Boolean  @default(true)
-  createdAt          DateTime @default(now()) @map("created_at")
+  id                  String   @id @default(uuid()) @db.Uuid
+  name                String?
+  colorToken          String?  @map("color_token")
+  recommendedStudents String?  @map("recommended_students")
+  description         String?
+  lessonsSummary      String?  @map("lessons_summary")
+  durationSummary     String?  @map("duration_summary")
+  sortOrder           Int      @default(0) @map("sort_order")
+  active              Boolean  @default(true)
+  createdAt           DateTime @default(now()) @map("created_at")
 
   @@map("lesson_modules")
   @@schema("shared")
@@ -332,8 +309,8 @@ model LessonModule {
 
 model TeacherBenefit {
   id          String   @id @default(uuid()) @db.Uuid
-  title       String?  @db.Text
-  description String?  @db.Text
+  title       String?
+  description String?
   sortOrder   Int      @default(0) @map("sort_order")
   active      Boolean  @default(true)
   createdAt   DateTime @default(now()) @map("created_at")
@@ -344,9 +321,9 @@ model TeacherBenefit {
 
 model Testimonial {
   id         String   @id @default(uuid()) @db.Uuid
-  quote      String?  @db.Text
-  authorName String?  @map("author_name") @db.Text
-  authorRole String?  @map("author_role") @db.Text
+  quote      String?
+  authorName String?  @map("author_name")
+  authorRole String?  @map("author_role")
   sortOrder  Int      @default(0) @map("sort_order")
   active     Boolean  @default(true)
   createdAt  DateTime @default(now()) @map("created_at")
@@ -376,15 +353,15 @@ model StudentUserMapping {
 model Student {
   id               Int      @id @default(autoincrement())
   fullName         String   @map("full_name")
-  email            String?  @db.Text
+  email            String?
   level            String
   unitId           String   @map("unit_id")
-  nativeLanguage   String?  @map("native_language") @db.Text
-  guardianName     String?  @map("guardian_name") @db.Text
-  guardianContact  String?  @map("guardian_contact") @db.Text
+  nativeLanguage   String?  @map("native_language")
+  guardianName     String?  @map("guardian_name")
+  guardianContact  String?  @map("guardian_contact")
   attendanceRate   Float?   @map("attendance_rate")
-  performanceLevel String?  @map("performance_level") @db.Text
-  notes            String?  @db.Text
+  performanceLevel String?  @map("performance_level")
+  notes            String?
   createdAt        DateTime @default(now()) @map("created_at")
   updatedAt        DateTime @updatedAt @map("updated_at")
 
@@ -393,19 +370,18 @@ model Student {
 }
 
 model Lesson {
-  id         Int      @id @default(autoincrement())
-  title      String
-  subject    String
-  description String? @db.Text
-  classId    String   @map("class_id")
-  date       DateTime
-  startTime  String   @map("start_time")
-  endTime    String   @map("end_time")
-  location   String?  @db.Text
-  status     String?  @db.VarChar(64)
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
-
+  id              Int              @id @default(autoincrement())
+  title           String
+  subject         String
+  description     String?
+  classId         String           @map("class_id")
+  date            DateTime
+  startTime       String           @map("start_time")
+  endTime         String           @map("end_time")
+  location        String?
+  status          String?          @db.VarChar(64)
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
   lessonMaterials LessonMaterial[]
 
   @@map("lessons")
@@ -417,8 +393,8 @@ model Curriculum {
   title       String
   subject     String
   level       String
-  description String?  @db.Text
-  objectives  String?  @db.Text
+  description String?
+  objectives  String?
   units       Json?
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
@@ -430,11 +406,11 @@ model Curriculum {
 model Event {
   id          Int      @id @default(autoincrement())
   title       String
-  description String?  @db.Text
+  description String?
   date        DateTime
   startTime   String   @map("start_time")
   endTime     String   @map("end_time")
-  location    String?  @db.Text
+  location    String?
   type        String?  @db.VarChar(64)
   createdAt   DateTime @default(now()) @map("created_at")
 
@@ -446,7 +422,7 @@ model Message {
   id         Int      @id @default(autoincrement())
   senderId   Int      @map("sender_id")
   receiverId Int      @map("receiver_id")
-  content    String   @db.Text
+  content    String
   isRead     Boolean  @default(false) @map("is_read")
   createdAt  DateTime @default(now()) @map("created_at")
 
@@ -457,7 +433,7 @@ model Message {
 model Announcement {
   id        Int      @id @default(autoincrement())
   title     String
-  content   String   @db.Text
+  content   String
   priority  String?  @db.VarChar(64)
   createdBy Int      @map("created_by")
   createdAt DateTime @default(now()) @map("created_at")
@@ -467,29 +443,28 @@ model Announcement {
 }
 
 model Task {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   title     String
-  completed Boolean  @default(false)
+  completed Boolean   @default(false)
   dueDate   DateTime? @map("due_date")
-  userId    Int      @map("user_id")
-  createdAt DateTime @default(now()) @map("created_at")
+  userId    Int       @map("user_id")
+  createdAt DateTime  @default(now()) @map("created_at")
 
   @@map("tasks")
   @@schema("teachers")
 }
 
 model Material {
-  id        Int      @id @default(autoincrement())
-  title     String
-  description String? @db.Text
-  category  String
-  url       String   @db.Text
-  kind      String   @default("other") @db.VarChar(64)
-  mimeType  String?  @map("mime_type") @db.Text
-  sizeBytes Int?     @map("size_bytes")
-  createdBy Int      @map("created_by")
-  createdAt DateTime @default(now()) @map("created_at")
-
+  id              Int              @id @default(autoincrement())
+  title           String
+  description     String?
+  category        String
+  url             String
+  createdBy       Int              @map("created_by")
+  createdAt       DateTime         @default(now()) @map("created_at")
+  kind            String           @default("other") @db.VarChar(64)
+  mimeType        String?          @map("mime_type")
+  sizeBytes       Int?             @map("size_bytes")
   lessonMaterials LessonMaterial[]
 
   @@map("materials")
@@ -499,11 +474,11 @@ model Material {
 model Bookmark {
   id        Int      @id @default(autoincrement())
   title     String
-  url       String   @db.Text
+  url       String
   category  String?  @db.VarChar(128)
-  starred   Boolean  @default(false)
   userId    Int      @map("user_id")
   createdAt DateTime @default(now()) @map("created_at")
+  starred   Boolean  @default(false)
 
   @@map("bookmarks")
   @@schema("teachers")
@@ -514,58 +489,47 @@ model LessonMaterial {
   lessonId   Int      @map("lesson_id")
   materialId Int      @map("material_id")
   createdAt  DateTime @default(now()) @map("created_at")
-
-  lesson   Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-  material Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  lesson     Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  material   Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
 
   @@unique([lessonId, materialId])
   @@map("lesson_materials")
   @@schema("teachers")
 }
 
-enum CurriculumLevelStatus {
-  draft
-  published
-  archived
-
-  @@schema("curriculum")
-}
-
 model CurriculumManager {
-  id        String   @id @default(uuid()) @db.Uuid
-  email     String   @unique @db.Text
-  name      String   @db.Text
-  passwordHash String @map("password_hash") @db.Text
-  isActive  Boolean  @default(true) @map("is_active")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
-
-  invitesSent CurriculumInvite[] @relation("CurriculumInviteSentBy")
-  invitesAccepted CurriculumInvite[] @relation("CurriculumInviteAcceptedBy")
-  programs CurriculumProgram[]
-  levelsCreated CurriculumLevel[] @relation("CurriculumLevelCreatedBy")
-  levelsUpdated CurriculumLevel[] @relation("CurriculumLevelUpdatedBy")
-  unitsCreated CurriculumUnit[] @relation("CurriculumUnitCreatedBy")
-  unitsUpdated CurriculumUnit[] @relation("CurriculumUnitUpdatedBy")
+  id                 String                      @id @default(uuid()) @db.Uuid
+  email              String                      @unique
+  name               String
+  passwordHash       String                      @map("password_hash")
+  isActive           Boolean                     @default(true) @map("is_active")
+  createdAt          DateTime                    @default(now()) @map("created_at")
+  updatedAt          DateTime                    @default(now()) @updatedAt @map("updated_at")
+  invitesAccepted    CurriculumInvite[]          @relation("CurriculumInviteAcceptedBy")
+  invitesSent        CurriculumInvite[]          @relation("CurriculumInviteSentBy")
+  levelsCreated      CurriculumLevel[]           @relation("CurriculumLevelCreatedBy")
+  levelsUpdated      CurriculumLevel[]           @relation("CurriculumLevelUpdatedBy")
+  programs           CurriculumProgram[]
   snapshotsPublished CurriculumPublishSnapshot[]
+  unitsCreated       CurriculumUnit[]            @relation("CurriculumUnitCreatedBy")
+  unitsUpdated       CurriculumUnit[]            @relation("CurriculumUnitUpdatedBy")
 
   @@map("managers")
   @@schema("curriculum")
 }
 
 model CurriculumInvite {
-  id                  String   @id @default(uuid()) @db.Uuid
-  email               String   @unique @db.Text
-  invitedByManagerId  String?  @map("invited_by_manager_id") @db.Uuid
-  acceptedByManagerId String?  @map("accepted_by_manager_id") @db.Uuid
-  expiresAt           DateTime? @map("expires_at")
-  acceptedAt          DateTime? @map("accepted_at")
-  revokedAt           DateTime? @map("revoked_at")
-  createdAt           DateTime  @default(now()) @map("created_at")
-  updatedAt           DateTime  @default(now()) @updatedAt @map("updated_at")
-
-  invitedByManager CurriculumManager? @relation("CurriculumInviteSentBy", fields: [invitedByManagerId], references: [id], onDelete: SetNull)
-  acceptedByManager CurriculumManager? @relation("CurriculumInviteAcceptedBy", fields: [acceptedByManagerId], references: [id], onDelete: SetNull)
+  id                  String             @id @default(uuid()) @db.Uuid
+  email               String             @unique
+  invitedByManagerId  String?            @map("invited_by_manager_id") @db.Uuid
+  acceptedByManagerId String?            @map("accepted_by_manager_id") @db.Uuid
+  expiresAt           DateTime?          @map("expires_at")
+  acceptedAt          DateTime?          @map("accepted_at")
+  revokedAt           DateTime?          @map("revoked_at")
+  createdAt           DateTime           @default(now()) @map("created_at")
+  updatedAt           DateTime           @default(now()) @updatedAt @map("updated_at")
+  acceptedByManager   CurriculumManager? @relation("CurriculumInviteAcceptedBy", fields: [acceptedByManagerId], references: [id])
+  invitedByManager    CurriculumManager? @relation("CurriculumInviteSentBy", fields: [invitedByManagerId], references: [id])
 
   @@index([acceptedAt, revokedAt])
   @@map("invites")
@@ -573,17 +537,16 @@ model CurriculumInvite {
 }
 
 model CurriculumProgram {
-  id                 Int      @id @default(autoincrement())
-  slug               String   @unique @db.VarChar(180)
-  title              String   @db.Text
-  description        String?  @db.Text
-  isArchived         Boolean  @default(false) @map("is_archived")
-  createdByManagerId String   @map("created_by_manager_id") @db.Uuid
-  createdAt          DateTime @default(now()) @map("created_at")
-  updatedAt          DateTime @default(now()) @updatedAt @map("updated_at")
-
-  createdByManager CurriculumManager @relation(fields: [createdByManagerId], references: [id], onDelete: Restrict)
-  levels CurriculumLevel[]
+  id                 Int               @id @default(autoincrement())
+  slug               String            @unique @db.VarChar(180)
+  title              String
+  description        String?
+  isArchived         Boolean           @default(false) @map("is_archived")
+  createdByManagerId String            @map("created_by_manager_id") @db.Uuid
+  createdAt          DateTime          @default(now()) @map("created_at")
+  updatedAt          DateTime          @default(now()) @updatedAt @map("updated_at")
+  levels             CurriculumLevel[]
+  createdByManager   CurriculumManager @relation(fields: [createdByManagerId], references: [id])
 
   @@index([isArchived, updatedAt])
   @@map("programs")
@@ -591,23 +554,22 @@ model CurriculumProgram {
 }
 
 model CurriculumLevel {
-  id                 Int      @id @default(autoincrement())
-  programId          Int      @map("program_id")
-  slug               String   @db.VarChar(180)
-  title              String   @db.Text
-  orderIndex         Int      @default(0) @map("order_index")
-  status             CurriculumLevelStatus @default(draft)
-  lastPublishedAt    DateTime? @map("last_published_at")
-  createdByManagerId String   @map("created_by_manager_id") @db.Uuid
-  updatedByManagerId String?  @map("updated_by_manager_id") @db.Uuid
-  createdAt          DateTime @default(now()) @map("created_at")
-  updatedAt          DateTime @default(now()) @updatedAt @map("updated_at")
-
-  program CurriculumProgram @relation(fields: [programId], references: [id], onDelete: Cascade)
-  createdByManager CurriculumManager @relation("CurriculumLevelCreatedBy", fields: [createdByManagerId], references: [id], onDelete: Restrict)
-  updatedByManager CurriculumManager? @relation("CurriculumLevelUpdatedBy", fields: [updatedByManagerId], references: [id], onDelete: SetNull)
-  units CurriculumUnit[]
-  snapshots CurriculumPublishSnapshot[]
+  id                 Int                         @id @default(autoincrement())
+  programId          Int                         @map("program_id")
+  slug               String                      @db.VarChar(180)
+  title              String
+  orderIndex         Int                         @default(0) @map("order_index")
+  lastPublishedAt    DateTime?                   @map("last_published_at")
+  createdByManagerId String                      @map("created_by_manager_id") @db.Uuid
+  updatedByManagerId String?                     @map("updated_by_manager_id") @db.Uuid
+  createdAt          DateTime                    @default(now()) @map("created_at")
+  updatedAt          DateTime                    @default(now()) @updatedAt @map("updated_at")
+  status             CurriculumLevelStatus       @default(draft)
+  createdByManager   CurriculumManager           @relation("CurriculumLevelCreatedBy", fields: [createdByManagerId], references: [id])
+  program            CurriculumProgram           @relation(fields: [programId], references: [id], onDelete: Cascade)
+  updatedByManager   CurriculumManager?          @relation("CurriculumLevelUpdatedBy", fields: [updatedByManagerId], references: [id])
+  snapshots          CurriculumPublishSnapshot[]
+  units              CurriculumUnit[]
 
   @@unique([programId, slug])
   @@index([programId, orderIndex])
@@ -617,26 +579,25 @@ model CurriculumLevel {
 }
 
 model CurriculumUnit {
-  id                 Int      @id @default(autoincrement())
-  levelId            Int      @map("level_id")
-  slug               String   @db.VarChar(220)
-  title              String   @db.Text
-  summary            String?  @db.Text
-  storyMarkdown      String   @default("") @map("story_markdown") @db.Text
-  mediaManifest      Json?    @map("media_manifest")
-  assignmentConfig   Json?    @map("assignment_config")
-  estimatedMinutes   Int?     @map("estimated_minutes")
-  orderIndex         Int      @default(0) @map("order_index")
-  isArchived         Boolean  @default(false) @map("is_archived")
-  createdByManagerId String   @map("created_by_manager_id") @db.Uuid
-  updatedByManagerId String?  @map("updated_by_manager_id") @db.Uuid
-  createdAt          DateTime @default(now()) @map("created_at")
-  updatedAt          DateTime @default(now()) @updatedAt @map("updated_at")
-
-  level CurriculumLevel @relation(fields: [levelId], references: [id], onDelete: Cascade)
-  createdByManager CurriculumManager @relation("CurriculumUnitCreatedBy", fields: [createdByManagerId], references: [id], onDelete: Restrict)
-  updatedByManager CurriculumManager? @relation("CurriculumUnitUpdatedBy", fields: [updatedByManagerId], references: [id], onDelete: SetNull)
-  snapshotUnits CurriculumPublishSnapshotUnit[]
+  id                 Int                             @id @default(autoincrement())
+  levelId            Int                             @map("level_id")
+  slug               String                          @db.VarChar(220)
+  title              String
+  summary            String?
+  storyMarkdown      String                          @default("") @map("story_markdown")
+  mediaManifest      Json?                           @map("media_manifest")
+  assignmentConfig   Json?                           @map("assignment_config")
+  estimatedMinutes   Int?                            @map("estimated_minutes")
+  orderIndex         Int                             @default(0) @map("order_index")
+  isArchived         Boolean                         @default(false) @map("is_archived")
+  createdByManagerId String                          @map("created_by_manager_id") @db.Uuid
+  updatedByManagerId String?                         @map("updated_by_manager_id") @db.Uuid
+  createdAt          DateTime                        @default(now()) @map("created_at")
+  updatedAt          DateTime                        @default(now()) @updatedAt @map("updated_at")
+  snapshotUnits      CurriculumPublishSnapshotUnit[]
+  createdByManager   CurriculumManager               @relation("CurriculumUnitCreatedBy", fields: [createdByManagerId], references: [id])
+  level              CurriculumLevel                 @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  updatedByManager   CurriculumManager?              @relation("CurriculumUnitUpdatedBy", fields: [updatedByManagerId], references: [id])
 
   @@unique([levelId, slug])
   @@index([levelId, orderIndex])
@@ -646,18 +607,17 @@ model CurriculumUnit {
 }
 
 model CurriculumPublishSnapshot {
-  id                   String   @id @default(uuid()) @db.Uuid
-  levelId              Int      @map("level_id")
+  id                   String                          @id @default(uuid()) @db.Uuid
+  levelId              Int                             @map("level_id")
   version              Int
-  isCurrent            Boolean  @default(false) @map("is_current")
-  publishedAt          DateTime @map("published_at")
-  publishedByManagerId String   @map("published_by_manager_id") @db.Uuid
-  snapshotPayload      Json?    @map("snapshot_payload")
-  createdAt            DateTime @default(now()) @map("created_at")
-
-  level CurriculumLevel @relation(fields: [levelId], references: [id], onDelete: Cascade)
-  publishedByManager CurriculumManager @relation(fields: [publishedByManagerId], references: [id], onDelete: Restrict)
-  units CurriculumPublishSnapshotUnit[]
+  isCurrent            Boolean                         @default(false) @map("is_current")
+  publishedAt          DateTime                        @map("published_at")
+  publishedByManagerId String                          @map("published_by_manager_id") @db.Uuid
+  snapshotPayload      Json?                           @map("snapshot_payload")
+  createdAt            DateTime                        @default(now()) @map("created_at")
+  units                CurriculumPublishSnapshotUnit[]
+  level                CurriculumLevel                 @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  publishedByManager   CurriculumManager               @relation(fields: [publishedByManagerId], references: [id])
 
   @@unique([levelId, version])
   @@index([levelId, isCurrent])
@@ -666,24 +626,45 @@ model CurriculumPublishSnapshot {
 }
 
 model CurriculumPublishSnapshotUnit {
-  id               Int      @id @default(autoincrement())
-  snapshotId       String   @map("snapshot_id") @db.Uuid
-  sourceUnitId     Int      @map("source_unit_id")
-  orderIndex       Int      @map("order_index")
-  slug             String   @db.VarChar(220)
-  title            String   @db.Text
-  summary          String?  @db.Text
-  storyMarkdown    String   @map("story_markdown") @db.Text
-  estimatedMinutes Int?     @map("estimated_minutes")
-  mediaManifest    Json?    @map("media_manifest")
-  assignmentConfig Json?    @map("assignment_config")
-  createdAt        DateTime @default(now()) @map("created_at")
-
-  snapshot CurriculumPublishSnapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
-  sourceUnit CurriculumUnit @relation(fields: [sourceUnitId], references: [id], onDelete: Restrict)
+  id               Int                       @id @default(autoincrement())
+  snapshotId       String                    @map("snapshot_id") @db.Uuid
+  sourceUnitId     Int                       @map("source_unit_id")
+  orderIndex       Int                       @map("order_index")
+  slug             String                    @db.VarChar(220)
+  title            String
+  summary          String?
+  storyMarkdown    String                    @map("story_markdown")
+  estimatedMinutes Int?                      @map("estimated_minutes")
+  mediaManifest    Json?                     @map("media_manifest")
+  assignmentConfig Json?                     @map("assignment_config")
+  createdAt        DateTime                  @default(now()) @map("created_at")
+  snapshot         CurriculumPublishSnapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+  sourceUnit       CurriculumUnit            @relation(fields: [sourceUnitId], references: [id])
 
   @@unique([snapshotId, sourceUnitId])
   @@index([snapshotId, orderIndex])
   @@map("publish_snapshot_units")
+  @@schema("curriculum")
+}
+
+enum UserRole {
+  student
+  teacher
+
+  @@schema("auth")
+}
+
+enum SubscriptionTier {
+  free
+  premium
+
+  @@schema("auth")
+}
+
+enum CurriculumLevelStatus {
+  draft
+  published
+  archived
+
   @@schema("curriculum")
 }

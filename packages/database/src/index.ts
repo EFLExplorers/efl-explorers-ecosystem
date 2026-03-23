@@ -17,8 +17,10 @@ if (envPath) {
 const databaseUrl = process.env.DATABASE_URL;
 const directUrl = process.env.DIRECT_URL;
 
+/** Accelerate URLs from the dashboard may be `prisma://` or `prisma+postgres://`. */
 const isPrismaAccelerateUrl = (url?: string) =>
-  typeof url === "string" && url.startsWith("prisma://");
+  typeof url === "string" &&
+  (url.startsWith("prisma://") || url.startsWith("prisma+postgres://"));
 
 const isPostgresUrl = (url?: string) => /^postgres(ql)?:/i.test(url ?? "");
 
@@ -130,7 +132,7 @@ const createPrismaClient = () => {
    * multiplex many app connections onto fewer server sessions. Reserve `DIRECT_URL` for migrations and
    * scripts that need a non-pooled session (see Prisma `directUrl`).
    *
-   * **Prisma Accelerate** (`prisma://…` on `DATABASE_URL`) must be checked before falling back to
+   * **Prisma Accelerate** (`prisma://…` or `prisma+postgres://…` on `DATABASE_URL`) must be checked before falling back to
    * `DIRECT_URL` — otherwise a paired `DIRECT_URL=postgresql://…` would incorrectly steal runtime traffic.
    */
   if (databaseUrl && isPrismaAccelerateUrl(databaseUrl)) {

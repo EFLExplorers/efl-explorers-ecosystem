@@ -8,21 +8,35 @@ import type {
 const isBlank = (value: string | undefined): boolean =>
   value === undefined || value.trim().length === 0;
 
-const looksLikePostgresOrAccelerate = (value: string): boolean => {
+const looksLikeAccelerateUrl = (value: string): boolean => {
   const v = value.trim();
-  if (/^prisma:\/\//i.test(v)) {
-    return true;
-  }
-  return /^postgres(ql)?:\/\//i.test(v);
+  return /^prisma(\+postgres)?:\/\//i.test(v);
 };
 
-const classifyConnectionString = (
-  raw: string | undefined,
-): DeploymentEnvVarStatus => {
+const looksLikePostgresUrl = (value: string): boolean =>
+  /^postgres(ql)?:\/\//i.test(value.trim());
+
+/** Valid shapes for DATABASE_URL in this monorepo. */
+const looksLikeDatabaseRuntimeUrl = (value: string): boolean =>
+  looksLikeAccelerateUrl(value) || looksLikePostgresUrl(value);
+
+const classifyDatabaseUrl = (raw: string | undefined): DeploymentEnvVarStatus => {
   if (isBlank(raw)) {
     return "missing";
   }
-  return looksLikePostgresOrAccelerate(raw!) ? "ok" : "suspicious";
+  return looksLikeDatabaseRuntimeUrl(raw!) ? "ok" : "suspicious";
+};
+
+/** DIRECT_URL must be plain Postgres (migrations, raw SQL, schema introspection when using Accelerate). */
+const classifyDirectUrl = (raw: string | undefined): DeploymentEnvVarStatus => {
+  if (isBlank(raw)) {
+    return "missing";
+  }
+  const v = raw!.trim();
+  if (looksLikeAccelerateUrl(v)) {
+    return "suspicious";
+  }
+  return looksLikePostgresUrl(v) ? "ok" : "suspicious";
 };
 
 const classifyPoolMax = (raw: string | undefined): DeploymentEnvVarStatus => {
@@ -55,19 +69,19 @@ const hasViableDatabaseConfig = (
   const dbOk =
     databaseUrlStatus === "ok" &&
     !isBlank(databaseUrlRaw) &&
-    looksLikePostgresOrAccelerate(databaseUrlRaw!);
+    looksLikeDatabaseRuntimeUrl(databaseUrlRaw!);
   const directOk =
     directUrlStatus === "ok" &&
     !isBlank(directUrlRaw) &&
-    /^postgres(ql)?:\/\//i.test(directUrlRaw!.trim());
+    looksLikePostgresUrl(directUrlRaw!);
   return dbOk || directOk;
 };
 
 export const getCriticalEnvIssues = (): string[] => {
   const databaseUrl = process.env.DATABASE_URL;
   const directUrl = process.env.DIRECT_URL;
-  const du = classifyConnectionString(databaseUrl);
-  const dr = classifyConnectionString(directUrl);
+  const du = classifyDatabaseUrl(databaseUrl);
+  const dr = classifyDirectUrl(directUrl);
 
   if (!hasViableDatabaseConfig(du, dr, databaseUrl, directUrl)) {
     return [
@@ -76,7 +90,12 @@ export const getCriticalEnvIssues = (): string[] => {
   }
   if (du === "suspicious" && dr !== "ok") {
     return [
-      "DATABASE_URL is set but does not look like postgres:// or prisma://, and DIRECT_URL is not a usable Postgres URL. See /deployment.",
+      "DATABASE_URL is set but does not look like postgres://, prisma://, or prisma+postgres://, and DIRECT_URL is not a usable Postgres URL. See /deployment.",
+    ];
+  }
+  if (dr === "suspicious" && !isBlank(directUrl) && looksLikeAccelerateUrl(directUrl!)) {
+    return [
+      "DIRECT_URL looks like Prisma Accelerate — put that string in DATABASE_URL instead; DIRECT_URL must be postgresql:// to your PlanetScale Postgres database.",
     ];
   }
   return [];
@@ -87,8 +106,8 @@ export const getDeploymentEnvReport = (): DeploymentEnvReport => {
   const directUrl = process.env.DIRECT_URL;
   const poolMax = process.env.DATABASE_POOL_MAX;
 
-  const du = classifyConnectionString(databaseUrl);
-  const dr = classifyConnectionString(directUrl);
+  const du = classifyDatabaseUrl(databaseUrl);
+  const dr = classifyDirectUrl(directUrl);
   const pm = classifyPoolMax(poolMax);
 
   const directOkEnough =
@@ -97,7 +116,9 @@ export const getDeploymentEnvReport = (): DeploymentEnvReport => {
   const directDisplayStatus: DeploymentEnvVarStatus = directOkEnough ? "ok" : dr;
   const directHint = (() => {
     if (dr === "suspicious") {
-      return "When set, expected postgresql:// or postgres:// (often used with Accelerate on DATABASE_URL).";
+      return directUrl?.trim() && looksLikeAccelerateUrl(directUrl)
+        ? "Accelerate URLs belong in DATABASE_URL, not DIRECT_URL. Use postgresql://… to PlanetScale here."
+        : "When set, expected postgresql:// or postgres:// to your database (not prisma+postgres).";
     }
     if (directOkEnough) {
       return "Not set — acceptable when DATABASE_URL already supplies runtime (Postgres or Accelerate).";
@@ -115,11 +136,11 @@ export const getDeploymentEnvReport = (): DeploymentEnvReport => {
       status: du,
       hint:
         du === "suspicious"
-          ? "Expected a non-empty postgres:// or postgresql:// URL, or prisma:// for Accelerate."
+          ? "Expected postgres://, prisma://, or prisma+postgres:// (Accelerate) for DATABASE_URL."
           : du === "missing" && dr === "ok"
             ? "Missing — using DIRECT_URL for runtime (per @repo/database precedence)."
             : du === "missing"
-              ? "Set a pooled or direct Postgres URL, or prisma:// for Accelerate (see @repo/database)."
+              ? "Set a pooled Postgres URL or Prisma Accelerate (prisma:// or prisma+postgres://)."
               : undefined,
     },
     {
@@ -166,7 +187,7 @@ const sanitizeProbeMessage = (error: unknown): string => {
   const msg = error.message;
   if (
     /postgres(ql)?:\/\//i.test(msg) ||
-    /prisma:\/\//i.test(msg) ||
+    /prisma(\+postgres)?:\/\//i.test(msg) ||
     /@\S+:\d+/.test(msg)
   ) {
     return "Database probe failed (details omitted for safety).";

@@ -43,7 +43,8 @@ type MetadataRows = {
 
 const tableId = (schema: string, name: string) => `${schema}.${name}`;
 
-const isAccelerateUrl = (url: string) => url.startsWith("prisma://");
+const isAccelerateUrl = (url: string) =>
+  url.startsWith("prisma://") || url.startsWith("prisma+postgres://");
 
 const isPostgresUrl = (url: string) => /^postgres(ql)?:/i.test(url);
 
@@ -121,45 +122,52 @@ const fetchMetadataViaDirectPg = async (connectionString: string): Promise<Metad
   }
 };
 
-/** Postgres URL runtime: sequential raw queries (no interactive `$transaction`). */
+/**
+ * Postgres URL runtime: one interactive transaction so all three introspection queries share
+ * a single backend connection. Sequential `$queryRaw` without a transaction can return the
+ * pool to the server between awaits under load, increasing concurrent sessions and tripping
+ * small Postgres limits (e.g. 53300 “remaining connection slots…” on shared tiers).
+ */
 const fetchMetadataViaPrisma = async (): Promise<MetadataRows> => {
-  const tables = await prisma.$queryRaw<RawTable[]>`
-    SELECT t.table_schema, t.table_name
-    FROM information_schema.tables t
-    WHERE t.table_type = 'BASE TABLE'
-      AND t.table_schema IN ('auth', 'curriculum', 'shared', 'students', 'teachers', 'public')
-      AND t.table_name NOT IN ('_prisma_migrations')
-    ORDER BY t.table_schema, t.table_name
-  `;
+  return prisma.$transaction(async (tx) => {
+    const tables = await tx.$queryRaw<RawTable[]>`
+      SELECT t.table_schema, t.table_name
+      FROM information_schema.tables t
+      WHERE t.table_type = 'BASE TABLE'
+        AND t.table_schema IN ('auth', 'curriculum', 'shared', 'students', 'teachers', 'public')
+        AND t.table_name NOT IN ('_prisma_migrations')
+      ORDER BY t.table_schema, t.table_name
+    `;
 
-  const columns = await prisma.$queryRaw<RawColumn[]>`
-    SELECT c.table_schema, c.table_name, c.column_name, c.ordinal_position
-    FROM information_schema.columns c
-    WHERE c.table_schema IN ('auth', 'curriculum', 'shared', 'students', 'teachers', 'public')
-    ORDER BY c.table_schema, c.table_name, c.ordinal_position
-  `;
+    const columns = await tx.$queryRaw<RawColumn[]>`
+      SELECT c.table_schema, c.table_name, c.column_name, c.ordinal_position
+      FROM information_schema.columns c
+      WHERE c.table_schema IN ('auth', 'curriculum', 'shared', 'students', 'teachers', 'public')
+      ORDER BY c.table_schema, c.table_name, c.ordinal_position
+    `;
 
-  const fkRows = await prisma.$queryRaw<RawFk[]>`
-    SELECT
-      kcu.table_schema AS from_schema,
-      kcu.table_name AS from_table,
-      kcu.column_name AS from_column,
-      ccu.table_schema AS to_schema,
-      ccu.table_name AS to_table,
-      ccu.column_name AS to_column,
-      tc.constraint_name AS constraint_name
-    FROM information_schema.table_constraints tc
-    JOIN information_schema.key_column_usage kcu
-      ON tc.constraint_schema = kcu.constraint_schema
-      AND tc.constraint_name = kcu.constraint_name
-    JOIN information_schema.constraint_column_usage ccu
-      ON ccu.constraint_schema = tc.constraint_schema
-      AND ccu.constraint_name = tc.constraint_name
-    WHERE tc.constraint_type = 'FOREIGN KEY'
-      AND tc.table_schema IN ('auth', 'curriculum', 'shared', 'students', 'teachers', 'public')
-  `;
+    const fkRows = await tx.$queryRaw<RawFk[]>`
+      SELECT
+        kcu.table_schema AS from_schema,
+        kcu.table_name AS from_table,
+        kcu.column_name AS from_column,
+        ccu.table_schema AS to_schema,
+        ccu.table_name AS to_table,
+        ccu.column_name AS to_column,
+        tc.constraint_name AS constraint_name
+      FROM information_schema.table_constraints tc
+      JOIN information_schema.key_column_usage kcu
+        ON tc.constraint_schema = kcu.constraint_schema
+        AND tc.constraint_name = kcu.constraint_name
+      JOIN information_schema.constraint_column_usage ccu
+        ON ccu.constraint_schema = tc.constraint_schema
+        AND ccu.constraint_name = tc.constraint_name
+      WHERE tc.constraint_type = 'FOREIGN KEY'
+        AND tc.table_schema IN ('auth', 'curriculum', 'shared', 'students', 'teachers', 'public')
+    `;
 
-  return { tables, columns, fkRows };
+    return { tables, columns, fkRows };
+  });
 };
 
 const buildGraph = ({ tables, columns, fkRows }: MetadataRows): SchemaGraphData => {

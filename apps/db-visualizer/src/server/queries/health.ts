@@ -1,4 +1,5 @@
 import { prisma } from "@repo/database";
+import type { Prisma } from "@repo/database";
 
 import type { SchemaHealthCheck, SchemaHealthData } from "@/types/db-visualizer";
 
@@ -13,7 +14,7 @@ const runCheck = async (
   id: string,
   schema: SchemaHealthCheck["schema"],
   table: string,
-  action: () => Promise<unknown>
+  action: () => Promise<unknown>,
 ): Promise<SchemaHealthCheck> => {
   try {
     await action();
@@ -35,37 +36,41 @@ const runCheck = async (
   }
 };
 
+type HealthTx = Prisma.TransactionClient;
+
 export const getSchemaHealthData = async (): Promise<SchemaHealthData> => {
-  /* Sequential: avoids N concurrent checkouts against a tiny pool (53300 on shared Postgres). */
-  const checks = [
-    await runCheck("shared-page", "shared", "pages", () =>
-      prisma.page.findFirst({ select: { id: true } })
-    ),
-    await runCheck("auth-user", "auth", "users", () =>
-      prisma.user.findFirst({ select: { id: true } })
-    ),
-    await runCheck("students-mapping", "students", "student_user_mappings", () =>
-      prisma.studentUserMapping.findFirst({ select: { id: true } })
-    ),
-    await runCheck("teachers-student", "teachers", "students", () =>
-      prisma.student.findFirst({ select: { id: true } })
-    ),
-    await runCheck("curriculum-level", "curriculum", "levels", () =>
-      prisma.curriculumLevel.findFirst({ select: { id: true } })
-    ),
-  ];
+  /* One transaction = one backend session for all checks (reduces 53300 pressure on tiny pools). */
+  return prisma.$transaction(async (tx: HealthTx) => {
+    const checks = [
+      await runCheck("shared-page", "shared", "pages", () =>
+        tx.page.findFirst({ select: { id: true } }),
+      ),
+      await runCheck("auth-user", "auth", "users", () =>
+        tx.user.findFirst({ select: { id: true } }),
+      ),
+      await runCheck("students-mapping", "students", "student_user_mappings", () =>
+        tx.studentUserMapping.findFirst({ select: { id: true } }),
+      ),
+      await runCheck("teachers-student", "teachers", "students", () =>
+        tx.student.findFirst({ select: { id: true } }),
+      ),
+      await runCheck("curriculum-level", "curriculum", "levels", () =>
+        tx.curriculumLevel.findFirst({ select: { id: true } }),
+      ),
+    ];
 
-  const summary = checks.reduce(
-    (accumulator, check) => {
-      if (check.status === "ok") {
-        accumulator.ok += 1;
-      } else {
-        accumulator.error += 1;
-      }
-      return accumulator;
-    },
-    { ok: 0, error: 0 }
-  );
+    const summary = checks.reduce(
+      (accumulator, check) => {
+        if (check.status === "ok") {
+          accumulator.ok += 1;
+        } else {
+          accumulator.error += 1;
+        }
+        return accumulator;
+      },
+      { ok: 0, error: 0 },
+    );
 
-  return { checks, summary };
+    return { checks, summary };
+  });
 };
