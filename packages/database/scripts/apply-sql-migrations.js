@@ -9,6 +9,11 @@ config({ path: path.join(__dirname, "..", ".env") });
 const dbDir = path.join(__dirname, "..", "db");
 const migrationNamePattern = /^\d{8}_[a-z0-9_]+\.sql$/i;
 
+/** When set, checksum mismatches on already-applied files UPDATE the row only (never re-run SQL). Use once after CRLF/LF or metadata drift — not if migration SQL meaningfully changed. */
+const repairChecksums =
+  process.argv.includes("--repair-checksums") ||
+  process.env.SQL_MIGRATIONS_REPAIR_CHECKSUMS === "1";
+
 const getConnectionString = () =>
   process.env.DIRECT_URL ?? process.env.DATABASE_URL ?? "";
 
@@ -93,8 +98,21 @@ const run = async () => {
       );
 
       if (existing.rowCount && existing.rows[0].checksum !== checksum) {
+        if (repairChecksums) {
+          console.warn(
+            `[repair-checksums] Updating stored hash for ${fileName} (migration SQL is not re-executed).`
+          );
+          await client.query(
+            "UPDATE public.manual_sql_migrations SET checksum = $2 WHERE name = $1",
+            [fileName, checksum]
+          );
+          await client.query("COMMIT");
+          continue;
+        }
         throw new Error(
-          `Checksum mismatch for already-applied migration ${fileName}.`
+          `Checksum mismatch for already-applied migration ${fileName}. ` +
+            `If the database already matches this file (e.g. line-ending drift), run once: ` +
+            `pnpm db:repair-sql-migration-checksums`
         );
       }
 

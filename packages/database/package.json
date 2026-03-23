@@ -8,6 +8,7 @@
     "build": "prisma generate",
     "db:seed": "prisma db seed",
     "db:apply-sql-migrations": "node ./scripts/apply-sql-migrations.js",
+    "db:repair-sql-migration-checksums": "node ./scripts/apply-sql-migrations.js --repair-checksums",
     "seed:dev-user": "node ./scripts/seed-dev-user.js",
     "seed:curriculum-manager": "node ./scripts/seed-curriculum-manager.js",
     "seed:admin": "tsx ./scripts/seed-admin.ts",

@@ -63,13 +63,14 @@ If APIs return **500** with Postgres **`53300`** or text like **“remaining con
 - Schema changes ship as **ordered SQL files** in `packages/database/db/` (e.g. `20260318_*.sql`).
 - Apply them with: `pnpm --filter @repo/database db:apply-sql-migrations` or **`pnpm db:apply-sql-migrations`** from the repo root (uses `DIRECT_URL` or `DATABASE_URL`).
 - Tracked in the DB in `public.manual_sql_migrations` (filename + checksum). **Production** should run the same script against the same migration set as `main` before or when you promote a release.
-- **Checksum mismatch** (`Checksum mismatch for already-applied migration …`): the script now **normalizes CRLF/LF** before hashing so Windows and Unix agree. Pull latest, then re-run **`pnpm db:apply-sql-migrations`**. If it still fails, the DB row was recorded under old rules or the file changed after apply: confirm the table DDL already matches the migration, then set the stored checksum to the current normalized file hash (print it from the repo root):
+- **Checksum mismatch** (`Checksum mismatch for already-applied migration …`): the script **normalizes CRLF/LF** before hashing. Re-run **`pnpm db:apply-sql-migrations`** after pulling. If a row still disagrees (e.g. DB recorded hashes before normalization), run **once** — only when you are sure the migration SQL was already applied and the file was not intentionally changed:
+  - **`pnpm db:repair-sql-migration-checksums`** — updates `public.manual_sql_migrations.checksum` to match each file on disk; **does not re-run** migration SQL.
+  - Alternative: `SQL_MIGRATIONS_REPAIR_CHECKSUMS=1 pnpm db:apply-sql-migrations` (same behavior).
+- **Manual repair** (if you prefer SQL): print a file’s normalized SHA-256 from the repo root, then `UPDATE public.manual_sql_migrations SET checksum = '<hex>' WHERE name = '<filename>';`:
 
 ```bash
 node -e "const fs=require('fs'),c=require('crypto');const n=s=>s.replace(/\r\n/g,'\n').replace(/\r/g,'\n');const s=n(fs.readFileSync('packages/database/db/20260317_add_teacher_user_mappings.sql','utf8'));console.log(c.createHash('sha256').update(s).digest('hex'));"
 ```
-
-Then run: `UPDATE public.manual_sql_migrations SET checksum = '<printed-hex>' WHERE name = '20260317_add_teacher_user_mappings.sql';`
 
 ### Prisma Client generation
 

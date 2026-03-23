@@ -70,6 +70,8 @@ pnpm db:generate
 pnpm db:apply-sql-migrations
 ```
 
+If `db:apply-sql-migrations` fails with **checksum mismatch** on migrations you know are already applied (common after line-ending fixes), run **once**: `pnpm db:repair-sql-migration-checksums` (see **`docs/operations.md`**).
+
 Generate Prisma client (same as `pnpm db:generate`):
 
 ```bash

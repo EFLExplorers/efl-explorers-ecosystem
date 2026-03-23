@@ -10,6 +10,7 @@
     "db:validate": "pnpm --filter @repo/database exec prisma validate",
     "db:generate": "pnpm --filter @repo/database exec prisma generate",
     "db:apply-sql-migrations": "pnpm --filter @repo/database db:apply-sql-migrations",
+    "db:repair-sql-migration-checksums": "pnpm --filter @repo/database db:repair-sql-migration-checksums",
     "check:teacher-runtime-integrity": "node ./scripts/check-teacher-runtime-integrity.js",
     "smoke:prod": "node ./scripts/production-smoke.mjs"
   },
