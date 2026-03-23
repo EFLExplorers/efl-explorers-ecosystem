@@ -1,0 +1,2 @@
+# Stable checksums for manual SQL migrations (apply-sql-migrations.js uses SHA256 of file body).
+packages/database/db/*.sql text eol=lf

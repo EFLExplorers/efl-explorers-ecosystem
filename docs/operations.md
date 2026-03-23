@@ -61,8 +61,15 @@ If APIs return **500** with Postgres **`53300`** or text like **“remaining con
 ### SQL migrations (not Prisma Migrate folders)
 
 - Schema changes ship as **ordered SQL files** in `packages/database/db/` (e.g. `20260318_*.sql`).
-- Apply them with: `pnpm --filter @repo/database db:apply-sql-migrations` (uses `DIRECT_URL` or `DATABASE_URL`).
+- Apply them with: `pnpm --filter @repo/database db:apply-sql-migrations` or **`pnpm db:apply-sql-migrations`** from the repo root (uses `DIRECT_URL` or `DATABASE_URL`).
 - Tracked in the DB in `public.manual_sql_migrations` (filename + checksum). **Production** should run the same script against the same migration set as `main` before or when you promote a release.
+- **Checksum mismatch** (`Checksum mismatch for already-applied migration …`): the script now **normalizes CRLF/LF** before hashing so Windows and Unix agree. Pull latest, then re-run **`pnpm db:apply-sql-migrations`**. If it still fails, the DB row was recorded under old rules or the file changed after apply: confirm the table DDL already matches the migration, then set the stored checksum to the current normalized file hash (print it from the repo root):
+
+```bash
+node -e "const fs=require('fs'),c=require('crypto');const n=s=>s.replace(/\r\n/g,'\n').replace(/\r/g,'\n');const s=n(fs.readFileSync('packages/database/db/20260317_add_teacher_user_mappings.sql','utf8'));console.log(c.createHash('sha256').update(s).digest('hex'));"
+```
+
+Then run: `UPDATE public.manual_sql_migrations SET checksum = '<printed-hex>' WHERE name = '20260317_add_teacher_user_mappings.sql';`
 
 ### Prisma Client generation
 
@@ -89,6 +96,10 @@ If APIs return **500** with Postgres **`53300`** or text like **“remaining con
 ### Sharing connection strings (e.g. with teammates or tools)
 
 - Never commit real passwords or API keys. Share **redacted** URLs (placeholders for user/password) plus **metadata**: provider name, region, `sslmode`, whether you use **direct vs pooler**, and which env var holds which URL.
+
+### Cross-app DB parity (stay on the same schema)
+
+All apps that import **`@repo/database`** expect the **same PostgreSQL database** (same schemas: `auth`, `teachers`, `students`, `curriculum`, `shared`). For **local dev**, use identical **`DATABASE_URL`** / **`DIRECT_URL`** in every copied `.env.local` (templates now use the same localhost defaults). For **Vercel**, set matching vars on **each** project: `landing-page`, `teacher-platform`, `student-platform`, `curriculum-platform`, and **`db-visualizer`** (prefer a **read-only** role there). After changing hosted URLs, redeploy each project (or push a commit) so instances pick up env.
 
 ### Production / preview checklist
 
@@ -210,4 +221,7 @@ Landing page content endpoints require an API key:
 - **`db-visualizer`:** use a **read-only** Postgres role for `DATABASE_URL` / `DIRECT_URL` in Production and Preview. See `apps/db-visualizer/.env.local.example` and [`docs/db-visualizer/scaling-and-operating-model.md`](db-visualizer/scaling-and-operating-model.md).
 - **Shared env vars (optional):** On Vercel Teams **Pro** or **Enterprise**, you can define [shared environment variables](https://vercel.com/docs/concepts/projects/environment-variables/shared-environment-variables) once and link them to multiple projects (e.g. the same `DATABASE_URL`, `DIRECT_URL`, or `CURRICULUM_API_SHARED_SECRET`). Updates propagate to every linked project. Project-level variables with the **same key** and **same environment** (Production / Preview / Development) **override** shared values—use that for app-specific secrets like `NEXTAUTH_SECRET` or `NEXTAUTH_URL`.
 - `DATABASE_URL` and `DIRECT_URL` should be present for all DB-backed apps: landing, teacher, student, and curriculum. For **PlanetScale Postgres**, use the connection strings from the PlanetScale dashboard: typically **direct** for `DIRECT_URL` and, if offered, a **pooler** URL for serverless `DATABASE_URL` (see [PostgreSQL, Prisma, and hosted DB](#postgresql-prisma-and-hosted-db-definite-behavior) above).
+- **Rotating connection strings:** After you change `DATABASE_URL` or `DIRECT_URL` in Vercel, trigger a **new deployment** (Redeploy, or push any commit) so serverless instances load the updated env; do not assume every running invocation refreshes immediately.
+- **URL encoding:** In `postgresql://user:password@host/...`, the user and password must be **percent-encoded** if they contain reserved characters (`@`, `#`, `/`, `:`, space, etc.). Dashboard “connect” forms often warn about this; a single unencoded character produces authentication failures that look like a “bad connection string.”
+- **Curriculum app auth base URL:** `NEXTAUTH_URL` must be the deployment **origin only** (`https://…` with no path — not `/login`).
 - `CURRICULUM_API_SHARED_SECRET` must match across curriculum, teacher, and student when curriculum API protection is enabled.

@@ -4,8 +4,10 @@ Monorepo for the EFL Explorers apps:
 
 - `apps/landing-page` (Next.js)
 - `apps/teacher-platform` (Next.js)
-- `packages/database` (Prisma schema + client)
 - `apps/student-platform` (Next.js)
+- `apps/curriculum-platform` (Next.js)
+- `apps/db-visualizer` (Next.js)
+- `packages/database` (Prisma schema + client)
 
 ## Documentation
 
@@ -37,7 +39,10 @@ cp apps/landing-page/.env.local.example apps/landing-page/.env.local
 cp apps/teacher-platform/.env.local.example apps/teacher-platform/.env.local
 cp apps/student-platform/.env.local.example apps/student-platform/.env.local
 cp apps/curriculum-platform/.env.local.example apps/curriculum-platform/.env.local
+cp apps/db-visualizer/.env.local.example apps/db-visualizer/.env.local
 ```
+
+Use the **same** `DATABASE_URL` / `DIRECT_URL` across apps for one shared Postgres (see **`docs/operations.md`** → *Cross-app DB parity*). For **db-visualizer** in production, prefer **read-only** credentials.
 
 ### Required values
 
@@ -57,7 +62,15 @@ Teacher platform also accepts `AUTH_SECRET` as a compatibility alias, but `NEXTA
 
 This repo uses Prisma from `packages/database`. Use **`pnpm --filter @repo/database exec prisma …`** (the `prisma` CLI is not assumed to be global).
 
-Generate Prisma client:
+From the **repo root**, shortcuts:
+
+```bash
+pnpm db:validate
+pnpm db:generate
+pnpm db:apply-sql-migrations
+```
+
+Generate Prisma client (same as `pnpm db:generate`):
 
 ```bash
 pnpm --filter @repo/database build
@@ -68,7 +81,7 @@ pnpm --filter @repo/database exec prisma generate
 Schema and migrations (after DB is reachable — see **`docs/operations.md`** for SQL migration workflow and hosted DB behavior):
 
 ```bash
-pnpm --filter @repo/database exec prisma validate
+pnpm db:validate
 # Introspection (rewrites schema — review git diff):
 # pnpm --filter @repo/database exec prisma db pull
 ```
