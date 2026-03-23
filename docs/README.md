@@ -7,7 +7,7 @@
 | **Docs that appear in the Nextra app** | `apps/docs` (`@repo/docs`), content: **`apps/docs/content/`** | **Structured and simplified** — navigation, hubs, manifests, guides people actually read in the site. Only put MDX here if it should ship in that UI. Run: `pnpm --filter @repo/docs dev`. |
 | **Chaos / dev-oriented notes** | **`docs/`** (this folder, repo root) | **Organic** — scratchpads, deep dives, logs, experiments, anything you add as you go. **Not** built by Nextra; Markdown (and whatever structure you like). Optimized for *you* and Cursor, not for the public docs sidebar. |
 
-**Deprecated:** `apps/ecosystem-docs/pages/` — orphan MDX. New site-facing content belongs in `apps/docs/content/` only (see `apps/ecosystem-docs/README.md`).
+New site-facing content belongs in `apps/docs/content/` only.
 
 ## Optional subfolders under `docs/`
 

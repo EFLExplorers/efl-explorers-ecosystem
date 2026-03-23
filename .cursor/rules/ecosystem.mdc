@@ -24,7 +24,7 @@ This section is the **authoritative** list of runtime, framework, and data-store
 
 **Explicit non-goals (do not add without updating this file):** Astro, a second meta-framework alongside Next for product or docs surfaces, or duplicate schema locations outside `@repo/database`.
 
-## Product apps (six pillars)
+## Product apps (five pillars)
 
 Folder names under `apps/`:
 
@@ -33,7 +33,6 @@ Folder names under `apps/`:
 - `student-platform` — student portal; curriculum via HTTP to curriculum app
 - `teacher-platform` — teacher operations on `teachers` schema models
 - `curriculum-platform` — curriculum authoring and public published-level API
-- `ecosystem-docs` — **deprecated MDX folder** (`apps/ecosystem-docs/pages/`); do not extend. Live Nextra content is under `apps/docs/content/`.
 
 ## Documentation app
 

@@ -1,7 +1,9 @@
+import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { AppSidebarNav } from "@/components/layout/AppSidebarNav";
 import { SchemaHealthPanel } from "@/components/dashboard/SchemaHealthPanel";
+import { getCriticalEnvIssues } from "@/lib/envDiagnostics";
 import { getSchemaHealthData } from "@/server/queries/health";
 import type { SchemaHealthData } from "@/types/db-visualizer";
 
@@ -23,6 +25,7 @@ const shortCommitSha = commitSha.slice(0, 8);
 export const DashboardShellLayout = async ({
   children,
 }: Readonly<{ children: ReactNode }>) => {
+  const envIssues = getCriticalEnvIssues();
   let healthData = EMPTY_SCHEMA_HEALTH_DATA;
   let healthWarning = "";
 
@@ -58,6 +61,19 @@ export const DashboardShellLayout = async ({
       <div className={styles.body}>
         <aside className={styles.sidebar} aria-label="Visualizer navigation and schema health">
           <AppSidebarNav />
+          {envIssues.length > 0 ? (
+            <div className={styles.envBanner} role="alert">
+              <strong>Environment</strong>
+              <ul>
+                {envIssues.map((issue) => (
+                  <li key={issue}>{issue}</li>
+                ))}
+              </ul>
+              <Link className={styles.envBannerLink} href="/deployment">
+                Open deployment / env report
+              </Link>
+            </div>
+          ) : null}
           {healthWarning ? (
             <p className={styles.healthWarning} role="status">
               {healthWarning}

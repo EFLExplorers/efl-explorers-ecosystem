@@ -2,7 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, Boxes, Lock, Network, Table2 } from "lucide-react";
+import {
+  Activity,
+  BookOpen,
+  Boxes,
+  Lock,
+  Network,
+  Table2,
+} from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 import styles from "./AppSidebarNav.module.css";
@@ -19,6 +26,7 @@ const navItems: NavItem[] = [
   { href: "/curriculum", label: "Curriculum Engine", icon: BookOpen },
   { href: "/connectivity", label: "Global Connectivity", icon: Network },
   { href: "/schema-map", label: "Schema map", icon: Table2 },
+  { href: "/deployment", label: "Deployment / env", icon: Activity },
 ];
 
 export const AppSidebarNav = () => {

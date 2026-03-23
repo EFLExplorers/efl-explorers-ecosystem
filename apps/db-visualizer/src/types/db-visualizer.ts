@@ -207,3 +207,25 @@ export type SchemaGraphData = {
   edges: SchemaGraphEdge[];
   schemas: readonly string[];
 };
+
+export type DeploymentEnvVarStatus = "ok" | "missing" | "suspicious";
+
+export type DeploymentEnvVarRow = {
+  readonly key: string;
+  readonly importance: "required" | "optional";
+  readonly status: DeploymentEnvVarStatus;
+  readonly hint?: string;
+};
+
+export type DeploymentRuntimeContext = {
+  readonly nodeEnv: string;
+  readonly vercelEnv: string | null;
+  readonly vercelRegion: string | null;
+  readonly commitShort: string;
+};
+
+export type DeploymentEnvReport = {
+  readonly context: DeploymentRuntimeContext;
+  readonly variables: DeploymentEnvVarRow[];
+  readonly criticalIssues: string[];
+};
