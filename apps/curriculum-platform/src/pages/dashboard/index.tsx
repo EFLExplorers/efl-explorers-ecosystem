@@ -18,6 +18,15 @@ export type DashboardMetrics = {
 type DashboardPageProps = {
   readonly userEmail: string;
   readonly metrics: DashboardMetrics;
+  readonly metricsError: string | null;
+};
+
+const emptyMetrics: DashboardMetrics = {
+  programCount: 0,
+  levelCount: 0,
+  unitCount: 0,
+  publishedLevelCount: 0,
+  pendingInviteCount: 0,
 };
 
 export const getServerSideProps: GetServerSideProps<DashboardPageProps> = async (
@@ -28,43 +37,65 @@ export const getServerSideProps: GetServerSideProps<DashboardPageProps> = async 
     return access;
   }
 
-  const [
-    programCount,
-    levelCount,
-    unitCount,
-    publishedLevelCount,
-    pendingInviteCount,
-  ] = await Promise.all([
-    prisma.curriculumProgram.count({ where: { isArchived: false } }),
-    prisma.curriculumLevel.count({ where: { status: { not: "archived" } } }),
-    prisma.curriculumUnit.count({ where: { isArchived: false } }),
-    prisma.curriculumLevel.count({ where: { status: "published" } }),
-    prisma.curriculumInvite.count({
-      where: { acceptedAt: null, revokedAt: null },
-    }),
-  ]);
+  try {
+    const [
+      programCount,
+      levelCount,
+      unitCount,
+      publishedLevelCount,
+      pendingInviteCount,
+    ] = await Promise.all([
+      prisma.curriculumProgram.count({ where: { isArchived: false } }),
+      prisma.curriculumLevel.count({ where: { status: { not: "archived" } } }),
+      prisma.curriculumUnit.count({ where: { isArchived: false } }),
+      prisma.curriculumLevel.count({ where: { status: "published" } }),
+      prisma.curriculumInvite.count({
+        where: { acceptedAt: null, revokedAt: null },
+      }),
+    ]);
 
-  return {
-    props: {
-      userEmail: access.userEmail ?? "Unknown user",
-      metrics: {
-        programCount,
-        levelCount,
-        unitCount,
-        publishedLevelCount,
-        pendingInviteCount,
+    return {
+      props: {
+        userEmail: access.userEmail ?? "Unknown user",
+        metrics: {
+          programCount,
+          levelCount,
+          unitCount,
+          publishedLevelCount,
+          pendingInviteCount,
+        },
+        metricsError: null,
       },
-    },
-  };
+    };
+  } catch (error) {
+    console.error("[dashboard] metrics queries failed:", error);
+    return {
+      props: {
+        userEmail: access.userEmail ?? "Unknown user",
+        metrics: emptyMetrics,
+        metricsError:
+          "Dashboard metrics could not be loaded. Check DATABASE_URL, run Prisma migrations against your database, and confirm the curriculum schema tables exist.",
+      },
+    };
+  }
 };
 
-export const DashboardPage = ({ userEmail, metrics }: DashboardPageProps) => {
+export const DashboardPage = ({
+  userEmail,
+  metrics,
+  metricsError,
+}: DashboardPageProps) => {
   return (
     <DashboardShell
       pageTitle="Dashboard"
       pageSubtitle="Start a workflow or jump back into authoring and publishing."
       userEmailOverride={userEmail}
     >
+      {metricsError ? (
+        <p className={styles.metricsError} role="alert">
+          {metricsError}
+        </p>
+      ) : null}
       <p className={styles.welcome}>
         Signed in as <strong>{userEmail}</strong>. Use the cards below to open
         each process.

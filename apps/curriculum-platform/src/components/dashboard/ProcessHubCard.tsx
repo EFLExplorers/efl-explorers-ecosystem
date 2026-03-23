@@ -30,11 +30,15 @@ export const ProcessHubCard = ({
       <p className={styles.description}>{description}</p>
       {meta ? <p className={styles.meta}>{meta}</p> : null}
       <div className={styles.actions}>
-        <Link className={styles.primaryLink} href={href}>
+        <Link className={styles.primaryLink} href={href} prefetch={false}>
           {actionLabel}
         </Link>
         {secondaryHref && secondaryLabel ? (
-          <Link className={styles.secondaryLink} href={secondaryHref}>
+          <Link
+            className={styles.secondaryLink}
+            href={secondaryHref}
+            prefetch={false}
+          >
             {secondaryLabel}
           </Link>
         ) : null}

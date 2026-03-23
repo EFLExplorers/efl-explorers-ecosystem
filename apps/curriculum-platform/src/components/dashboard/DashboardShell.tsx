@@ -55,6 +55,7 @@ export const DashboardShell = ({
               <Link
                 key={item.href}
                 href={item.href}
+                prefetch={false}
                 className={`${styles.navLink} ${active ? styles.navLinkActive : ""}`}
               >
                 {item.label}

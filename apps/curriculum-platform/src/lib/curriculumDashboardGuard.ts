@@ -22,10 +22,18 @@ export async function requireActiveCurriculumManager(
     };
   }
 
-  const manager = await prisma.curriculumManager.findUnique({
-    where: { id: managerId },
-    select: { id: true, isActive: true },
-  });
+  let manager: { id: string; isActive: boolean } | null;
+  try {
+    manager = await prisma.curriculumManager.findUnique({
+      where: { id: managerId },
+      select: { id: true, isActive: true },
+    });
+  } catch (error) {
+    console.error("[requireActiveCurriculumManager] prisma.curriculumManager.findUnique failed:", error);
+    return {
+      redirect: { destination: "/unauthorized", permanent: false },
+    };
+  }
 
   if (!manager || !manager.isActive) {
     return {
