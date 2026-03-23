@@ -2,15 +2,14 @@
 
 This document outlines the strict operational doctrine for the EFL Explorers monorepo.
 
-## 1. No Assumptions
+## STRICT RULE: No assumptions
 
-If you do not see the file, path, variable, or logic flow in your current context, you **MUST** ask. Do not invent boilerplate or guess at implementation details.
+If a file path, variable, or logic flow is not explicitly in your current context, you **MUST** ask for it. Do not invent boilerplate.
 
-## 2. Planning First
+## STRICT RULE: Planning first
 
 Before generating code, provide a `<PLANNING>` block. List your assumptions there for approval.
 
-## 3. Strict Types
+## STRICT RULE: Strict types
 
-- Do not use `any`.
-- Use **Zod** for all form validation (including subscription and lead flows).
+No `any` types. Use **Zod** for all forms (especially Subscription requests).

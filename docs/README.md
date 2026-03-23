@@ -1,22 +1,39 @@
-# EFL Explorers Ecosystem Docs
+# EFL Explorers — documentation map
 
-This folder contains structured, in-depth documentation for the ecosystem.
-Start with the maticulus if you want the full system map, then drill into
-architecture, operations, and app/package details.
+## How documentation is split
 
-## Start Here
-- `maticulus.md` — In-depth ecosystem matrix and cross-app flows.
-- `architecture.md` — System architecture, data domains, and auth/SSO.
-- `operations.md` — Local setup, environment variables, and workflows.
+| What | Where | Mindset |
+|------|--------|--------|
+| **Docs that appear in the Nextra app** | `apps/docs` (`@repo/docs`), content: **`apps/docs/content/`** | **Structured and simplified** — navigation, hubs, manifests, guides people actually read in the site. Only put MDX here if it should ship in that UI. Run: `pnpm --filter @repo/docs dev`. |
+| **Chaos / dev-oriented notes** | **`docs/`** (this folder, repo root) | **Organic** — scratchpads, deep dives, logs, experiments, anything you add as you go. **Not** built by Nextra; Markdown (and whatever structure you like). Optimized for *you* and Cursor, not for the public docs sidebar. |
+
+**Deprecated:** `apps/ecosystem-docs/pages/` — orphan MDX. New site-facing content belongs in `apps/docs/content/` only (see `apps/ecosystem-docs/README.md`).
+
+## Optional subfolders under `docs/`
+
+- **`docs/dev/`** — handy inbox for messy WIP (optional).
+- **`docs/prod/`** — handy inbox for rollout / env / incident notes (optional).
+
+Everything else (`platforms/`, `StudentDevelopmentPlan/`, `Scale/`, …) is still valid chaos corpus—no need to move files unless you want to.
+
+---
+
+## Start here (root corpus — internal)
+
+- `maticulus.md` — Ecosystem matrix and cross-app flows.
+- `architecture.md` — System architecture, data domains, auth/SSO.
+- `operations.md` — Local setup, environment variables, workflows.
 - `completeness.md` — Checklist for no-assumption understanding.
 
 ## Observability / internal tools
-- `db-visualizer/scaling-and-operating-model.md` — Operating model for `apps/db-visualizer`: security, performance, health checks, and how it maps to the multi-schema Postgres monorepo.
+
+- `db-visualizer/scaling-and-operating-model.md` — Operating model for `apps/db-visualizer`.
 
 ## Platforms
+
 - `platforms/README.md` — Platform index + UI/API/backend/database split.
-- `platforms/curriculum-platform/README.md` — What the curriculum builder is for, publish/snapshot logic, and how teacher/student apps consume it.
 
 ## Packages
+
 - `packages/database.md` — Prisma schema + DB client.
 - `packages/ui.md` — Shared UI components.

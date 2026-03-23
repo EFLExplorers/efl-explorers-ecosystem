@@ -1,10 +1,9 @@
 {
-  "personality": "Personality Rules",
-  "system": "System Architecture",
+  "personality": "Zero Assumptions Doctrine",
   "db-visualizer": "DB Visualizer",
   "landing-page": "Landing Page",
+  "ecosystem-docs": "Ecosystem Docs",
   "student-platform": "Student Platform",
   "teacher-platform": "Teacher Platform",
-  "curriculum-platform": "Curriculum Platform",
-  "ecosystem-docs": "Ecosystem Docs"
+  "curriculum-platform": "Curriculum Platform"
 }

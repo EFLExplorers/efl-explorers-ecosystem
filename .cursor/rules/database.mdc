@@ -10,8 +10,8 @@ globs:
 
 ## 1. Referential integrity and indexes
 
-- Add an `@@index` on **every relation scalar** used for lookups and joins (and `@unique` where the domain requires it). Audit existing models when touching related code; common gaps include `Account.userId`, `Session.userId`, and similar high-cardinality FK columns.
-- **`relationMode = "prisma"`** applies when the deployment **does not enforce foreign keys at the database** (FK-less / Vitess-style setups). The checked-in datasource is PostgreSQL with normal relation metadata; **do not add `relationMode` unless** the team standardizes on an FK-less host and updates `schema.prisma` accordingly. Always match the datasource block to the real database.
+- **Strict rule:** Add an `@@index` on **every relation scalar** used for lookups and joins (and `@unique` where the domain requires it). Audit existing models when touching related code; common gaps include `Account.userId`, `Session.userId`, and similar high-cardinality FK columns.
+- **PlanetScale / FK-less hosts:** **`relationMode = "prisma"` is mandatory** when the database does not enforce foreign keys at the DB layer. Match the `datasource` block to the real deployment; do not assume plain PostgreSQL FK behavior on Vitess-style setups.
 
 ## 2. Migration and sync workflow
 
@@ -24,7 +24,7 @@ globs:
 
 ## 4. Schema health
 
-- Use the **db-visualizer** app to verify connectivity and model coverage against real data.
+- Use the **`db-visualizer`** project (`apps/db-visualizer`) as the tool to verify schema health, connectivity, and model coverage against real data.
 
 ## 5. Single source of truth
 

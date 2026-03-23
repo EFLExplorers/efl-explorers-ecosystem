@@ -4,6 +4,7 @@ globs:
   - "apps/**/*"
   - "packages/**/*"
   - "apps/docs/content/**/*.mdx"
+  - "docs/**/*.md"
 ---
 
 # ECOSYSTEM MAP
@@ -32,12 +33,18 @@ Folder names under `apps/`:
 - `student-platform` — student portal; curriculum via HTTP to curriculum app
 - `teacher-platform` — teacher operations on `teachers` schema models
 - `curriculum-platform` — curriculum authoring and public published-level API
-- `ecosystem-docs` — **deprecated content tree**; live docs are in `docs` app
+- `ecosystem-docs` — **deprecated MDX folder** (`apps/ecosystem-docs/pages/`); do not extend. Live Nextra content is under `apps/docs/content/`.
 
 ## Documentation app
 
-- **`apps/docs`** — package name `@repo/docs`. Nextra 4 content root: `apps/docs/content/`.
+- **`apps/docs`** — package name `@repo/docs`. **Single Nextra site** for the monorepo. Nextra 4 content root: `apps/docs/content/`.
+- **Purpose:** **Structured, simplified** MDX that **appears in the docs app** (sidebar, search, shipped UX).
 - **Architecture hub:** `apps/docs/content/index.mdx` (connection-first diagrams and links).
+
+## Chaos / dev docs (not Nextra)
+
+- **Repo root `docs/`** — **Dev-oriented, organic “chaos” notes**: deep dives, logs, scratch, anything added over time. **Not** part of the Nextra build. Entry point: `docs/README.md`. Optional inboxes: `docs/dev/`, `docs/prod/`.
+- **Rule of thumb:** If it should be **readable in the Nextra UI**, put it under `apps/docs/content/`. If it is **for your workflow and Cursor**, keep it under root `docs/`.
 
 ## Shared packages
 

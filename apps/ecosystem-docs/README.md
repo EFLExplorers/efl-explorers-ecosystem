@@ -15,3 +15,5 @@ pnpm --filter @repo/docs dev
 ```
 
 The old `pages/` tree here is obsolete; edit MDX under `apps/docs/content/` instead.
+
+**Chaos / dev Markdown (not Nextra):** repo-root `docs/` — organic notes as you go; not shown in the docs app. See `docs/README.md`.
